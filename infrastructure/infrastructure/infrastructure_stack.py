@@ -8,6 +8,8 @@ from aws_cdk import (
     aws_dynamodb as dynamodb,
     aws_iam as iam
 )
+import string
+import secrets
 
 
 class InfrastructureStack(Stack):
