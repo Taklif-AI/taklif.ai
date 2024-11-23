@@ -16,6 +16,50 @@ class InfrastructureStack(Stack):
         super().__init__(scope, construct_id, **kwargs)
 
         # Create the IAM User Groups and Policies
+        # Backend Developers Group
+        backend_policy = iam.ManagedPolicy(
+            self, "BackendPolicy",
+            statements=[
+                iam.PolicyStatement(
+                    actions=["lambda:*", "dynamodb:*", "apigateway:*",
+                            # "cognito user pools:*", "cognito identity:*", "cognito sync:*"
+                             "rds:*", "s3:*", "ec2:*", "amplify:*"],
+                    resources=["*"]
+                )
+            ]
+        )
+        backend_group = iam.Group(self, "BackendGroup")
+        backend_group.add_managed_policy(backend_policy)
+
+        # Frontend Developers Group
+        frontend_policy = iam.ManagedPolicy(
+            self, "FrontendPolicy",
+            statements=[
+                iam.PolicyStatement(
+                    actions=["dynamodb:List*", "dynamodb:Read*",
+                             "s3:List*", "s3:Read*",
+                             "rds:List*", "rds:Read*",
+                             "amplify:*"],
+                    resources=["*"]
+                )
+            ]
+        )
+        frontend_group = iam.Group(self, "FrontendGroup")
+        frontend_group.add_managed_policy(frontend_policy)
+
+        # Admin Group
+        admin_policy = iam.ManagedPolicy(
+            self, "AdminPolicy",
+            statements=[
+                iam.PolicyStatement(
+                    actions=["*"],
+                    resources=["*"]
+                )
+            ]
+        )
+        admin_group = iam.Group(self, "AdminGroup")
+        admin_group.add_managed_policy(admin_policy)
+
         # Helper function to generate a random password
         def generate_password(length=16):
             characters = string.ascii_letters + string.digits + string.punctuation
