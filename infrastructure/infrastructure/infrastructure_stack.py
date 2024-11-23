@@ -22,7 +22,7 @@ class InfrastructureStack(Stack):
             statements=[
                 iam.PolicyStatement(
                     actions=["lambda:*", "dynamodb:*", "apigateway:*",
-                             "cognito-user-pools:*", "cognito-identity:*", "cognito-sync:*",
+                             "cognito-idp:*", "cognito-identity:*", "cognito-sync:*",
                              "rds:*", "s3:*", "ec2:*", "amplify:*"],
                     resources=["*"]
                 )
