@@ -87,7 +87,6 @@ jobs:
           LANGCHAIN_API_KEY: ${{ secrets.LANGCHAIN_API_KEY }}
         run: |
           cdk deploy InfrastructureStackDev --require-approval never
-          cdk destroy InfrastructureStackDev --force
         working-directory: infrastructure
 
       # Deploy to the Production stack if merging into main
@@ -100,5 +99,4 @@ jobs:
           LANGCHAIN_API_KEY: ${{ secrets.LANGCHAIN_API_KEY }}
         run: |
           cdk deploy InfrastructureStackProd --require-approval never
-          cdk destroy InfrastructureStackDev --force
         working-directory: infrastructure
