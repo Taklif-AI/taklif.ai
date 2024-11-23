@@ -61,21 +61,24 @@ class InfrastructureStack(Stack):
         admin_group.add_managed_policy(admin_policy)
 
         # Create Backend Users
-        for i in range(1, 4):  # 3 users
-            iam.User(self, f"BackendUser{i}",
-                     user_name=f"backend-user-{i}",
-                     groups=[backend_group])
-
+        iam.User(self, "BackendUser-Mohammed",
+                 user_name="backend-user-mohammed",
+                 groups=[backend_group]
+                )
+            
         # Create Frontend Users
-        for i in range(1, 3):  # 2 users
-            iam.User(self, f"FrontendUser{i}",
-                     user_name=f"frontend-user-{i}",
-                     groups=[frontend_group])
-
-        # Create Admin User
-        iam.User(self, "AdminUser",
-                 user_name="admin-user",
+        iam.User(self, "FrontendUser-Shady",
+                 user_name="frontend-user-shady",
+                 groups=[frontend_group]
+                )
+        
+        # Create Admin Users
+        iam.User(self, "AdminUser-Zaki",
+                 user_name="admin-user-zaki",
                  groups=[admin_group])
+        iam.User(self, "AdminUser-Salem",
+                 user_name="admin-user-salem",
+                 groups=[admin_group])         
 
         # LLM Calling Lambda Function ---------------------------------
         '''
