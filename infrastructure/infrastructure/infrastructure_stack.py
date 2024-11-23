@@ -21,8 +21,9 @@ class InfrastructureStack(Stack):
             self, "BackendPolicy",
             statements=[
                 iam.PolicyStatement(
-                    actions=["lambda:*", "dynamodb:*", "apigateway:*", "cognito user pools:*",
-                             "cognito identity:*", "rds:*", "s3:*", "ec2:*", "amplify:*", "cognito sync:*"],
+                    actions=["lambda:*", "dynamodb:*", "apigateway:*",
+                            # "cognito user pools:*", "cognito identity:*", "cognito sync:*"
+                             "rds:*", "s3:*", "ec2:*", "amplify:*"],
                     resources=["*"]
                 )
             ]
