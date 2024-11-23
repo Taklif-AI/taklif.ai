@@ -8,8 +8,6 @@ from aws_cdk import (
     aws_dynamodb as dynamodb,
     aws_iam as iam
 )
-import string
-import secrets
 
 
 class InfrastructureStack(Stack):
@@ -24,7 +22,7 @@ class InfrastructureStack(Stack):
             statements=[
                 iam.PolicyStatement(
                     actions=["lambda:*", "dynamodb:*", "apigateway:*",
-                            # "cognito user pools:*", "cognito identity:*", "cognito sync:*"
+                             "cognito-user-pools:*", "cognito-identity:*", "cognito-sync:*",
                              "rds:*", "s3:*", "ec2:*", "amplify:*"],
                     resources=["*"]
                 )
@@ -62,46 +60,22 @@ class InfrastructureStack(Stack):
         admin_group = iam.Group(self, "AdminGroup")
         admin_group.add_managed_policy(admin_policy)
 
-        # Helper function to generate a random password
-        def generate_password(length=16):
-            characters = string.ascii_letters + string.digits + string.punctuation
-            return ''.join(secrets.choice(characters) for _ in range(length))
-
-        # Helper function to create users with auto-generated console passwords
-        def create_user(user_name: str, group: iam.Group):
-            password = generate_password()
-            iam_user = iam.CfnUser(
-                self, f"{user_name}Cfn",
-                user_name=user_name,
-                groups=[group.group_name]
-            )
-            iam.CfnLoginProfile(
-                self, f"{user_name}LoginProfile",
-                user_name=user_name,
-                password=password,
-                password_reset_required=True  # Users must reset the password on first login
-            )
-            print(f"Generated password for {user_name}: {password}")
-
         # Create Backend Users
         for i in range(1, 4):  # 3 users
-            create_user(
-                user_name=f"backend-user-{i}",
-                group=backend_group
-            )
+            iam.User(self, f"BackendUser{i}",
+                     user_name=f"backend-user-{i}",
+                     groups=[backend_group])
 
         # Create Frontend Users
         for i in range(1, 3):  # 2 users
-            create_user(
-                user_name=f"frontend-user-{i}",
-                group=frontend_group
-            )
+            iam.User(self, f"FrontendUser{i}",
+                     user_name=f"frontend-user-{i}",
+                     groups=[frontend_group])
 
         # Create Admin User
-        create_user(
-            user_name="admin-user",
-            group=admin_group
-        )
+        iam.User(self, "AdminUser",
+                 user_name="admin-user",
+                 groups=[admin_group])
 
         # LLM Calling Lambda Function ---------------------------------
         '''
