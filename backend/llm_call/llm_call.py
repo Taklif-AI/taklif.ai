@@ -1,46 +1,57 @@
 from langchain_community.chat_models import ChatLiteLLM
 from langchain_core.output_parsers import StrOutputParser
-from langchain_core.prompts import PromptTemplate
+import time
 from langchain_core.tracers.langchain import wait_for_all_tracers
 import json
-import os
+from langchain import hub
 
 def lambda_handler(event, context):
     try:
         body = json.loads(event.get('body', '{}'))
         
-        # Extract 'query' from the body
-        query = body.get('query', [])
-        
-        if not query:
+        # extract params from body:
+        params = body.get('params')
+        if not params:
             return {
                 "statusCode": 400,
-                "body": json.dumps({"error": "Bad Request: Missing 'query' in the event payload"})
+                "body": json.dumps({"error": "Bad Request: Missing 'params' in the event payload"})
             }
+        subject, work_place, course, learning_objective, student_interest, lang_diff_level, logic_diff_level, req_clarity, num_of_words = params
 
-        # Invoke the LLM        
-        prompt_template = "'{query}'" # TBD
-        
-        prompt = PromptTemplate(input_variables=["query"], template=prompt_template)
-        
+        # prepare the prompt  
+        langsmith_prompt = hub.pull("college-scope-prompt")
+    #     # # Invoke the LLM
         model_name = "openrouter/google/palm-2-chat-bison"
         llm = ChatLiteLLM(model=model_name)
-        simple_chain = prompt | llm | StrOutputParser()
+        simple_chain = langsmith_prompt | llm | StrOutputParser()
+        start_time = time.time()
 
-        response = simple_chain.invoke(input=query)
+        response = simple_chain.invoke(input = {
+                                                "subject": subject,
+                                                "work_place": work_place,
+                                                "course": course,
+                                                "learning_objective":learning_objective ,
+                                                 "student_interest": student_interest,
+                                                 "lang_diff_level": lang_diff_level,
+                                                 "logic_diff_level": logic_diff_level,
+                                                 "req_clarity": req_clarity,
+                                                 "num_of_words": num_of_words})
+
 
         # Return the content from the LLM response
         return {
             "statusCode": 200,
-            "body": json.dumps({"response": response})
+            "body": json.dumps({"response": response}), 
+            "time": (time.time() - start_time)
         }
     
     except Exception as e:
         # Handle exceptions and return an error message
         return {
             "statusCode": 500,
-            "body": json.dumps({"error": "Internal Server Error: " + str(e)})
+            "body": json.dumps({"error": "Internal Server Error: " + str(e)}),
+            "time": (time.time() - start_time)
         }
-    # wait for langsmith tracer to finish    
+    # # wait for langsmith tracer to finish    
     finally:
         wait_for_all_tracers()
