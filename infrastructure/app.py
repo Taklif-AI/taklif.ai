@@ -9,7 +9,7 @@ environments = {
         "region": os.getenv("CDK_DEFAULT_REGION"), # example: us-east-1
         "env_name": "Development",
         "lambda_memory_size": 700,
-        "lambda_timeout": 15,
+        "lambda_timeout": 30,
         "OPENROUTER_API_KEY": os.getenv("OPENROUTER_API_KEY"),
         "LANGCHAIN_API_KEY": os.getenv("LANGCHAIN_API_KEY"),
     },
@@ -18,7 +18,7 @@ environments = {
         "region": os.getenv("CDK_DEFAULT_REGION"),
         "env_name": "Production",
         "lambda_memory_size": 1024,
-        "lambda_timeout": 25,
+        "lambda_timeout": 30,
         "OPENROUTER_API_KEY": os.getenv("OPENROUTER_API_KEY"),
         "LANGCHAIN_API_KEY": os.getenv("LANGCHAIN_API_KEY"),
     }
