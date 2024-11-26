@@ -1,15 +1,16 @@
+from langchain_core.tracers.langchain import wait_for_all_tracers
 from langchain_community.chat_models import ChatLiteLLM
 from langchain_core.output_parsers import StrOutputParser
-import time
-from langchain_core.tracers.langchain import wait_for_all_tracers
-import json
 from langchain import hub
+import json
+import time
+
 
 def lambda_handler(event, context):
     try:
         body = json.loads(event.get('body', '{}'))
         
-        # extract params from body:
+        # Extract params from body
         params = body.get('params')
         if not params:
             return {
@@ -18,11 +19,13 @@ def lambda_handler(event, context):
             }
         subject, work_place, course, learning_objective, student_interest, lang_diff_level, logic_diff_level, req_clarity, num_of_words = params
 
-        # prepare the prompt  
+        # Prepare the prompt  
         langsmith_prompt = hub.pull("college-scope-prompt")
-    #     # # Invoke the LLM
+
+        # Invoke the LLM
         model_name = "openrouter/google/palm-2-chat-bison"
         llm = ChatLiteLLM(model=model_name)
+        
         simple_chain = langsmith_prompt | llm | StrOutputParser()
         start_time = time.time()
 
@@ -42,7 +45,7 @@ def lambda_handler(event, context):
         return {
             "statusCode": 200,
             "body": json.dumps({"response": response}), 
-            "time": (time.time() - start_time)
+            "executionTime": (time.time() - start_time)
         }
     
     except Exception as e:
@@ -50,8 +53,8 @@ def lambda_handler(event, context):
         return {
             "statusCode": 500,
             "body": json.dumps({"error": "Internal Server Error: " + str(e)}),
-            "time": (time.time() - start_time)
         }
-    # # wait for langsmith tracer to finish    
+
+    # Wait for langsmith tracer to finish    
     finally:
         wait_for_all_tracers()
