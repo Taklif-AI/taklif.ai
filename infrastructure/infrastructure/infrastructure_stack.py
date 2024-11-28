@@ -125,7 +125,7 @@ class InfrastructureStack(Stack):
 
         # LLM crud Lambda Function ---------------------------------
         llm_crud_lambda_layer = lambda_.LayerVersion(
-            self, "LLMsBasicDependencies",
+            self, "LLMCrudDependencies",
             code=lambda_.Code.from_asset("./layers/llm_crud/"),
             compatible_runtimes=[lambda_.Runtime.PYTHON_3_10],
             description="Lambda layer for boto3 and others.",
