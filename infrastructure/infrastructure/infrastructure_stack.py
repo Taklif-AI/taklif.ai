@@ -121,10 +121,38 @@ class InfrastructureStack(Stack):
             }
         )
 
-        llm_call_api = apigateway.LambdaRestApi(
+   
+
+        # LLM crud Lambda Function ---------------------------------
+        llm_crud_lambda_layer = lambda_.LayerVersion(
+            self, "LLMsBasicDependencies",
+            code=lambda_.Code.from_asset("./layers/llm_crud/"),
+            compatible_runtimes=[lambda_.Runtime.PYTHON_3_10],
+            description="Lambda layer for boto3 and others.",
+        )
+                
+        llm_crud_lambda_code_path = os.path.join(
+            os.path.dirname(__file__), 
+            "../../backend/llm_crud"
+        )
+    
+        llm_crud_function = lambda_.Function(
+            self,
+            id=f"{env_name}-LLMCrudFunction",
+            code=lambda_.Code.from_asset(llm_crud_lambda_code_path),
+            handler="llm_crud.lambda_handler",
+            runtime=lambda_.Runtime.PYTHON_3_10,
+            layers=[llm_crud_lambda_layer],
+            timeout=Duration.seconds(lambda_timeout),
+            memory_size=lambda_memory_size,
+            environment={
+                "ENV_NAME":env_name,
+            }
+        )
+
+        llm_api = apigateway.LambdaRestApi(
             self,
             "LLMCallAPI",
-            handler=llm_call_function,
             rest_api_name=f"{env_name}-LLMCallAPI",
             proxy=False,
             description="API Gateway for LLM Call",
@@ -136,8 +164,28 @@ class InfrastructureStack(Stack):
             )
         )
 
-        items = llm_call_api.root.add_resource("llm_call")
-        items.add_method("POST") # POST /llm_call
-        items.add_cors_preflight(
+        # llm_call_resource = llm_api.root.add_resource("llm_call")
+        # llm_call_resource.add_method("POST") # POST /llm_call
+        # llm_call_resource.add_cors_preflight(
+        #     allow_origins=apigateway.Cors.ALL_ORIGINS,  # Allow all origins, or specify a list of allowed origins (it can be replaced with our frontend domain)
+        # )
+
+        
+        llm_call_resource = llm_api.root.add_resource("llm_call")
+        llm_call_resource.add_method("POST", apigateway.LambdaIntegration(llm_call_function))
+        llm_call_resource.add_cors_preflight(
+            allow_origins=apigateway.Cors.ALL_ORIGINS,  # Allow all origins, or specify a list of allowed origins (it can be replaced with our frontend domain)
+        )
+        # Create a resource for routing Lambda 2
+        items_resource = llm_api.root.add_resource("items")
+        items_resource.add_method("GET", apigateway.LambdaIntegration(llm_crud_function))
+        items_resource.add_method("PUT", apigateway.LambdaIntegration(llm_crud_function))
+        item_name_resource = items_resource.add_resource("{name}")
+        item_name_resource.add_method("DELETE", apigateway.LambdaIntegration(llm_crud_function)) # NAME
+        item_name_resource.add_method("GET", apigateway.LambdaIntegration(llm_crud_function)) # NAME
+        items_resource.add_cors_preflight(
+            allow_origins=apigateway.Cors.ALL_ORIGINS,  # Allow all origins, or specify a list of allowed origins (it can be replaced with our frontend domain)
+        )
+        item_name_resource.add_cors_preflight(
             allow_origins=apigateway.Cors.ALL_ORIGINS,  # Allow all origins, or specify a list of allowed origins (it can be replaced with our frontend domain)
         )
