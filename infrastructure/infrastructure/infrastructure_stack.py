@@ -154,11 +154,10 @@ class InfrastructureStack(Stack):
             self,
             "LLMCallAPI",
             rest_api_name=f"{env_name}-LLMCallAPI",
-            proxy=False,
             description="API Gateway for LLM Call",
             endpoint_types=[apigateway.EndpointType.EDGE],
             deploy_options=apigateway.StageOptions( # we can make the throttling limits dynamic by the user subscription
-                stage_name=env_name,
+            stage_name=env_name,
 #                throttling_rate_limit=1, # maximum number of requests per second (RPS) allowed for the stage
 #                throttling_burst_limit=5, # maximum number of requests that can be served in a short burst before the rate limit is applied
             )
