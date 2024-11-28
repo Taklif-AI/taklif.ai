@@ -150,7 +150,7 @@ class InfrastructureStack(Stack):
             }
         )
 
-        llm_api = apigateway.LambdaRestApi(
+        llm_api = apigateway.RestApi(
             self,
             "LLMCallAPI",
             rest_api_name=f"{env_name}-LLMCallAPI",
