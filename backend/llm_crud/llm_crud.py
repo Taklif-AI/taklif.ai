@@ -4,8 +4,6 @@ import boto3
 client = boto3.client('dynamodb')
 dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table('llms')
-tableName = 'llms'
-
 
 def lambda_handler(event, context):
     print(event)
@@ -16,18 +14,18 @@ def lambda_handler(event, context):
     }
 
     try:
-        if event['routeKey'] == "DELETE /items/{name}":
+        if event['httpMethod'] == "DELETE" and event['pathParameters'] is not None :
             table.delete_item(
-                Key={'name': event['pathParameters']['name']})
-            body = 'Deleted item ' + event['pathParameters']['name']
-        elif event['routeKey'] == "GET /items/{name}":
+                Key={'name': str(event['pathParameters']['name'])})
+            body = 'Deleted item ' + str(event['pathParameters']['name'])
+        elif event['httpMethod'] == "GET" and event['pathParameters'] is not None :
             body = table.get_item(
-                Key={'name': event['pathParameters']['name']})
+                Key={'name': str(event['pathParameters']['name'])})
             body = body["Item"]
             responseBody = [
                 {'name': body['name'], 'quality': body['quality']}]
             body = responseBody
-        elif event['routeKey'] == "GET /items":
+        elif event['httpMethod'] == "GET"  and event['pathParameters'] is None:
             body = table.scan()
             body = body["Items"]
             print("ITEMS----")
@@ -38,7 +36,7 @@ def lambda_handler(event, context):
                     {'name': items['name'], 'quality': items['quality']}]
                 responseBody.append(responseItems)
             body = responseBody
-        elif event['routeKey'] == "PUT /items":
+        elif event['httpMethod'] == "PUT":
             requestJSON = json.loads(event['body'])
             table.put_item(
                 Item={
@@ -49,7 +47,7 @@ def lambda_handler(event, context):
             body = 'Put item ' + requestJSON['name']
     except KeyError:
         statusCode = 400
-        body = 'Unsupported route: ' + event['routeKey']
+        body = 'Unsupported route: ' + event['path']
     body = json.dumps(body)
     res = {
         "statusCode": statusCode,
