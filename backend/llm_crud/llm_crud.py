@@ -1,9 +1,14 @@
 import json
 import boto3
+import os
 
 client = boto3.client("dynamodb")
 dynamodb = boto3.resource("dynamodb")
-table = dynamodb.Table("LLMs")
+
+
+env_name = os.environ.get("ENV_NAME", "Development")
+table_name = f"LLMs-{env_name}"
+table = dynamodb.Table(table_name)
 
 
 def lambda_handler(event, context):
