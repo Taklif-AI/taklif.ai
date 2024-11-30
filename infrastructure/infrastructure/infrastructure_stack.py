@@ -79,7 +79,20 @@ class InfrastructureStack(Stack):
         iam.User(self, "AdminUser-Salem",
                  user_name="admin-user-salem",
                  groups=[admin_group])         
+        lambda_role = iam.Role(
+            self,
+            id=f"{env_name}-LLMCallLambdaRole",
+            assumed_by=iam.ServicePrincipal("lambda.amazonaws.com"),
+        )
 
+        # Add policies to the role
+      
+        lambda_role.add_managed_policy(
+            iam.ManagedPolicy.from_aws_managed_policy_name("service-role/AWSLambdaBasicExecutionRole")
+        )
+        lambda_role.add_managed_policy(
+            iam.ManagedPolicy.from_aws_managed_policy_name("AmazonDynamoDBFullAccess")
+        )
         # LLM Calling Lambda Function ---------------------------------
         '''
         # Add lambda layer by ARN
@@ -147,7 +160,9 @@ class InfrastructureStack(Stack):
             memory_size=lambda_memory_size,
             environment={
                 "ENV_NAME":env_name,
-            }
+            },
+            role=lambda_role, 
+
         )
 
         llm_api = apigateway.RestApi(
@@ -188,3 +203,5 @@ class InfrastructureStack(Stack):
         item_name_resource.add_cors_preflight(
             allow_origins=apigateway.Cors.ALL_ORIGINS,  # Allow all origins, or specify a list of allowed origins (it can be replaced with our frontend domain)
         )
+        LLMsTable = dynamodb.Table(self,id= f"{env_name}-LLMTable",table_name='LLMs'
+                                  ,partition_key= dynamodb.Attribute(name='name',type= dynamodb.AttributeType.STRING))
