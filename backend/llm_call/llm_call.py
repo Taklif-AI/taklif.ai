@@ -39,7 +39,7 @@ def lambda_handler(event, context):
         langsmith_prompt = hub.pull("college-scope-prompt")
 
         # Invoke the LLM
-        llm = ChatLiteLLM(model=model_name) # example model name: "meta-llama/llama-3.2-3b-instruct:free"
+        llm = ChatLiteLLM(model=model_name) # example model name: "openrouter/meta-llama/llama-3.2-3b-instruct:free"
         
         simple_chain = langsmith_prompt | llm | StrOutputParser()
 
