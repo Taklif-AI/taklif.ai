@@ -240,7 +240,7 @@ class InfrastructureStack(Stack):
         LLMsTable = dynamodb.Table(
             self,
             id=f"{env_name}-LLMTable",
-            table_name="LLMs",
+            table_name=f"{env_name}-LLMs",
             partition_key=dynamodb.Attribute(
                 name="name", type=dynamodb.AttributeType.STRING
             ),
