@@ -63,7 +63,7 @@ def lambda_handler(event, context):
                     "quality": requestJSON["quality"],
                 }
             )
-            body = f"Put item: {prrequestJSON["name"]}-{prrequestJSON["provider"]}"
+            body = f"Put item: {requestJSON["name"]}-{requestJSON["provider"]}"
     except KeyError:
         statusCode = 400
         body = "Unsupported route: " + event["path"]
