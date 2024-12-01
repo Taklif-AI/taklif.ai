@@ -16,7 +16,6 @@ def lambda_handler(event, context):
     statusCode = 200
     headers = {"Content-Type": "application/json"}
 
-    return table
     try:
         if event["httpMethod"] == "DELETE" and event["pathParameters"] is not None:
             provider = event["pathParameters"]["provider"]
