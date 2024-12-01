@@ -7,16 +7,16 @@ dynamodb = boto3.resource("dynamodb")
 
 
 env_name = os.environ.get("ENV_NAME", "Development")
-table_name = f"LLMs-{env_name}"
+table_name = f"{env_name}-LLMs"
 table = dynamodb.Table(table_name)
 
 
 def lambda_handler(event, context):
-    print(event)
     body = {}
     statusCode = 200
     headers = {"Content-Type": "application/json"}
 
+    return table
     try:
         if event["httpMethod"] == "DELETE" and event["pathParameters"] is not None:
             provider = event["pathParameters"]["provider"]
