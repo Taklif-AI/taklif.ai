@@ -225,10 +225,11 @@ class InfrastructureStack(Stack):
             "PUT", apigateway.LambdaIntegration(llm_crud_function)
         )
         item_name_resource = items_resource.add_resource("{name}")
-        item_name_resource.add_method(
+        item_provider_resource = item_name_resource.add_resource("{provider}")
+        item_provider_resource.add_method(
             "DELETE", apigateway.LambdaIntegration(llm_crud_function)
         )  # NAME
-        item_name_resource.add_method(
+        item_provider_resource.add_method(
             "GET", apigateway.LambdaIntegration(llm_crud_function)
         )  # NAME
         items_resource.add_cors_preflight(
