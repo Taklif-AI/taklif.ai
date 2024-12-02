@@ -250,18 +250,42 @@ class InfrastructureStack(Stack):
                 name='provider', type=dynamodb.AttributeType.STRING
             )
         )
-
+        amplify.CfnApp.repository
     
         # Create the Amplify app with the build spec
         amplify_app = amplify.CfnApp(
             self,
-            "NextJsTaklifAIApp",
-            name="NextJsTaklifAIApp",
-            source_code_provider=amplify.GitHubSourceCodeProvider(
-                owner="Taklif-AI",
-                repository="taklif.ai",
-                oauth_token="***REMOVED-GITHUB-TOKEN***",
-            )
+            "NextJsTaklifAIApps",
+            name="NextJsTaklifAIApps",
+            repository="https://github.com/Taklif-AI/taklif.ai",
+            oauth_token="***REMOVED-GITHUB-TOKEN***",
         )
-
-        amplify_app.add_branch("feature/amplify-hosting")
+    
+        # Define the monorepo branch with build settings
+        main_branch = amplify.CfnBranch(
+            self,
+            "FeatureBranch",
+            app_id=amplify_app.attr_app_id,
+            branch_name="feature/nextjs-hosting",  # Replace with your default branch (e.g., main or master)
+            build_spec="""
+                version: 1
+                applications:
+                  - frontend:
+                      phases:
+                        preBuild:
+                          commands:
+                            - cd ../../web/taklif-ai/  # Navigate to monorepo subdirectory
+                            - npm install
+                        build:
+                          commands:
+                            - npm run build
+                      artifacts:
+                        baseDirectory: ../../web/taklif-ai//build  # Adjust based on your app's build output
+                        files:
+                          - '**/*'
+                      cache:
+                        paths:
+                          - node_modules/**/*  # Cache dependencies
+                    appRoot: web/taklif-ai    
+            """,
+        )
