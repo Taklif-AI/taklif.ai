@@ -26,7 +26,8 @@ class InfrastructureStack(Stack):
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        # Create the IAM User Groups and Policies
+
+        # <IAM RESOURCES> ---------------------------------------------------------------------
         # Backend Developers Group
         backend_policy = iam.ManagedPolicy(
             self,
@@ -106,14 +107,18 @@ class InfrastructureStack(Stack):
         iam.User(
             self, "AdminUser-Salem", user_name="admin-user-salem", groups=[admin_group]
         )
+        iam.User(
+            self, "AdminUser-Dr-Motaz", user_name="admin-user-motaz", groups=[admin_group]
+        )
+
+        # Create role for lambda functions
         lambda_role = iam.Role(
             self,
-            id=f"{env_name}-LLMCallLambdaRole",
+            id=f"{env_name}-LLMCrudLambdaRole",
             assumed_by=iam.ServicePrincipal("lambda.amazonaws.com"),
         )
 
-        # Add policies to the role
-
+        # Add policies to the llm crud role
         lambda_role.add_managed_policy(
             iam.ManagedPolicy.from_aws_managed_policy_name(
                 "service-role/AWSLambdaBasicExecutionRole"
@@ -122,16 +127,11 @@ class InfrastructureStack(Stack):
         lambda_role.add_managed_policy(
             iam.ManagedPolicy.from_aws_managed_policy_name("AmazonDynamoDBFullAccess")
         )
-        # LLM Calling Lambda Function ---------------------------------
-        """
-        # Add lambda layer by ARN
-        llm_call_lambda_layer = lambda_.LayerVersion.from_layer_version_arn(
-            self, 
-            "LLMsBasicDependencies",
-            "arn:aws:lambda:eu-north-1:491085403164:layer:LLMsBasicsDependencies:1"
-        )
-        """
+        # </IAM RESOURCES> ---------------------------------------------------------------------
 
+
+        # <LAMBDA RESOURCES> ---------------------------------------------------------------------
+        # LLM Calling Lambda Function 
         llm_call_lambda_layer = lambda_.LayerVersion(
             self,
             "LLMsBasicDependencies",
@@ -190,55 +190,58 @@ class InfrastructureStack(Stack):
             },
             role=lambda_role,
         )
+        # </LAMBDA RESOURCES> ---------------------------------------------------------------------
 
-        llm_api = apigateway.RestApi(
+
+        # <API GATEWAY RESOURCES> ---------------------------------------------------------------------
+        orchestration_api = apigateway.RestApi(
             self,
-            "LLMCallAPI",
-            rest_api_name=f"{env_name}-LLMCallAPI",
-            description="API Gateway for LLM Call",
+            "OrchestrationAPI",
+            rest_api_name=f"{env_name}-OrchestrationAPI",
+            description="API Gateway for services orchestration",
             endpoint_types=[apigateway.EndpointType.EDGE],
-            deploy_options=apigateway.StageOptions(  # we can make the throttling limits dynamic by the user subscription
+            deploy_options=apigateway.StageOptions( # we can make the throttling limits dynamic by the user subscription
                 stage_name=env_name,
-                #                throttling_rate_limit=1, # maximum number of requests per second (RPS) allowed for the stage
-                #                throttling_burst_limit=5, # maximum number of requests that can be served in a short burst before the rate limit is applied
+                # throttling_rate_limit=1, # maximum number of requests per second (RPS) allowed for the stage
+                # throttling_burst_limit=5, # maximum number of requests that can be served in a short burst before the rate limit is applied
             ),
         )
 
-        # llm_call_resource = llm_api.root.add_resource("llm_call")
-        # llm_call_resource.add_method("POST") # POST /llm_call
-        # llm_call_resource.add_cors_preflight(
-        #     allow_origins=apigateway.Cors.ALL_ORIGINS,  # Allow all origins, or specify a list of allowed origins (it can be replaced with our frontend domain)
-        # )
-
-        llm_call_resource = llm_api.root.add_resource("llm_call")
+        llm_call_resource = orchestration_api.root.add_resource("llm_call")
         llm_call_resource.add_method(
             "POST", apigateway.LambdaIntegration(llm_call_function)
         )
         llm_call_resource.add_cors_preflight(
-            allow_origins=apigateway.Cors.ALL_ORIGINS,  # Allow all origins, or specify a list of allowed origins (it can be replaced with our frontend domain)
+            allow_origins=apigateway.Cors.ALL_ORIGINS, # Allow all origins, or specify a list of allowed origins (it can be replaced with our frontend domain)
         )
-        # Create a resource for routing Lambda 2
-        items_resource = llm_api.root.add_resource("items")
-        items_resource.add_method(
+
+        models_resource = orchestration_api.root.add_resource("models")
+        models_resource.add_method(
             "GET", apigateway.LambdaIntegration(llm_crud_function)
         )
-        items_resource.add_method(
+        models_resource.add_method(
             "PUT", apigateway.LambdaIntegration(llm_crud_function)
         )
-        item_name_resource = items_resource.add_resource("{name}")
-        item_provider_resource = item_name_resource.add_resource("{provider}")
-        item_provider_resource.add_method(
+
+        model_name_resource = models_resource.add_resource("{name}")
+        model_name_resource = item_name_resource.add_resource("{provider}")
+        model_name_resource.add_method(
             "DELETE", apigateway.LambdaIntegration(llm_crud_function)
-        )  # NAME
-        item_provider_resource.add_method(
+        )
+        model_name_resource.add_method(
             "GET", apigateway.LambdaIntegration(llm_crud_function)
-        )  # NAME
-        items_resource.add_cors_preflight(
-            allow_origins=apigateway.Cors.ALL_ORIGINS,  # Allow all origins, or specify a list of allowed origins (it can be replaced with our frontend domain)
         )
-        item_name_resource.add_cors_preflight(
-            allow_origins=apigateway.Cors.ALL_ORIGINS,  # Allow all origins, or specify a list of allowed origins (it can be replaced with our frontend domain)
+
+        models_resource.add_cors_preflight(
+            allow_origins=apigateway.Cors.ALL_ORIGINS, # Allow all origins, or specify a list of allowed origins (it can be replaced with our frontend domain)
         )
+        model_name_resource.add_cors_preflight(
+            allow_origins=apigateway.Cors.ALL_ORIGINS, # Allow all origins, or specify a list of allowed origins (it can be replaced with our frontend domain)
+        )
+        # </API GATEWAY RESOURCES> ---------------------------------------------------------------------
+
+
+        # <DYNAMODB RESOURCES> ---------------------------------------------------------------------
         LLMsTable = dynamodb.Table(
             self,
             id=f"{env_name}-LLMTable",
@@ -250,5 +253,7 @@ class InfrastructureStack(Stack):
                 name='provider', type=dynamodb.AttributeType.STRING
             )
         )
+        # </DYNAMODB RESOURCES> ---------------------------------------------------------------------
 
-        # Amplify app created through the GUI
+
+        # <Amplify RESOURCES/> created through GUI
