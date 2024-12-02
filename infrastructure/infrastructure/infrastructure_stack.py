@@ -3,7 +3,6 @@ from constructs import Construct
 from aws_cdk import (
     Stack,
     Duration,
-    core,
     aws_lambda as lambda_,
     aws_apigateway as apigateway,
     aws_dynamodb as dynamodb,
