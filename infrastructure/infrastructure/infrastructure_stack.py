@@ -224,11 +224,11 @@ class InfrastructureStack(Stack):
         )
 
         model_name_resource = models_resource.add_resource("{name}")
-        model_name_resource = models_resource.add_resource("{provider}")
-        model_name_resource.add_method(
+        model_provider_resource = model_name_resource.add_resource("{provider}")
+        model_provider_resource.add_method(
             "DELETE", apigateway.LambdaIntegration(llm_crud_function)
         )
-        model_name_resource.add_method(
+        model_provider_resource.add_method(
             "GET", apigateway.LambdaIntegration(llm_crud_function)
         )
 
@@ -236,6 +236,9 @@ class InfrastructureStack(Stack):
             allow_origins=apigateway.Cors.ALL_ORIGINS, # Allow all origins, or specify a list of allowed origins (it can be replaced with our frontend domain)
         )
         model_name_resource.add_cors_preflight(
+            allow_origins=apigateway.Cors.ALL_ORIGINS, # Allow all origins, or specify a list of allowed origins (it can be replaced with our frontend domain)
+        )
+        model_provider_resource.add_cors_preflight(
             allow_origins=apigateway.Cors.ALL_ORIGINS, # Allow all origins, or specify a list of allowed origins (it can be replaced with our frontend domain)
         )
         # </API GATEWAY RESOURCES> ---------------------------------------------------------------------
