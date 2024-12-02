@@ -3,6 +3,7 @@ from constructs import Construct
 from aws_cdk import (
     Stack,
     Duration,
+    core,
     aws_lambda as lambda_,
     aws_apigateway as apigateway,
     aws_dynamodb as dynamodb,
@@ -260,8 +261,9 @@ class InfrastructureStack(Stack):
             repository=None,  # Optional, set this if using GitHub or similar
         )
 
+
         # Override the build spec to use the frontend folder
-        amplify_app.add_override("Resources." + amplify_app.attr_name + ".Properties.BuildSpec", {
+        amplify_app.add_override("Resources." + amplify_app.attr_app_id + ".Properties.BuildSpec", {
             "version": "1.0",
             "frontend": {
                 "phases": {
