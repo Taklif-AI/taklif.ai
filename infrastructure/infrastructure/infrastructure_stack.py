@@ -251,38 +251,11 @@ class InfrastructureStack(Stack):
             )
         )
 
-        # Define the build spec for the Amplify app
-        build_spec = {
-            "version": "1.0",
-            "frontend": {
-                "phases": {
-                    "preBuild": {
-                        "commands": [
-                            "cd ../../web/taklif-ai",  # Navigate to the frontend folder
-                            "npm install"              # Install the required dependencies
-                        ]
-                    },
-                    "build": {
-                        "commands": [
-                            "npm run build"            # Build the Next.js app
-                        ]
-                    }
-                },
-                "artifacts": {
-                    "baseDirectory": "../../web/taklif-ai/out",  # Specify the output directory from the build
-                    "files": ["**/*"]                             # Include all files in the output
-                },
-                "cache": {
-                    "paths": ["../../web/taklif-ai/node_modules/**/*"]  # Cache node_modules to speed up builds
-                }
-            }
-        }
-
+    
         # Create the Amplify app with the build spec
         amplify_app = amplify.CfnApp(
             self,
             "NextJsTaklifAIApp",
             name="NextJsTaklifAIApp",
             repository=None,  # Optional, set this if using GitHub or similar
-            build_spec=build_spec  # Provide the build_spec directly here
         )
