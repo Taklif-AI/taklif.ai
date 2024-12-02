@@ -261,7 +261,7 @@ class InfrastructureStack(Stack):
         )
 
         # Override the build spec to use the frontend folder
-        amplify_app.add_override("Resources.NextJsTaklifAIApp.Properties.BuildSpec", {
+        amplify_app.add_override("Resources." + amplify_app.attr_name + ".Properties.BuildSpec", {
             "version": "1.0",
             "frontend": {
                 "phases": {
