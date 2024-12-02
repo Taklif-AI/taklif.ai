@@ -251,39 +251,38 @@ class InfrastructureStack(Stack):
             )
         )
 
-
-        # Amplify
-        amplify_app = amplify.CfnApp(
-            self,
-            "NextJsTaklifAIApp",
-            name="NextJsTaklifAIApp",
-            repository=None,  # Optional, set this if using GitHub or similar
-        )
-
-
-        # Override the build spec to use the frontend folder
-        amplify_app.add_override("Resources." + amplify_app.attr_app_id + ".Properties.BuildSpec", {
+        # Define the build spec for the Amplify app
+        build_spec = {
             "version": "1.0",
             "frontend": {
                 "phases": {
                     "preBuild": {
                         "commands": [
-                            "cd ../../web/taklif-ai",
-                            "npm install"
+                            "cd ../../web/taklif-ai",  # Navigate to the frontend folder
+                            "npm install"              # Install the required dependencies
                         ]
                     },
                     "build": {
                         "commands": [
-                            "npm run build"
+                            "npm run build"            # Build the Next.js app
                         ]
                     }
                 },
                 "artifacts": {
-                    "baseDirectory": "taklif-ai/out",  # Update if your build directory is named differently
-                    "files": ["**/*"]
+                    "baseDirectory": "../../web/taklif-ai/out",  # Specify the output directory from the build
+                    "files": ["**/*"]                             # Include all files in the output
                 },
                 "cache": {
-                    "paths": ["taklif-ai/node_modules/**/*"]
+                    "paths": ["../../web/taklif-ai/node_modules/**/*"]  # Cache node_modules to speed up builds
                 }
             }
-        })
+        }
+
+        # Create the Amplify app with the build spec
+        amplify_app = amplify.CfnApp(
+            self,
+            "NextJsTaklifAIApp",
+            name="NextJsTaklifAIApp",
+            repository=None,  # Optional, set this if using GitHub or similar
+            build_spec=build_spec  # Provide the build_spec directly here
+        )
