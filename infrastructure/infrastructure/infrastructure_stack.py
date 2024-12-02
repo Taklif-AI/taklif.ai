@@ -257,5 +257,11 @@ class InfrastructureStack(Stack):
             self,
             "NextJsTaklifAIApp",
             name="NextJsTaklifAIApp",
-            repository=None,  # Optional, set this if using GitHub or similar
+            source_code_provider=amplify.GitHubSourceCodeProvider(
+                owner="Taklif-AI",
+                repository="taklif.ai",
+                oauth_token="***REMOVED-GITHUB-TOKEN***",
+            )
         )
+
+        amplify_app.add_branch("feature/amplify-hosting")
