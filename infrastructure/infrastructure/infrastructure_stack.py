@@ -7,6 +7,7 @@ from aws_cdk import (
     aws_apigateway as apigateway,
     aws_dynamodb as dynamodb,
     aws_iam as iam,
+    aws_amplify as amplify
 )
 
 
@@ -249,3 +250,39 @@ class InfrastructureStack(Stack):
                 name='provider', type=dynamodb.AttributeType.STRING
             )
         )
+
+
+        # Amplify
+        amplify_app = amplify.CfnApp(
+            self,
+            "NextJsTaklifAIApp",
+            name="NextJsTaklifAIApp",
+            repository=None,  # Optional, set this if using GitHub or similar
+        )
+
+        # Override the build spec to use the frontend folder
+        amplify_app.add_override("Resources.NextJsTaklifAIApp.Properties.BuildSpec", {
+            "version": "1.0",
+            "frontend": {
+                "phases": {
+                    "preBuild": {
+                        "commands": [
+                            "cd ../../web/taklif-ai",
+                            "npm install"
+                        ]
+                    },
+                    "build": {
+                        "commands": [
+                            "npm run build"
+                        ]
+                    }
+                },
+                "artifacts": {
+                    "baseDirectory": "taklif-ai/out",  # Update if your build directory is named differently
+                    "files": ["**/*"]
+                },
+                "cache": {
+                    "paths": ["taklif-ai/node_modules/**/*"]
+                }
+            }
+        })
