@@ -250,42 +250,5 @@ class InfrastructureStack(Stack):
                 name='provider', type=dynamodb.AttributeType.STRING
             )
         )
-        amplify.CfnApp.repository
-    
-        # Create the Amplify app with the build spec
-        amplify_app = amplify.CfnApp(
-            self,
-            "NextJsTaklifAIApps",
-            name="NextJsTaklifAIApps",
-            repository="https://github.com/Taklif-AI/taklif.ai",
-            oauth_token="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",
-        )
-    
-        # Define the monorepo branch with build settings
-        main_branch = amplify.CfnBranch(
-            self,
-            "FeatureBranch",
-            app_id=amplify_app.attr_app_id,
-            branch_name="feature/nextjs-hosting",  # Replace with your default branch (e.g., main or master)
-            build_spec="""
-                version: 1
-                applications:
-                  - frontend:
-                      phases:
-                        preBuild:
-                          commands:
-                            - cd ../../web/taklif-ai/  # Navigate to monorepo subdirectory
-                            - npm install
-                        build:
-                          commands:
-                            - npm run build
-                      artifacts:
-                        baseDirectory: ../../web/taklif-ai//build  # Adjust based on your app's build output
-                        files:
-                          - '**/*'
-                      cache:
-                        paths:
-                          - node_modules/**/*  # Cache dependencies
-                    appRoot: web/taklif-ai    
-            """,
-        )
+
+        # Amplify app created through the GUI
