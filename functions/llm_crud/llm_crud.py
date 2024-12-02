@@ -22,7 +22,7 @@ def lambda_handler(event, context):
             name = event["pathParameters"]["name"]
 
             table.delete_item(
-                Key={"name": name, "provider": provider}  # Partition key  # Sort key
+                Key={"name": name, "provider": provider}  # Partition key: name, Sort key: provider
             )
             body = f"Deleted item: {name}-{provider}"
         elif event["httpMethod"] == "GET" and event["pathParameters"] is not None:
@@ -70,10 +70,10 @@ def lambda_handler(event, context):
         body = "Unsupported route: " + event["path"]
 
     body = json.dumps(body)
-    res = {
+    result = {
         "statusCode": statusCode,
         "headers": {"Content-Type": "application/json"},
         "body": body,
     }
 
-    return res
+    return result
