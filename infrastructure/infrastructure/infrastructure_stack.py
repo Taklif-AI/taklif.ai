@@ -7,6 +7,7 @@ from aws_cdk import (
     aws_apigateway as apigateway,
     aws_dynamodb as dynamodb,
     aws_iam as iam,
+    aws_amplify as amplify
 )
 
 
@@ -140,7 +141,7 @@ class InfrastructureStack(Stack):
         )
 
         llm_call_lambda_code_path = os.path.join(
-            os.path.dirname(__file__), "../../backend/llm_call"
+            os.path.dirname(__file__), "../../functions/llm_call"
         )
 
         llm_call_function = lambda_.Function(
@@ -172,7 +173,7 @@ class InfrastructureStack(Stack):
         )
 
         llm_crud_lambda_code_path = os.path.join(
-            os.path.dirname(__file__), "../../backend/llm_crud"
+            os.path.dirname(__file__), "../../functions/llm_crud"
         )
 
         llm_crud_function = lambda_.Function(
@@ -249,3 +250,5 @@ class InfrastructureStack(Stack):
                 name='provider', type=dynamodb.AttributeType.STRING
             )
         )
+
+        # Amplify app created through the GUI
