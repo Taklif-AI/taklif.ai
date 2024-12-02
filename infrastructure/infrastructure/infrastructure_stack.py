@@ -224,7 +224,7 @@ class InfrastructureStack(Stack):
         )
 
         model_name_resource = models_resource.add_resource("{name}")
-        model_name_resource = item_name_resource.add_resource("{provider}")
+        model_name_resource = models_resource.add_resource("{provider}")
         model_name_resource.add_method(
             "DELETE", apigateway.LambdaIntegration(llm_crud_function)
         )
