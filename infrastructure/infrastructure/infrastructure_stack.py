@@ -141,7 +141,7 @@ class InfrastructureStack(Stack):
         )
 
         llm_call_lambda_code_path = os.path.join(
-            os.path.dirname(__file__), "../../backend/llm_call"
+            os.path.dirname(__file__), "../../functions/llm_call"
         )
 
         llm_call_function = lambda_.Function(
@@ -173,7 +173,7 @@ class InfrastructureStack(Stack):
         )
 
         llm_crud_lambda_code_path = os.path.join(
-            os.path.dirname(__file__), "../../backend/llm_crud"
+            os.path.dirname(__file__), "../../functions/llm_crud"
         )
 
         llm_crud_function = lambda_.Function(
