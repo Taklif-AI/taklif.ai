@@ -110,6 +110,9 @@ class InfrastructureStack(Stack):
         iam.User(
             self, "AdminUser-Dr-Motaz", user_name="admin-user-motaz", groups=[admin_group]
         )
+        iam.User(
+            self, "GitHub-Actions", user_name="github-action", groups=[admin_group]
+        )
 
         # Create role for lambda functions
         lambda_role = iam.Role(
