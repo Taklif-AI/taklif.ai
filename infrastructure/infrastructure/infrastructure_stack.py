@@ -144,10 +144,17 @@ class InfrastructureStack(Stack):
         )
         tesseract_layer = lambda_.LayerVersion(
             self,
-            "PdfProcessingDependencies",
+            "tesseractDependencies",
             code=lambda_.Code.from_asset("./layers/tesseract/"),
             compatible_runtimes=[lambda_.Runtime.PYTHON_3_10],
             description="Lambda layer tesseract",
+        )
+        pdfProcessing_layer = lambda_.LayerVersion(
+            self,
+            "PdfProcessingDependencies",
+            code=lambda_.Code.from_asset("./layers/pdf_processing/"),
+            compatible_runtimes=[lambda_.Runtime.PYTHON_3_10],
+            description="Lambda layer for pdf processing",
         )
 
         llm_call_lambda_code_path = os.path.join(
