@@ -156,12 +156,13 @@ class InfrastructureStack(Stack):
             compatible_runtimes=[lambda_.Runtime.PYTHON_3_10],
             description="Lambda layer for pdf processing",
         )
-        poppler_layer = lambda_.LayerVersion(
+    
+        opencv_layer = lambda_.LayerVersion(
             self,
-            "PopplerDependencies",
-            code=lambda_.Code.from_asset("./layers/poppler_layer/"),
+            "opencvDependencies",
+            code=lambda_.Code.from_asset("./layers/opencv/"),
             compatible_runtimes=[lambda_.Runtime.PYTHON_3_10],
-            description="Lambda layer for poppler",
+            description="Lambda layer for opencv",
         )
 
         llm_call_lambda_code_path = os.path.join(
