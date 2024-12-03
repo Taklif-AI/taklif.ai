@@ -158,7 +158,7 @@ class InfrastructureStack(Stack):
         )
         poppler_layer = lambda_.LayerVersion(
             self,
-            "PdfProcessingDependencies",
+            "PopplerDependencies",
             code=lambda_.Code.from_asset("./layers/poppler_layer/"),
             compatible_runtimes=[lambda_.Runtime.PYTHON_3_10],
             description="Lambda layer for poppler",
