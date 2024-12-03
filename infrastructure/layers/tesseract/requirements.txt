@@ -1,1 +1,1 @@
-pytesseract==0.3.13; python_version >= '3.8'
+pytesseract
