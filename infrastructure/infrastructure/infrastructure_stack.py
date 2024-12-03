@@ -156,6 +156,13 @@ class InfrastructureStack(Stack):
             compatible_runtimes=[lambda_.Runtime.PYTHON_3_10],
             description="Lambda layer for pdf processing",
         )
+        poppler_layer = lambda_.LayerVersion(
+            self,
+            "PdfProcessingDependencies",
+            code=lambda_.Code.from_asset("./layers/poppler_layer/"),
+            compatible_runtimes=[lambda_.Runtime.PYTHON_3_10],
+            description="Lambda layer for poppler",
+        )
 
         llm_call_lambda_code_path = os.path.join(
             os.path.dirname(__file__), "../../functions/llm_call"
