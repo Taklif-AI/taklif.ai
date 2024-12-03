@@ -1,3 +1,4 @@
 pytesseract
 PyPDF2
 opencv-python-headless
+fitz
