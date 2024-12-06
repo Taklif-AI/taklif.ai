@@ -110,6 +110,9 @@ class InfrastructureStack(Stack):
         iam.User(
             self, "AdminUser-Dr-Motaz", user_name="admin-user-motaz", groups=[admin_group]
         )
+        iam.User(
+            self, "GitHub-Actions", user_name="github-action", groups=[admin_group]
+        )
 
         # Create role for lambda functions
         lambda_role = iam.Role(
@@ -132,12 +135,10 @@ class InfrastructureStack(Stack):
 
         # <LAMBDA RESOURCES> ---------------------------------------------------------------------
         # LLM Calling Lambda Function 
-        llm_call_lambda_layer = lambda_.LayerVersion(
-            self,
+        llm_call_lambda_layer = lambda_.LayerVersion.from_layer_version_arn( # Add lambda layer by ARN
+            self, 
             "LLMsBasicDependencies",
-            code=lambda_.Code.from_asset("./layers/llms_basic_dependencies/"),
-            compatible_runtimes=[lambda_.Runtime.PYTHON_3_10],
-            description="Lambda layer for LangChain, LiteLLM and other required dependencies",
+            "arn:aws:lambda:eu-north-1:491085403164:layer:LLMsBasicDependencies1963E08C:60"
         )
 
         llm_call_lambda_code_path = os.path.join(
@@ -164,12 +165,10 @@ class InfrastructureStack(Stack):
         )
 
         # LLM crud Lambda Function ---------------------------------
-        llm_crud_lambda_layer = lambda_.LayerVersion(
-            self,
+        llm_crud_lambda_layer = lambda_.LayerVersion.from_layer_version_arn( # Add lambda layer by ARN
+            self, 
             "LLMCrudDependencies",
-            code=lambda_.Code.from_asset("./layers/llm_crud/"),
-            compatible_runtimes=[lambda_.Runtime.PYTHON_3_10],
-            description="Lambda layer for boto3 and others.",
+            "arn:aws:lambda:eu-north-1:491085403164:layer:LLMCrudDependencies59042EEA:36"
         )
 
         llm_crud_lambda_code_path = os.path.join(
