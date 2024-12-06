@@ -56,13 +56,13 @@ export function HomeHero() {
 
           <div className="flex flex-col sm:flex-row justify-center gap-4 items-center">
             <Link href="/assignment-generation">
-              <Button size="lg" className="w-full sm:w-auto bg-violet-600 hover:bg-violet-700">
+              <Button size="lg" className="rounded-full w-full sm:w-auto text-white-500 bg-violet-600 hover:bg-violet-700">
                 Create Your First Assignment
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
             <Link href="#features">
-              <Button size="lg" variant="outline" className="w-full sm:w-auto">
+              <Button size="lg" variant="outline" className="rounded-full w-full sm:w-auto">
                 See How It Works
               </Button>
             </Link>
