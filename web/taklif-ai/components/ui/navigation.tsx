@@ -5,8 +5,8 @@ import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { cn } from "@/lib/utils/truncate-file";
-import { FileText, Users, Home, HelpCircle, Settings, BookOpen, ArrowRight } from "lucide-react";
-
+import { FileText, Users, Home, HelpCircle, Settings, BookOpen, ArrowRight, Sparkles } from "lucide-react";
+import Image from "next/image";
 const navigation = [
 
 ];
@@ -43,9 +43,10 @@ export function Navigation() {
             </Button>
           </Link> */}
           <Link href="/assignment-generation">
-            <Button size="sm" className="rounded-full w-full sm:w-auto bg-violet-600 hover:bg-violet-700">
-              Try now
-              <ArrowRight className="ml-2 h-5 w-4" />
+            <Button size="sm" className="rounded-full w-full sm:w-auto text-white-500 bg-violet-600 hover:bg-violet-700">
+              Try magic now
+
+              <Sparkles className="ml-2 h-4 w-4" />
             </Button>
           </Link>
           <ThemeToggle />
