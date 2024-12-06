@@ -32,7 +32,7 @@ export function Navigation() {
         </div>
 
         <div className="flex items-center gap-4">
-          <Link href="/profile">
+          {/* <Link href="/profile">
             <Button
               variant="ghost"
               size="icon"
@@ -41,7 +41,7 @@ export function Navigation() {
               <Settings className="h-5 w-5" />
               <span className="sr-only">Profile</span>
             </Button>
-          </Link>
+          </Link> */}
           <ThemeToggle />
         </div>
       </nav>
