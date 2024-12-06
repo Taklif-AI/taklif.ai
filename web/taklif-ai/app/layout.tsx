@@ -9,7 +9,7 @@ import { Footer } from '@/components/ui/footer';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Taklif.ai - Transform Your Learning',
+  title: 'Taklif.AI',
   description: 'AI-powered assignment generation for personalized learning',
 };
 
