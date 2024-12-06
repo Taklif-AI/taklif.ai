@@ -135,34 +135,10 @@ class InfrastructureStack(Stack):
 
         # <LAMBDA RESOURCES> ---------------------------------------------------------------------
         # LLM Calling Lambda Function 
-        llm_call_lambda_layer = lambda_.LayerVersion(
-            self,
+        llm_call_lambda_layer = lambda_.LayerVersion.from_layer_version_arn( # Add lambda layer by ARN
+            self, 
             "LLMsBasicDependencies",
-            code=lambda_.Code.from_asset("./layers/llms_basic_dependencies/"),
-            compatible_runtimes=[lambda_.Runtime.PYTHON_3_10],
-            description="Lambda layer for LangChain, LiteLLM and other required dependencies",
-        )
-        tesseract_layer = lambda_.LayerVersion(
-            self,
-            "tesseractDependencies",
-            code=lambda_.Code.from_asset("./layers/tesseract/"),
-            compatible_runtimes=[lambda_.Runtime.PYTHON_3_10],
-            description="Lambda layer tesseract",
-        )
-        pdfProcessing_layer = lambda_.LayerVersion(
-            self,
-            "PdfProcessingDependencies",
-            code=lambda_.Code.from_asset("./layers/pdf_processing/"),
-            compatible_runtimes=[lambda_.Runtime.PYTHON_3_10],
-            description="Lambda layer for pdf processing",
-        )
-    
-        opencv_layer = lambda_.LayerVersion(
-            self,
-            "opencvDependencies",
-            code=lambda_.Code.from_asset("./layers/opencv/"),
-            compatible_runtimes=[lambda_.Runtime.PYTHON_3_10],
-            description="Lambda layer for opencv",
+            "arn:aws:lambda:eu-north-1:***REMOVED-AWS-ACCOUNT-ID***:layer:LLMsBasicDependencies1963E08C:60"
         )
 
         llm_call_lambda_code_path = os.path.join(
@@ -189,12 +165,10 @@ class InfrastructureStack(Stack):
         )
 
         # LLM crud Lambda Function ---------------------------------
-        llm_crud_lambda_layer = lambda_.LayerVersion(
-            self,
+        llm_crud_lambda_layer = lambda_.LayerVersion.from_layer_version_arn( # Add lambda layer by ARN
+            self, 
             "LLMCrudDependencies",
-            code=lambda_.Code.from_asset("./layers/llm_crud/"),
-            compatible_runtimes=[lambda_.Runtime.PYTHON_3_10],
-            description="Lambda layer for boto3 and others.",
+            "arn:aws:lambda:eu-north-1:***REMOVED-AWS-ACCOUNT-ID***:layer:LLMCrudDependencies59042EEA:36"
         )
 
         llm_crud_lambda_code_path = os.path.join(
