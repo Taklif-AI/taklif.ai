@@ -36,8 +36,8 @@ def lambda_handler(event, context):
             )
             body = [
                 {
-                    "name": models["model"]["name"],
-                    "provider": models["model"]["provider"],
+                    "name": models["Item"]["name"],
+                    "provider": models["Item"]["provider"],
                     # Here we can add other attributes like: "quality": models["model"]["quality"],
                 }
             ]
@@ -45,7 +45,7 @@ def lambda_handler(event, context):
         # Get all models
         elif event["httpMethod"] == "GET" and event["pathParameters"] is None: # list all the models
             models_list = table.scan()
-            models = models_list["models"]
+            models = models_list["Items"]
             responseBody = []
             for model in models:
                 responseItems = [
