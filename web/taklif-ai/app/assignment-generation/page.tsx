@@ -56,10 +56,44 @@ export default function AssignmentPage() {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     try {
       const fileName = assignmentData.file?.name || 'Untitled';
       const title = fileName.replace(/\.pdf$/i, '');
+
+      // prepere the data to be sent to the backend
+      const dataToApi = {
+        model: "openrouter/google/learnlm-1.5-pro-experimental:free",
+        params: {
+          student_interest: assignmentData.interest,
+          general_assignment: "A permutation is simply a name for a reordering. So the permutations of the string ‘abc’ are ‘abc’, ‘acb’, ‘bac’, ‘bca’, ‘cab’, and ‘cba’. Note that a sequence is a permutation of itself (the trivial permutation). For this part of the pset you’ll need to write a recursive function get_permutations that takes a string and returns a list of all its permutations. You will find this function helpful later in the pset for part C. A couple of notes on the requirements: Recursion MUST be used, global variables may NOT be used. Additionally, it is okay to use loops to code the solution. The order of the returned permutations does not matter. Please also avoid returning duplicates in your final list.",
+          lang_diff_level: assignmentData.difficulty,
+          num_of_words: assignmentData.wordCount
+        }
+      };
+
+      // send the assignment to the backend
+      const res = await fetch('/api/assignment-generation', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataToApi)
+      });
+
+      // check the incoming response
+      if (!res.ok) {
+        Toast.error("Failed to create assignment. Please try again.");
+        return;
+      }
+
+      const result = await res.json();
+      // check the parsed result
+      if (!result || result.error) {
+        Toast.error(result.error);
+        return;
+      }
+      console.log(result);
 
       const newAssignment = {
         id: Date.now().toString(),
@@ -70,7 +104,6 @@ export default function AssignmentPage() {
         wordCount: assignmentData.wordCount,
         interest: assignmentData.interest,
       };
-
       const existingAssignments = JSON.parse(localStorage.getItem('assignments') || '[]');
       localStorage.setItem('assignments', JSON.stringify([...existingAssignments, newAssignment]));
 
