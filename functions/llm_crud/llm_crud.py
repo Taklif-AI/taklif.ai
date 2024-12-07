@@ -2,7 +2,6 @@ import json
 import boto3
 import os
 
-
 client = boto3.client("dynamodb")
 dynamodb = boto3.resource("dynamodb")
 
