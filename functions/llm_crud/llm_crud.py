@@ -2,12 +2,11 @@ import json
 import boto3
 import os
 
-
 client = boto3.client("dynamodb")
 dynamodb = boto3.resource("dynamodb")
 
 env_name = os.environ.get("ENV_NAME", "Development")
-table_name = f"{env_name}-LLMs"
+table_name = f"{env_name}-LLMsMetaData"
 table = dynamodb.Table(table_name)
 
 

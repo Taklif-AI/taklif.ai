@@ -246,8 +246,8 @@ class InfrastructureStack(Stack):
         # <DYNAMODB RESOURCES> ---------------------------------------------------------------------
         LLMsTable = dynamodb.Table(
             self,
-            id=f"{env_name}-LLMTable",
-            table_name=f"{env_name}-LLMs",
+            id=f"{env_name}-LLMsTable",
+            table_name=f"{env_name}-LLMsMetaData",
             partition_key=dynamodb.Attribute(
                 name="name", type=dynamodb.AttributeType.STRING
             ),
