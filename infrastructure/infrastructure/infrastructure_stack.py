@@ -138,7 +138,7 @@ class InfrastructureStack(Stack):
         llm_call_lambda_layer = lambda_.LayerVersion.from_layer_version_arn( # Add lambda layer by ARN
             self, 
             "LLMsBasicDependencies",
-            "arn:aws:lambda:eu-north-1:***REMOVED-AWS-ACCOUNT-ID***:layer:LLMsBasicDependencies1963E08C:60"
+            "arn:aws:lambda:eu-north-1:***REMOVED-AWS-ACCOUNT-ID***:layer:LLMsBasicsDependencies:1"
         )
 
         llm_call_lambda_code_path = os.path.join(
@@ -168,7 +168,7 @@ class InfrastructureStack(Stack):
         llm_crud_lambda_layer = lambda_.LayerVersion.from_layer_version_arn( # Add lambda layer by ARN
             self, 
             "LLMCrudDependencies",
-            "arn:aws:lambda:eu-north-1:***REMOVED-AWS-ACCOUNT-ID***:layer:LLMCrudDependencies59042EEA:36"
+            "arn:aws:lambda:eu-north-1:770693421928:layer:Klayers-p310-boto3:21"
         )
 
         llm_crud_lambda_code_path = os.path.join(

@@ -6,6 +6,16 @@ import json
 
 
 def lambda_handler(event, context):
+    """lambda handler to craft request to LLm to
+    personalize the assignments based on user's parameters
+
+    Args:
+        event (object): contains request params
+        context (_type_): _description_
+
+    Returns:
+        response : json object containing personalized assignment or error message. 
+    """
     try:
         body = json.loads(event.get('body', '{}'))
 
@@ -25,18 +35,13 @@ def lambda_handler(event, context):
                 "body": json.dumps({"error": "Bad Request: Missing 'params' in the event payload"})
             }
         
-        subject = params.get("subject")
-        work_place = params.get("work_place")
-        course = params.get("course")
-        learning_objective = params.get("learning_objective")
         student_interest = params.get("student_interest")
         lang_diff_level = params.get("lang_diff_level")
-        logic_diff_level = params.get("logic_diff_level")
-        req_clarity = params.get("req_clarity")
         num_of_words = params.get("num_of_words")
+        general_assignment = params.get("general_assignment")
 
         # Prepare the prompt  
-        langsmith_prompt = hub.pull("college-scope-prompt")
+        langsmith_prompt = hub.pull("personalize-assignment-prompt")
 
         # Invoke the LLM
         llm = ChatLiteLLM(model=model_name) # example model name: "openrouter/meta-llama/llama-3.2-3b-instruct:free"
@@ -44,15 +49,17 @@ def lambda_handler(event, context):
         simple_chain = langsmith_prompt | llm | StrOutputParser()
 
         response = simple_chain.invoke(input = {
-                                                "subject": subject,
-                                                "work_place": work_place,
-                                                "course": course,
-                                                "learning_objective":learning_objective,
                                                 "student_interest": student_interest,
                                                 "lang_diff_level": lang_diff_level,
-                                                "logic_diff_level": logic_diff_level,
-                                                "req_clarity": req_clarity,
-                                                "num_of_words": num_of_words})
+                                                "num_of_words": num_of_words,
+                                                "general_assignment": general_assignment,
+                                                # "subject": subject,
+                                                # "work_place": work_place,
+                                                # "course": course,
+                                                # "learning_objective":learning_objective,
+                                                # "req_clarity": req_clarity,
+                                                # "logic_diff_level": logic_diff_level,
+                                                })
 
 
         # Return the content from the LLM response
