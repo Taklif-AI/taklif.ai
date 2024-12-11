@@ -4,108 +4,152 @@ import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { File, Clock, Tag } from "lucide-react";
-import Link from "next/link";
-import { AssignmentDetails } from "@/components/assignment/additional-components/assignment-details";
 
-interface Assignment {
-  id: string;
-  title: string;
-  fileName: string;
-  createdAt: string;
-  difficulty: string;
-  interest: string;
-}
+import { Assignment } from "@/lib/utils/assigment-typs";
+import { Toast } from "@/lib/utils/toast";
+import { formatDistanceToNow } from "date-fns";
+import { ThumbsUp, ThumbsDown, RefreshCw, Wand2 } from "lucide-react";
+
 
 export default function AssignmentsPage() {
   const [assignments, setAssignments] = useState<Assignment[]>([]);
-  const [selectedAssignment, setSelectedAssignment] = useState<Assignment | null>(null);
-  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
   useEffect(() => {
-    // Load assignments from localStorage
-    const savedAssignments = JSON.parse(localStorage.getItem('assignments') || '[]');
-    setAssignments(savedAssignments);
+    // Simulated assignments data - in a real app, this would come from an API
+    const mockAssignments: Assignment[] = [
+      {
+        id: "1",
+        title: "Introduction to Physics",
+        text: "Create a comprehensive explanation of Newton's laws of motion with practical examples from everyday life. Include mathematical formulas and their applications.",
+        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), // 2 hours ago
+        likes: 5,
+        dislikes: 1
+      },
+      {
+        id: "2",
+        title: "Advanced Mathematics",
+        text: "Develop a step-by-step guide to solving quadratic equations, including the quadratic formula, completing the square, and factoring methods.",
+        createdAt: new Date(Date.now() - 1000 * 60 * 30).toISOString(), // 30 minutes ago
+        likes: 3,
+        dislikes: 0
+      }
+    ];
+    setAssignments(mockAssignments);
   }, []);
 
-  const getDifficultyColor = (difficulty: string) => {
-    const colors = {
-      easy: "bg-green-100 text-green-800",
-      medium: "bg-yellow-100 text-yellow-800",
-      hard: "bg-red-100 text-red-800",
-    };
-    return colors[difficulty as keyof typeof colors] || "bg-gray-100 text-gray-800";
+  const handleLike = (id: string) => {
+    setAssignments(prev =>
+      prev.map(assignment =>
+        assignment.id === id
+          ? { ...assignment, likes: assignment.likes + 1 }
+          : assignment
+      )
+    );
+    Toast.success("Assignment liked!");
   };
 
-  const handleViewDetails = (assignment: Assignment) => {
-    setSelectedAssignment(assignment);
-    setIsDetailsOpen(true);
+  const handleDislike = (id: string) => {
+    setAssignments(prev =>
+      prev.map(assignment =>
+        assignment.id === id
+          ? { ...assignment, dislikes: assignment.dislikes + 1 }
+          : assignment
+      )
+    );
+    Toast.success("Feedback recorded");
+  };
+
+  const handleRegenerate = (id: string) => {
+    Toast.success("Regenerating assignment...");
+    // In a real app, this would trigger the regeneration process
+  };
+
+  const handleSimplify = (id: string) => {
+    Toast.success("Simplifying assignment...");
+    // In a real app, this would trigger the simplification process
   };
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Your Assignments</h1>
-        <Link href="/assignment-generation">
-          <Button>Create New Assignment</Button>
-        </Link>
-      </div>
+      <div className="max-w-4xl mx-auto space-y-8">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold mb-2">Generated Assignments</h1>
+          <p className="text-muted-foreground">
+            View and manage your AI-generated assignments
+          </p>
+        </div>
 
-      <div className="grid gap-4">
-        {assignments.map((assignment) => (
-          <Card key={assignment.id} className="p-6">
-            <div className="flex items-start justify-between">
-              <div className="flex items-start space-x-4">
-                <div className="p-3 bg-primary/5 rounded-lg">
-                  <File className="h-6 w-6 text-primary" />
+        <div className="space-y-6">
+          {assignments.map((assignment) => (
+            <Card key={assignment.id} className="p-6 hover:shadow-lg transition-all">
+              <div className="space-y-4">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h2 className="text-xl font-semibold mb-1">{assignment.title}</h2>
+                    <p className="text-sm text-muted-foreground">
+                      Generated {formatDistanceToNow(new Date(assignment.createdAt))} ago
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleSimplify(assignment.id)}
+                      className="text-violet-600 hover:text-violet-700"
+                    >
+                      <Wand2 className="h-4 w-4 mr-1" />
+                      Simplify
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleRegenerate(assignment.id)}
+                      className="text-violet-600 hover:text-violet-700"
+                    >
+                      <RefreshCw className="h-4 w-4 mr-1" />
+                      Regenerate
+                    </Button>
+                  </div>
                 </div>
-                <div>
-                  <h2 className="text-xl font-semibold mb-2">{assignment.title}</h2>
-                  <div className="flex items-center text-sm text-muted-foreground mb-3">
-                    <Clock className="h-4 w-4 mr-1" />
-                    <span>Created on {new Date(assignment.createdAt).toLocaleDateString()}</span>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <Badge className={getDifficultyColor(assignment.difficulty)}>
-                      {assignment.difficulty.charAt(0).toUpperCase() + assignment.difficulty.slice(1)}
-                    </Badge>
 
-                    <Badge variant="outline" className="flex items-center">
-                      <Tag className="h-3 w-3 mr-1" />
-                      {assignment.interest}
-                    </Badge>
+                <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                  {assignment.text}
+                </p>
 
-                  </div>
+                <div className="flex items-center gap-4 pt-2 border-t">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleLike(assignment.id)}
+                    className="text-green-600 hover:text-green-700"
+                  >
+                    <ThumbsUp className="h-4 w-4 mr-1" />
+                    {assignment.likes}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleDislike(assignment.id)}
+                    className="text-red-600 hover:text-red-700"
+                  >
+                    <ThumbsDown className="h-4 w-4 mr-1" />
+                    {assignment.dislikes}
+                  </Button>
                 </div>
               </div>
-              <Button
-                variant="outline"
-                onClick={() => handleViewDetails(assignment)}
-              >
-                View Details
-              </Button>
-            </div>
-          </Card>
-        ))}
+            </Card>
+          ))}
+
+          {assignments.length === 0 && (
+            <Card className="p-12 text-center">
+              <h3 className="text-xl font-semibold mb-2">No assignments yet</h3>
+              <p className="text-muted-foreground mb-4">
+                Your generated assignments will appear here
+              </p>
+            </Card>
+          )}
+        </div>
       </div>
-
-      {assignments.length === 0 && (
-        <Card className="p-12 text-center">
-          <h3 className="text-xl font-semibold mb-2">No assignments yet</h3>
-          <p className="text-muted-foreground mb-4">
-            Create your first assignment to get started
-          </p>
-          <Link href="/assignment">
-            <Button>Create New Assignment</Button>
-          </Link>
-        </Card>
-      )}
-
-      <AssignmentDetails
-        assignment={selectedAssignment}
-        open={isDetailsOpen}
-        onOpenChange={setIsDetailsOpen}
-      />
     </div>
   );
 }
