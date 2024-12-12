@@ -6,9 +6,8 @@ import { ArrowLeft, Send } from "lucide-react";
 
 interface ReviewStepProps {
   data: {
-    file: File | null;
-    difficulty: string;
-    wordCount: number;
+    file: File | string |null;
+   
     interest: string;
   };
   onBack: () => void;
@@ -16,6 +15,9 @@ interface ReviewStepProps {
 }
 
 export function ReviewStep({ data, onBack, onSubmit }: ReviewStepProps) {
+
+  console.log(data)
+
   
   const getContentPreview = () => {
     if (!data.file) return null;
@@ -61,7 +63,6 @@ export function ReviewStep({ data, onBack, onSubmit }: ReviewStepProps) {
         <div className="flex flex-wrap gap-2">
           
             <span
-              
               className="px-2 py-1 bg-primary/10 rounded-md text-sm"
             >
               {data.interest}
