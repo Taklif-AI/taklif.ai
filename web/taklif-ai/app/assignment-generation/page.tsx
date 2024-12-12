@@ -15,32 +15,33 @@ export default function AssignmentPage() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
   const [assignmentData, setAssignmentData] = useState({
-    file: null as File | null,
+    file: null as File | "" |  null,
     difficulty: "easy",
     wordCount: 400,
     interest: "",
   });
-
+  
   useEffect(() => {
-    // Load saved progress
-    const savedFile = storage.getProgress('PDF_FILE');
-    const savedInterests = storage.getProgress('INTERESTS');
-    const savedStep = storage.getProgress('CURRENT_STEP');
+  const savedFile = storage.getProgress('PDF_FILE');
+  const savedInterests = storage.getProgress('INTERESTS');
+  const savedStep = storage.getProgress('CURRENT_STEP');
 
-    if (savedFile || savedInterests) {
-      setAssignmentData({
-        file: savedFile,
-        difficulty: "easy",
-        wordCount: 400,
-        interest: savedInterests || "",
-      });
-    }
+  if (savedFile || savedInterests) {
+    setAssignmentData(prev => ({
+      ...prev,
+      file: savedFile,
+      difficulty: "easy",
+      wordCount: 400,
+      interest: savedInterests ,
+    }));
+  }
 
-    if (savedStep !== null) {
-      setCurrentStep(Number(savedStep));
-    }
-  }, [assignmentData]);
+  if (savedStep !== null) {
+    setCurrentStep(Number(savedStep));
+  }
+}, []);
 
+  
 
   const handleNext = (stepData: any) => {
     try {
@@ -50,7 +51,7 @@ export default function AssignmentPage() {
       if (currentStep === 0) {
         storage.saveProgress('PDF_FILE', stepData.file);
       } else if (currentStep === 1) {
-        storage.saveProgress('INTERESTS', stepData.interests);
+        storage.saveProgress('INTERESTS', stepData.interest);
       }
 
       const nextStep = currentStep + 1;
@@ -142,14 +143,16 @@ export default function AssignmentPage() {
       case 1:
         return (
           <InterestsSelect
-            onNext={(interests) => handleNext({ interests })}
+            onNext={(interest) => handleNext({ interest })}
             onBack={handleBack}
             initialInterests={assignmentData.interest}
                       />
         );
       case 2:
         return (
+          
           <ReviewStep
+            
             data={assignmentData}
             onBack={handleBack}
             onSubmit={handleSubmit}
