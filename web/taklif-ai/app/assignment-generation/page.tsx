@@ -8,6 +8,7 @@ import { ReviewStep } from "@/components/assignment/assignment-generation-steps/
 import { ProgressSteps } from "@/components/ui/progress-steps";
 import { storage } from "@/lib/utils/local-storage";
 import { Toast } from "@/lib/utils/toast";
+import { fileToBase64 } from "@/lib/utils/file-to-base64";
 
 const steps = ["Upload PDF", "Choose Interests", "Review Inputs"];
 
@@ -15,33 +16,33 @@ export default function AssignmentPage() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
   const [assignmentData, setAssignmentData] = useState({
-    file: null as File | "" |  null,
-    difficulty: "easy",
-    wordCount: 400,
+    file: null as File | "" | null,
+    // difficulty: "easy",
+    // wordCount: 400,
     interest: "",
   });
-  
+
   useEffect(() => {
-  const savedFile = storage.getProgress('PDF_FILE');
-  const savedInterests = storage.getProgress('INTERESTS');
-  const savedStep = storage.getProgress('CURRENT_STEP');
+    const savedFile = storage.getProgress('PDF_FILE');
+    const savedInterests = storage.getProgress('INTERESTS');
+    const savedStep = storage.getProgress('CURRENT_STEP');
 
-  if (savedFile || savedInterests) {
-    setAssignmentData(prev => ({
-      ...prev,
-      file: savedFile,
-      difficulty: "easy",
-      wordCount: 400,
-      interest: savedInterests ,
-    }));
-  }
+    if (savedFile || savedInterests) {
+      setAssignmentData(prev => ({
+        ...prev,
+        file: savedFile,
+        difficulty: "easy",
+        wordCount: 400,
+        interest: savedInterests,
+      }));
+    }
 
-  if (savedStep !== null) {
-    setCurrentStep(Number(savedStep));
-  }
-}, []);
+    if (savedStep !== null) {
+      setCurrentStep(Number(savedStep));
+    }
+  }, []);
 
-  
+
 
   const handleNext = (stepData: any) => {
     try {
@@ -58,12 +59,13 @@ export default function AssignmentPage() {
       setCurrentStep(nextStep);
       storage.saveProgress('CURRENT_STEP', nextStep);
     } catch (error) {
+      console.log(error);
       Toast.error("An error occurred while saving progress");
     }
   };
 
 
- 
+
 
   const handleBack = () => {
     if (currentStep > 0) {
@@ -72,20 +74,39 @@ export default function AssignmentPage() {
       storage.saveProgress('CURRENT_STEP', prevStep);
     }
   };
-  const handleSubmit = async () => {
-    try {
-      const fileName = assignmentData.file?.name || 'Untitled';
-      const title = fileName.replace(/\.pdf$/i, '');
 
-      // prepere the data to be sent to the backend
-      const dataToApi = {
-        model: "openrouter/google/learnlm-1.5-pro-experimental:free",
-        params: {
-          student_interest: assignmentData.interest,
-          general_assignment: "A permutation is simply a name for a reordering. So the permutations of the string ‘abc’ are ‘abc’, ‘acb’, ‘bac’, ‘bca’, ‘cab’, and ‘cba’. Note that a sequence is a permutation of itself (the trivial permutation). For this part of the pset you’ll need to write a recursive function get_permutations that takes a string and returns a list of all its permutations. You will find this function helpful later in the pset for part C. A couple of notes on the requirements: Recursion MUST be used, global variables may NOT be used. Additionally, it is okay to use loops to code the solution. The order of the returned permutations does not matter. Please also avoid returning duplicates in your final list.",
-         
+  const handleSubmit = async () => {
+    let fileName = '';
+    let title = '';
+
+
+
+    // prepare the assignment-data to the backend
+    const dataToBackend = {
+      student_interest: assignmentData.interest,
+      general_assignment: "",
+      is_pdf: false,
+    }
+
+    try {
+      if (assignmentData.file instanceof File) {
+        fileName = assignmentData.file?.name || 'Untitled';
+        title = fileName.replace(/\.pdf$/i, '');
+        try {
+          const base64 = await fileToBase64(assignmentData.file);
+          dataToBackend.general_assignment = base64;
+          dataToBackend.is_pdf = true;
+        } catch (error) {
+          console.log(error);
+          Toast.error("Failed to process your file. Please try again.");
         }
-      };
+      } else if (typeof assignmentData.file === 'string') {
+        fileName = assignmentData.file;
+        title = 'Text-based assignment';
+        dataToBackend.general_assignment = assignmentData.file;
+        dataToBackend.is_pdf = false;
+      }
+
 
       // send the assignment to the backend
       const res = await fetch('/api/assignment-generation', {
@@ -93,29 +114,28 @@ export default function AssignmentPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(dataToApi)
+        body: JSON.stringify(dataToBackend)
       });
 
       // check the incoming response
-      // if (!res.ok) {
-      //   Toast.error("Failed to create assignment. Please try again.");
-      //   return;
-      // }
+      if (!res.ok) {
+        Toast.error("Failed to create assignment. Please try again.1");
+        return;
+      }
 
-      // const result = await res.json();
-      // // check the parsed result
-      // if (!result || result.error) {
-      //   Toast.error(result.error);
-      //   return;
-      // }
-      // console.log(result);
+      const result = await res.json();
+      // check the parsed result
+      if (!result || result.error) {
+        Toast.error(result.error);
+        return;
+      }
+      console.log(result);
 
       const newAssignment = {
         id: Date.now().toString(),
         title,
         fileName: fileName || 'unknown.pdf',
         createdAt: new Date().toISOString(),
-        wordCount: assignmentData.wordCount,
         interest: assignmentData.interest,
       };
       const existingAssignments = JSON.parse(localStorage.getItem('assignments') || '[]');
@@ -126,7 +146,7 @@ export default function AssignmentPage() {
       router.push('/assignment-generation/all-assignments');
       /* eslint-disable */
     } catch (error) {
-      Toast.error("Failed to create assignment. Please try again.");
+      Toast.error("Failed to create assignment. Please try again.2");
     }
     /* eslint-enable */
   };
@@ -135,8 +155,8 @@ export default function AssignmentPage() {
     switch (currentStep) {
       case 0:
         return (
-          <PDFUpload 
-            onNext={(file) => handleNext({ file })} 
+          <PDFUpload
+            onNext={(file) => handleNext({ file })}
             initialFile={assignmentData.file}
           />
         );
@@ -146,13 +166,13 @@ export default function AssignmentPage() {
             onNext={(interest) => handleNext({ interest })}
             onBack={handleBack}
             initialInterests={assignmentData.interest}
-                      />
+          />
         );
       case 2:
         return (
-          
+
           <ReviewStep
-            
+
             data={assignmentData}
             onBack={handleBack}
             onSubmit={handleSubmit}
