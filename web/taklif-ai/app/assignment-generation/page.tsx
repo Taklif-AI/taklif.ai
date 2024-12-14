@@ -78,6 +78,11 @@ export default function AssignmentPage() {
   const handleSubmit = async () => {
     let fileName = '';
     let title = '';
+    const sleep = (ms: number): Promise<void> => {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    };
+    router.push('assignment-generation/loading/');
+    await sleep(10000);
 
 
 
@@ -115,6 +120,7 @@ export default function AssignmentPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(dataToBackend)
+
       });
 
       // check the incoming response
@@ -143,7 +149,7 @@ export default function AssignmentPage() {
 
       storage.clearProgress();
       Toast.success("Assignment created successfully!");
-      router.push('/assignment-generation/all-assignments');
+      router.push('/assignment-generation/ruselt/');
       /* eslint-disable */
     } catch (error) {
       Toast.error("Failed to create assignment. Please try again.2");
