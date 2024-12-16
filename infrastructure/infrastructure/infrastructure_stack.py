@@ -135,10 +135,14 @@ class InfrastructureStack(Stack):
 
         # <LAMBDA RESOURCES> ---------------------------------------------------------------------
         # LLM Generation Lambda Function
+        llm_generation_code_path = os.path.join(
+            os.path.dirname(__file__), "../../functions/llm_generation"
+        )
+
         llm_generation_function = lambda_.DockerImageFunction(
             self,
             id=f"{env_name}-LLMGenerationFunction",
-            code=lambda_.DockerImageCode.from_image_asset("../../functions/llm_generation"),
+            code=lambda_.DockerImageCode.from_image_asset(llm_generation_code_path),
             timeout=Duration.seconds(lambda_timeout),
             memory_size=lambda_memory_size,
             environment={
