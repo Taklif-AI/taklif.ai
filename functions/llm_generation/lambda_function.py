@@ -8,9 +8,6 @@ import cv2
 import os
 
 
-pytesseract.pytesseract.tesseract_cmd = '/var/opt/bin/tesseract'
-
-
 # Helper function to decode PDF base64
 def decode_pdf(base64_pdf):
     return base64.b64decode(base64_pdf)  # Return the raw byte content
