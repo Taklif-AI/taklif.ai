@@ -7,10 +7,10 @@ COPY requirements.txt ${LAMBDA_TASK_ROOT}
 RUN pip install -r requirements.txt
 
 # Copy function handler code
-COPY ../../../functions/llm_generation ${LAMBDA_TASK_ROOT}
+COPY lambda_function.py ${LAMBDA_TASK_ROOT}
 
 # Copy tesseract binary
-COPY ../../binaries/tesseract_ocr /var/opt
+COPY tesseract_ocr /var/opt
 
 # Setting environment variables for tesseract
 ENV PATH="/var/opt/bin:$PATH"
