@@ -1,5 +1,0 @@
-langchain[all]
-litellm
-langchain_community
-openai
-boto3
