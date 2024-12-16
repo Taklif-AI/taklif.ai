@@ -18,7 +18,6 @@ environments = {
         "env_name": "Production",
         "lambda_memory_size": 1024,
         "lambda_timeout": 60,
-        "OPENROUTER_API_KEY": os.getenv("OPENROUTER_API_KEY"),
         "LANGCHAIN_API_KEY": os.getenv("LANGCHAIN_API_KEY"),
     }
 }
