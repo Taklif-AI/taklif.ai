@@ -17,5 +17,7 @@ ENV PATH="/var/opt/bin:$PATH"
 RUN cp -r /var/opt/lib/* /var/lang/lib
 ENV TESSDATA_PREFIX=/var/opt/tesseract/share/tessdata
 
+RUN chmod +x /var/opt/bin/tesseract
+
 # Set the CMD to your handler
 CMD [ "lambda_function.handler" ]
