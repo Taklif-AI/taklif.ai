@@ -20,7 +20,6 @@ class InfrastructureStack(Stack):
         env_name: str,
         lambda_memory_size: int,
         lambda_timeout: int,
-        OPENROUTER_API_KEY: str,
         LANGCHAIN_API_KEY: str,
         **kwargs,
     ) -> None:
