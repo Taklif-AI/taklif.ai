@@ -1,5 +1,35 @@
 import InterestValidator as InterestValidator
 import AssignmentValidator as AssignmentValidator
+
+
+def guard_interest(interest:str, metadata:dict):
+   """ Performs guardrails on interest
+
+   Args:
+       interest (str): user's interest 
+       metadata (dict): {model, apiKey}
+
+   Returns:
+       _type_: PassResult(metadata = {llm_response})
+   """
+   interestValidator = InterestValidator.InterestValidator(use_local = True)
+   interest_validation = interestValidator.validate(interest, metadata = metadata)
+   return interest_validation
+
+def guard_assignment(assignment: str, metadata:dict):
+   """ Performs guardrails on assignment 
+
+   Args:
+       interest (str): user's assignment 
+       metadata (dict): {model, apiKey}
+
+   Returns:
+       _type_: PassResult(metadata = {llm_response})
+   """
+   assignmentValidator = AssignmentValidator.AssignmentValidator()
+   assignment_validation = assignmentValidator.validate(assignment, metadata= metadata)
+
+   return assignment_validation
 def guard_input(input:dict, metadata: dict):
   """_summary_
 
