@@ -167,9 +167,9 @@ class InfrastructureStack(Stack):
             ),
         )
 
-        llm_call_resource = orchestration_api.root.add_resource("llm_call")
+        llm_call_resource = orchestration_api.root.add_resource("llm_generation")
         llm_call_resource.add_method(
-            "POST", apigateway.LambdaIntegration(llm_call_function)
+            "POST", apigateway.LambdaIntegration(llm_generation_function)
         )
         llm_call_resource.add_cors_preflight(
             allow_origins=apigateway.Cors.ALL_ORIGINS, # Allow all origins, or specify a list of allowed origins (it can be replaced with our frontend domain)
