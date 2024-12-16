@@ -167,38 +167,11 @@ class InfrastructureStack(Stack):
             ),
         )
 
-        llm_call_resource = orchestration_api.root.add_resource("llm_generation")
-        llm_call_resource.add_method(
+        llm_generation_resource = orchestration_api.root.add_resource("llm_generation")
+        llm_generation_resource.add_method(
             "POST", apigateway.LambdaIntegration(llm_generation_function)
         )
-        llm_call_resource.add_cors_preflight(
-            allow_origins=apigateway.Cors.ALL_ORIGINS, # Allow all origins, or specify a list of allowed origins (it can be replaced with our frontend domain)
-        )
-
-        models_resource = orchestration_api.root.add_resource("models")
-        models_resource.add_method(
-            "GET", apigateway.LambdaIntegration(llm_crud_function)
-        )
-        models_resource.add_method(
-            "PUT", apigateway.LambdaIntegration(llm_crud_function)
-        )
-
-        model_name_resource = models_resource.add_resource("{name}")
-        model_provider_resource = model_name_resource.add_resource("{provider}")
-        model_provider_resource.add_method(
-            "DELETE", apigateway.LambdaIntegration(llm_crud_function)
-        )
-        model_provider_resource.add_method(
-            "GET", apigateway.LambdaIntegration(llm_crud_function)
-        )
-
-        models_resource.add_cors_preflight(
-            allow_origins=apigateway.Cors.ALL_ORIGINS, # Allow all origins, or specify a list of allowed origins (it can be replaced with our frontend domain)
-        )
-        model_name_resource.add_cors_preflight(
-            allow_origins=apigateway.Cors.ALL_ORIGINS, # Allow all origins, or specify a list of allowed origins (it can be replaced with our frontend domain)
-        )
-        model_provider_resource.add_cors_preflight(
+        llm_generation_resource.add_cors_preflight(
             allow_origins=apigateway.Cors.ALL_ORIGINS, # Allow all origins, or specify a list of allowed origins (it can be replaced with our frontend domain)
         )
         # </API GATEWAY RESOURCES> ---------------------------------------------------------------------
