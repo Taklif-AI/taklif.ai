@@ -13,7 +13,6 @@ from litellm import completion
 import ast
 
 
-
 @register_validator(name="guardrails/interest_validator", data_type="string")
 class InterestValidator(Validator):
     def __init__(
@@ -32,33 +31,36 @@ class InterestValidator(Validator):
                 fix_value=None,
             )
 
-        inference_result = self._inference_remote(interest = value, metadata=metadata)
-        validation = inference_result['decision']
+        inference_result = self._inference_remote(interest=value, metadata=metadata)
 
-        return PassResult(
-                metadata= inference_result
-            )
-       
+        return PassResult(metadata=inference_result)
 
     def _inference_local(self, model_input: str) -> bool:
         """Implement a function to perform inference on a local machine."""
         return model_input.islower()
 
-    def _inference_remote(self,metadata: dict, interest: str) -> bool:
+    def _inference_remote(self, metadata: dict, interest: str) -> bool:
         """Implement a function that will build a request and perform inference on a
         remote machine. This is not required if you will always use local mode.
         """
         interest_guardrail_prompt = hub.pull("interest-guardrails-prompt")
-        prompt = interest_guardrail_prompt.format(interest= interest)
+        prompt = interest_guardrail_prompt.format(interest=interest)
         # send request to guardrails LLM
-        evaluated_interest = completion(model=metadata['model'],
-                                        api_key= metadata['apiKey'],
-                                        messages=[{ "content": prompt,"role": "system"}])
-
+        evaluated_interest = completion(
+            model=metadata["model"],
+            api_key=metadata["apiKey"],
+            messages=[{"content": prompt, "role": "system"}],
+        )
+        res = {
+            "content": ast.literal_eval(evaluated_interest["choices"][0]["message"]["content"]),
+            "model": evaluated_interest["model"],
+            "completion_tokens": evaluated_interest["usage"].completion_tokens,
+            "prompt_tokens": evaluated_interest["usage"].prompt_tokens,
+            "total_tokens": evaluated_interest["usage"].total_tokens,
+        }
         # parse the response
-        try:    
-            evaluated_interest = ast.literal_eval(evaluated_interest['choices'][0].message['content'])
-            return evaluated_interest
+        try:
+            
+            return res
         except Exception as e:
             return ast.literal_eval(e)
-       
