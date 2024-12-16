@@ -134,24 +134,11 @@ class InfrastructureStack(Stack):
 
 
         # <LAMBDA RESOURCES> ---------------------------------------------------------------------
-        # LLM Calling Lambda Function 
-        llm_call_lambda_layer = lambda_.LayerVersion.from_layer_version_arn( # Add lambda layer by ARN
-            self, 
-            "LLMsBasicDependencies",
-            "arn:aws:lambda:eu-north-1:491085403164:layer:LLMsBasicsDependencies:1"
-        )
-
-        llm_call_lambda_code_path = os.path.join(
-            os.path.dirname(__file__), "../../functions/llm_call"
-        )
-
-        llm_call_function = lambda_.Function(
+        # LLM Generation Lambda Function
+        llm_generation_function = lambda_.DockerImageFunction(
             self,
-            id=f"{env_name}-LLMCallFunction",
-            code=lambda_.Code.from_asset(llm_call_lambda_code_path),
-            handler="llm_call.lambda_handler",
-            runtime=lambda_.Runtime.PYTHON_3_10,
-            layers=[llm_call_lambda_layer],
+            id=f"{env_name}-LLMGenerationFunction",
+            code=lambda_.DockerImageCode.from_image_asset("../docker_images/llm_generation"),
             timeout=Duration.seconds(lambda_timeout),
             memory_size=lambda_memory_size,
             environment={
@@ -162,33 +149,7 @@ class InfrastructureStack(Stack):
                 "LANGCHAIN_PROJECT": "Taklif.AI",
                 "LANGCHAIN_API_KEY": LANGCHAIN_API_KEY,
             },
-        )
-
-        # LLM crud Lambda Function ---------------------------------
-        llm_crud_lambda_layer = lambda_.LayerVersion.from_layer_version_arn( # Add lambda layer by ARN
-            self, 
-            "LLMCrudDependencies",
-            "arn:aws:lambda:eu-north-1:770693421928:layer:Klayers-p310-boto3:21"
-        )
-
-        llm_crud_lambda_code_path = os.path.join(
-            os.path.dirname(__file__), "../../functions/llm_crud"
-        )
-
-        llm_crud_function = lambda_.Function(
-            self,
-            id=f"{env_name}-LLMCrudFunction",
-            code=lambda_.Code.from_asset(llm_crud_lambda_code_path),
-            handler="llm_crud.lambda_handler",
-            runtime=lambda_.Runtime.PYTHON_3_10,
-            layers=[llm_crud_lambda_layer],
-            timeout=Duration.seconds(lambda_timeout),
-            memory_size=lambda_memory_size,
-            environment={
-                "ENV_NAME": env_name,
-            },
-            role=lambda_role,
-        )
+        )        
         # </LAMBDA RESOURCES> ---------------------------------------------------------------------
 
 
