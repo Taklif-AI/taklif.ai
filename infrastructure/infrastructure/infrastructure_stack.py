@@ -149,11 +149,11 @@ class InfrastructureStack(Stack):
                 "ENV_NAME": env_name,
                 "LANGCHAIN_TRACING_V2": "true",
                 "LANGCHAIN_ENDPOINT": "https://api.smith.langchain.com",
-                "OPENROUTER_API_KEY": OPENROUTER_API_KEY,
                 "LANGCHAIN_PROJECT": "Taklif.AI",
-                "LANGCHAIN_API_KEY": LANGCHAIN_API_KEY,
+                "LANGCHAIN_API_KEY": LANGCHAIN_API_KEY
             },
-        )        
+            role=lambda_role
+        )
         # </LAMBDA RESOURCES> ---------------------------------------------------------------------
 
 
@@ -179,21 +179,6 @@ class InfrastructureStack(Stack):
             allow_origins=apigateway.Cors.ALL_ORIGINS, # Allow all origins, or specify a list of allowed origins (it can be replaced with our frontend domain)
         )
         # </API GATEWAY RESOURCES> ---------------------------------------------------------------------
-
-
-        # <DYNAMODB RESOURCES> ---------------------------------------------------------------------
-        LLMsTable = dynamodb.Table(
-            self,
-            id=f"{env_name}-LLMsTable",
-            table_name=f"{env_name}-LLMsMetaData",
-            partition_key=dynamodb.Attribute(
-                name="name", type=dynamodb.AttributeType.STRING
-            ),
-            sort_key=dynamodb.Attribute(
-                name='provider', type=dynamodb.AttributeType.STRING
-            )
-        )
-        # </DYNAMODB RESOURCES> ---------------------------------------------------------------------
 
 
         # <Amplify RESOURCES/> created through GUI
