@@ -138,7 +138,7 @@ class InfrastructureStack(Stack):
         llm_generation_function = lambda_.DockerImageFunction(
             self,
             id=f"{env_name}-LLMGenerationFunction",
-            code=lambda_.DockerImageCode.from_image_asset("../docker_images/llm_generation"),
+            code=lambda_.DockerImageCode.from_image_asset("docker_images/llm_generation"),
             timeout=Duration.seconds(lambda_timeout),
             memory_size=lambda_memory_size,
             environment={
