@@ -1,0 +1,21 @@
+FROM public.ecr.aws/lambda/python:3.10
+
+# Copy requirements.txt
+COPY requirements.txt ${LAMBDA_TASK_ROOT}
+
+# Install the specified packages
+RUN pip install -r requirements.txt
+
+# Copy function handler code
+COPY ../../../functions/llm_generation ${LAMBDA_TASK_ROOT}
+
+# Copy tesseract binary
+COPY ../../binaries/tesseract_ocr /var/opt
+
+# Setting environment variables for tesseract
+ENV PATH="/var/opt/bin:$PATH"
+RUN cp -r /var/opt/lib/* /var/lang/lib
+ENV TESSDATA_PREFIX=/var/opt/tesseract/share/tessdata
+
+# Set the CMD to your handler
+CMD [ "lambda_function.handler" ]

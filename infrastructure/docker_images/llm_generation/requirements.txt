@@ -1,0 +1,16 @@
+langchain[all]
+litellm
+langchain_community
+openai
+boto3
+opencv-python-headless
+pymupdf
+pytesseract
+PyPDF2
+certifi
+charset-normalizer
+idna
+packaging
+pillow
+requests
+urllib3
