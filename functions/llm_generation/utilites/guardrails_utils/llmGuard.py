@@ -12,7 +12,7 @@ def guard_input(input:dict, metadata: dict):
   output = {}
   interestValidator = InterestValidator.InterestValidator(use_local = True)
   interest_validation = interestValidator.validate(input['interest'], metadata = metadata)
-  if not interest_validation.metadata['decision']:
+  if not interest_validation.metadata['content']['decision']:
      output = {
         'status': 'bad',
         'llm_response': interest_validation.metadata
@@ -20,7 +20,7 @@ def guard_input(input:dict, metadata: dict):
      return output
   assignmentValidator = AssignmentValidator.AssignmentValidator()
   assignment_validation = assignmentValidator.validate(input['assignment'], metadata= metadata)
-  if not assignment_validation.metadata['decision']:
+  if not assignment_validation.metadata['content']['decision']:
      output = {
         'status': 'bad',
         'llm_response': assignment_validation.metadata

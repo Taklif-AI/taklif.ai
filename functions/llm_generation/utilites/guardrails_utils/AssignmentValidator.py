@@ -32,7 +32,6 @@ class AssignmentValidator(Validator):
             )
 
         inference_result = self._inference_remote(assignment = value, metadata=metadata)
-        validation = inference_result['decision']
         return PassResult(
             metadata = inference_result
         )
@@ -54,10 +53,16 @@ class AssignmentValidator(Validator):
                                         messages=[{ "content": prompt,"role": "system"}])
 
         # parse the response
-
+        res = {
+                    "content": ast.literal_eval(evaluated_assignment["choices"][0]["message"]["content"]),
+                    "model": evaluated_assignment["model"],
+                    "completion_tokens": evaluated_assignment["usage"].completion_tokens,
+                    "prompt_tokens": evaluated_assignment["usage"].prompt_tokens,
+                    "total_tokens": evaluated_assignment["usage"].total_tokens,
+                }
         try:    
-            evaluated_assignment = ast.literal_eval(evaluated_assignment['choices'][0].message['content'])
-            return evaluated_assignment
+            
+            return res
         except Exception as e:
             return ast.literal_eval(e)
        
