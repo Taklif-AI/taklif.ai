@@ -1,6 +1,6 @@
-from utilites.input_parsers import generation_parser, simplify_parser
 from concurrent.futures import ThreadPoolExecutor
-from utilites.pdf_ocr import pdf_ocr
+from utilites import input_parser
+from utilites import pdf_ocr
 from utilites.llm_generators import assignment, simplify
 from utilites.guardrails_utils import llm_guard
 import json
@@ -28,9 +28,9 @@ def handler(event, context):
     params = {}
     try:
         if task == "generation":
-            params = generation_parser.parse(body.get('params'))
+            params = input_parser.generation_parser(body.get('params'))
         elif task == "simplify":
-            params = simplify_parser.parse(body.get('params'))     
+            params = input_parser.simplify_parser(body.get('params'))     
     except BadRequestError as e:
         return {
         "statusCode": 400,
@@ -42,7 +42,7 @@ def handler(event, context):
     # PDF assignment processing
     if task == "generation" and params.get("is_pdf") == True:
         try:
-            params['general_assignment'] = pdf_ocr(params.get('general_assignment'), max_threads)
+            params['general_assignment'] = pdf_ocr.process(params.get('general_assignment'), max_threads)
         except PDFDecodingError as e:
             return {
                 "statusCode": 400,
