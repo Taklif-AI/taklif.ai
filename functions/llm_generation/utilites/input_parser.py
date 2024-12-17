@@ -1,7 +1,5 @@
-import  utilites.general_utils.exceptions as exceptions 
+import general_utils.exceptions as exceptions 
 import json
-
-
 
 
 def generation_parser(body:dict):
@@ -28,4 +26,5 @@ def simplify_parser(body:dict):
     return {
         "level" : params.get("level"),
         "general_assignment" : params.get("general_assignment")
-    }    
+    } 
+     

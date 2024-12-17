@@ -1,4 +1,4 @@
-import utilites.general_utils.exceptions as exceptions
+import general_utils.exceptions as exceptions
 from concurrent.futures import ThreadPoolExecutor
 import pytesseract
 import numpy as np
@@ -8,8 +8,6 @@ import fitz  # PyMuPDF
 import cv2
 import os
 
-
-# Custom exception classes
 
 # Helper function to decode PDF base64
 def decode_pdf(base64_pdf):
@@ -61,3 +59,4 @@ def process_pdf(base64_pdf, max_threads):
         raise process_err
     except Exception as e:
         raise exceptions.PDFProcessingError(f"Unexpected error: {str(e)}")
+   
