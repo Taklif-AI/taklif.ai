@@ -1,4 +1,4 @@
-import general_utils.exceptions as exceptions 
+from utilites.custom_exceptions import GenerateError
 from langchain_core.tracers.langchain import wait_for_all_tracers
 from langchain_core.output_parsers import StrOutputParser
 from langchain_community.chat_models import ChatLiteLLM
@@ -32,7 +32,7 @@ def generate(prompt_params:dict, litellm_call:str):
 
         return response
     except Exception as e:
-        raise exceptions.GenerateError(f"Internal Server Error: {str(e)}")
+        raise GenerateError(f"Internal Server Error: {str(e)}")
 
     # Wait for langsmith tracer to finish    
     finally:

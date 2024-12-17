@@ -1,4 +1,4 @@
-import general_utils.exceptions as exceptions 
+from utilites.custom_exceptions import BadRequestError 
 import json
 
 
@@ -7,7 +7,7 @@ def generation_parser(body:dict):
     params = body.get('params')
 
     if not params:
-        raise exceptions.BadRequestError("Bad Request: Missing 'params' in the event payload")
+        raise BadRequestError("Bad Request: Missing 'params' in the event payload")
     
     return {
         "interest" : params.get("interest"),
@@ -21,7 +21,7 @@ def simplify_parser(body:dict):
     params = body.get('params')
 
     if not params:
-        raise exceptions.BadRequestError("Bad Request: Missing 'params' in the event payload")
+        raise BadRequestError("Bad Request: Missing 'params' in the event payload")
     
     return {
         "level" : params.get("level"),

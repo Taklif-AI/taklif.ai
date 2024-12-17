@@ -1,4 +1,4 @@
-import general_utils.exceptions as exceptions
+from utilites.custom_exceptions import PDFDecodingError, PDFProcessingError
 from concurrent.futures import ThreadPoolExecutor
 import pytesseract
 import numpy as np
@@ -14,7 +14,7 @@ def decode_pdf(base64_pdf):
     try:
         return base64.b64decode(base64_pdf)  # Return the raw byte content
     except Exception as e:
-        raise exceptions.PDFDecodingError(f"Error decoding base64 PDF: {str(e)}")
+        raise PDFDecodingError(f"Error decoding base64 PDF: {str(e)}")
 
 
 # Helper function to process a single page and extract text
@@ -35,7 +35,7 @@ def process_page(page):
         # Extract text from the image using Tesseract OCR
         return pytesseract.image_to_string(gray)
     except Exception as e:
-        raise exceptions.PDFProcessingError(f"Error processing page: {str(e)}")
+        raise PDFProcessingError(f"Error processing page: {str(e)}")
 
 
 # Main OCR function
@@ -53,10 +53,10 @@ def process_pdf(base64_pdf, max_threads):
         # Combine results into a single string
         return "".join(results)
 
-    except exceptions.PDFDecodingError as decode_err:
+    except PDFDecodingError as decode_err:
         raise decode_err
-    except exceptions.PDFProcessingError as process_err:
+    except PDFProcessingError as process_err:
         raise process_err
     except Exception as e:
-        raise exceptions.PDFProcessingError(f"Unexpected error: {str(e)}")
+        raise PDFProcessingError(f"Unexpected error: {str(e)}")
    
