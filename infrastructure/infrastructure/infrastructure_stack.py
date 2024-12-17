@@ -21,6 +21,7 @@ class InfrastructureStack(Stack):
         lambda_memory_size: int,
         lambda_timeout: int,
         LANGCHAIN_API_KEY: str,
+        OPENROUTER_API_KEY: str,
         **kwargs,
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
@@ -149,7 +150,8 @@ class InfrastructureStack(Stack):
                 "LANGCHAIN_TRACING_V2": "true",
                 "LANGCHAIN_ENDPOINT": "https://api.smith.langchain.com",
                 "LANGCHAIN_PROJECT": "Taklif.AI",
-                "LANGCHAIN_API_KEY": LANGCHAIN_API_KEY
+                "LANGCHAIN_API_KEY": LANGCHAIN_API_KEY,
+                "OPENROUTER_API_KEY": OPENROUTER_API_KEY
             },
             role=lambda_role
         )

@@ -11,6 +11,7 @@ environments = {
         "lambda_memory_size": 512,
         "lambda_timeout": 30,
         "LANGCHAIN_API_KEY": os.getenv("LANGCHAIN_API_KEY"),
+        "OPENROUTER_API_KEY": os.getenv("OPENROUTER_API_KEY")
     },
     "production": {
         "account": os.getenv("CDK_DEFAULT_ACCOUNT"),
@@ -54,6 +55,7 @@ InfrastructureStack(
     lambda_memory_size=develop_env["lambda_memory_size"],
     lambda_timeout=develop_env["lambda_timeout"],
     LANGCHAIN_API_KEY=develop_env["LANGCHAIN_API_KEY"],
+    OPENROUTER_API_KEY=develop_env["OPENROUTER_API_KEY"]
 )
 
 # Production environment stack
