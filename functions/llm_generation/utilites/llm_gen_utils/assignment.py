@@ -26,7 +26,7 @@ def generate(prompt_params:dict, litellm_call:str):
         simple_chain = langsmith_prompt | llm | StrOutputParser()
 
         response = simple_chain.invoke(input = {
-                                                "interest": interest,
+                                                "student_interest": interest,
                                                 "general_assignment": general_assignment
                                                 })
 
