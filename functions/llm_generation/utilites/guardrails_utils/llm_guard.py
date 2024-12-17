@@ -1,5 +1,5 @@
-import interest_validator 
-import assignment_validator 
+import guardrails_utils.interest_validator as interest_validator
+import guardrails_utils.assignment_validator as assignment_validator
 
 
 def guard_interest(interest: str, metadata: dict):
