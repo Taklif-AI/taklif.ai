@@ -1,4 +1,4 @@
-import utilites.general_utils.exceptions as exceptions 
+import general_utils.exceptions as exceptions 
 from langchain_core.tracers.langchain import wait_for_all_tracers
 from langchain_core.output_parsers import StrOutputParser
 from langchain_community.chat_models import ChatLiteLLM
