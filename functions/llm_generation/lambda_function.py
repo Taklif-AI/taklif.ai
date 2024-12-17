@@ -36,9 +36,9 @@ def handler(event, context):
     params = {}
     try:
         if task == "generation":
-            params = generation_parser(body.get('params'))
+            params = generation_parser(body)
         elif task == "simplify":
-            params = simplify_parser(body.get('params'))     
+            params = simplify_parser(body)     
     except BadRequestError as e:
         return {
         "statusCode": 400,
