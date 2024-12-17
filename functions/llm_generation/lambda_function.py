@@ -1,10 +1,12 @@
 from concurrent.futures import ThreadPoolExecutor
-from utilites import input_parser
-from utilites import pdf_ocr
-from utilites.llm_generators import assignment, simplify
-from utilites.guardrails_utils import llm_guard
+from utilites.llm_gen_utils import assignment, simplify
+import  utilites.general_utils.exceptions as exceptions
+from utilites.guardrails_utils import guard_interest, guard_assignment
+from utilites.input_parser import BadRequestError, generation_parser, simplify_parser
+from utilites.pdf_ocr import process_pdf, PDFDecodingError, PDFProcessingError
 import json
 import os
+
 
 # TODO: atomic_counter_load_balancer
 
@@ -28,9 +30,9 @@ def handler(event, context):
     params = {}
     try:
         if task == "generation":
-            params = input_parser.generation_parser(body.get('params'))
+            params = generation_parser(body.get('params'))
         elif task == "simplify":
-            params = input_parser.simplify_parser(body.get('params'))     
+            params = simplify_parser(body.get('params'))     
     except BadRequestError as e:
         return {
         "statusCode": 400,
@@ -42,7 +44,7 @@ def handler(event, context):
     # PDF assignment processing
     if task == "generation" and params.get("is_pdf") == True:
         try:
-            params['general_assignment'] = pdf_ocr.process(params.get('general_assignment'), max_threads)
+            params['general_assignment'] = process_pdf(params.get('general_assignment'), max_threads)
         except PDFDecodingError as e:
             return {
                 "statusCode": 400,
@@ -68,7 +70,7 @@ def handler(event, context):
             response = assignment.generate(body.get('params'), "openrouter/meta-llama/llama-3.2-3b-instruct:free")
         elif task == "simplify":
             response = simplify.generate(body.get('params'), "openrouter/meta-llama/llama-3.2-3b-instruct:free")     
-    except GenerateError as e:
+    except exceptions.GenerateError as e:
         return {
         "statusCode": 500,
         "body": json.dumps({"error": "Internal Server Error: " + str(e)}),
