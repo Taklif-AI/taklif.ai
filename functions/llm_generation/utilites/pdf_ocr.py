@@ -51,7 +51,7 @@ def process_page(page):
 
 
 # Main OCR function
-def pdf_ocr(base64_pdf, max_threads):
+def process(base64_pdf, max_threads):
     try:
         # Decode PDF and load pages
         pdf_bytes = decode_pdf(base64_pdf)
