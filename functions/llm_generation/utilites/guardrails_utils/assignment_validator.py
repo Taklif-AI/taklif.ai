@@ -32,44 +32,44 @@ class AssignmentValidator(Validator):
             )
         # perform guarding
 
-        inference_result = self._inference_remote(assignment = value, metadata=metadata)
-        
+        inference_result = self._inference_remote(assignment=value, metadata=metadata)
+
         if inference_result["content"]["decision"]:
-            return PassResult(
-                metadata = inference_result
-            )
+            return PassResult(metadata=inference_result)
         else:
             return FailResult(
-                error_message= "Unacceptable assignment",
-                metadata = inference_result
+                error_message="Unacceptable assignment", metadata=inference_result
             )
-      
 
     def _inference_local(self, model_input: str) -> bool:
         """Implement a function to perform inference on a local machine."""
         return model_input.islower()
 
-    def _inference_remote(self,litellm_call: str, assignment: str) -> bool:
+    def _inference_remote(self, metadata: dict, assignment: str) -> bool:
         """Implement a function that will build a request and perform inference on a
         remote machine. This is not required if you will always use local mode.
         """
         assignment_guardrail_prompt = hub.pull("assignment-guardrails-prompt")
-        prompt = assignment_guardrail_prompt.format(assignment= assignment)
+        prompt = assignment_guardrail_prompt.format(assignment=assignment)
         # send request to guardrails LLM
-        evaluated_assignment = completion(model= litellm_call, 
-                                        messages=[{ "content": prompt,"role": "system"}])
+        evaluated_assignment = completion(
+            model=metadata["litellm_call"],
+            messages=[{"content": prompt, "role": "system"}],
+        )
 
         # parse the response
         res = {
-                    "content": ast.literal_eval(evaluated_assignment["choices"][0]["message"]["content"]),
-                    "model": evaluated_assignment["model"],
-                    "completion_tokens": evaluated_assignment["usage"].completion_tokens,
-                    "prompt_tokens": evaluated_assignment["usage"].prompt_tokens,
-                    "total_tokens": evaluated_assignment["usage"].total_tokens,
-                }
-        try:    
-            
+            "content": ast.literal_eval(
+                evaluated_assignment["choices"][0]["message"]["content"]
+            ),
+            "request_info": {
+                "model": evaluated_assignment["model"],
+                "completion_tokens": evaluated_assignment["usage"].completion_tokens,
+                "prompt_tokens": evaluated_assignment["usage"].prompt_tokens,
+                "total_tokens": evaluated_assignment["usage"].total_tokens,
+            },
+        }
+        try:
             return res
         except Exception as e:
             return ast.literal_eval(e)
-       

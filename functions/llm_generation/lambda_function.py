@@ -40,6 +40,16 @@ def handler(event, context):
         }
   
     # Interest guardrails
+    interest_validation = guard_interest(params['interest'], {'llm_call': ''})
+
+    if interest_validation['statusCode'] == 400:
+        return {
+            'statusCode': 400,
+            'body': json.dumps({'error': interest_validation['decision_explain']})
+
+        }
+     
+    
     
     # PDF assignment processing
     if task == "generation" and params.get("is_pdf") == True:
@@ -62,7 +72,13 @@ def handler(event, context):
             }
 
     # Assignment guardrails
-    
+    assignment_validation = guard_assignment(params['interest'], {'llm_call': ''})
+
+    if assignment_validation['statusCode'] == 400:
+        return {
+            'statusCode': 400,
+            'body': json.dumps({'error': assignment_validation['decision_explain']})
+        }
     # LLM calling
     response = ''
     try:
