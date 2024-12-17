@@ -9,6 +9,9 @@ RUN pip install -r requirements.txt
 # Copy function handler code
 COPY lambda_function.py ${LAMBDA_TASK_ROOT}
 
+# Copy utilites folder
+COPY utilites ${LAMBDA_TASK_ROOT}/utilites
+
 # Copy tesseract binary
 COPY tesseract_ocr /var/opt
 
