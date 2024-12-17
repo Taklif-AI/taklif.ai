@@ -1,14 +1,15 @@
-from concurrent.futures import ThreadPoolExecutor
+from utilites.guardrails_utils.llm_guard import guard_interest, guard_assignment
+from utilites.input_parser import generation_parser, simplify_parser
 from utilites.llm_gen_utils import assignment, simplify
-import  utilites.general_utils.exceptions as exceptions
-from utilites.guardrails_utils import guard_interest, guard_assignment
-from utilites.input_parser import BadRequestError, generation_parser, simplify_parser
-from utilites.pdf_ocr import process_pdf, PDFDecodingError, PDFProcessingError
+import utilites.general_utils.exceptions as exceptions
+from concurrent.futures import ThreadPoolExecutor
+from utilites.pdf_ocr import process_pdf
 import json
 import os
 
 
 # TODO: atomic_counter_load_balancer
+
 
 def handler(event, context):
     # Get the available memory in MB from the Lambda function
@@ -33,34 +34,32 @@ def handler(event, context):
             params = generation_parser(body.get('params'))
         elif task == "simplify":
             params = simplify_parser(body.get('params'))     
-    except BadRequestError as e:
+    except exceptions.BadRequestError as e:
         return {
         "statusCode": 400,
         "body": json.dumps({"error": e.message}),
         }
   
     # Interest guardrails
-    interest_validation = guard_interest(params['interest'], {'llm_call': ''})
+    interest_validation = guard_interest(params['interest'], {'litellm_call': ''})
 
-    if interest_validation['statusCode'] == 400:
+    if interest_validation['decision'] == 'rejected':
         return {
             'statusCode': 400,
-            'body': json.dumps({'error': interest_validation['decision_explain']})
+            'body': json.dumps({'error': interest_validation['details']['decision_explain']})
 
         }
      
-    
-    
     # PDF assignment processing
     if task == "generation" and params.get("is_pdf") == True:
         try:
             params['general_assignment'] = process_pdf(params.get('general_assignment'), max_threads)
-        except PDFDecodingError as e:
+        except exceptions.PDFDecodingError as e:
             return {
                 "statusCode": 400,
                 "body": json.dumps({"error": f"PDF Decoding error occurred: {str(e)}"})
             }
-        except PDFProcessingError as e:
+        except exceptions.PDFProcessingError as e:
             return {
                 "statusCode": 400,
                 "body": json.dumps({"error": f"PDF Processing error occurred: {str(e)}"})
@@ -72,13 +71,15 @@ def handler(event, context):
             }
 
     # Assignment guardrails
-    assignment_validation = guard_assignment(params['interest'], {'llm_call': ''})
+    assignment_validation = guard_assignment(params['interest'], {'litellm_call': ''})
 
-    if assignment_validation['statusCode'] == 400:
+    if assignment_validation['decision'] == 'rejected':
         return {
             'statusCode': 400,
-            'body': json.dumps({'error': assignment_validation['decision_explain']})
-        }
+            'body': json.dumps({'error': assignment_validation['details']['decision_explain']})
+
+        }  
+      
     # LLM calling
     response = ''
     try:
