@@ -21,11 +21,9 @@ def guard_interest(interest: str, metadata: dict):
 
     # return response
     return {
-            "statusCode": 200 if decision else 400,
-            "body": {
-                "decision_explain": interest_validation.metadata["content"][
-                    "explanation"
-                ],
+            "decision": "accepted" if decision else "rejected",
+            "details": {
+                "decision_explain": interest_validation.metadata["content"]["explanation"],
                 "request_info": interest_validation.metadata["request_info"],
             },
         }
@@ -50,11 +48,9 @@ def guard_assignment(assignment: str, metadata: dict):
     # return response
     decision = assignment_validation.metadata["content"]["decision"]
     return {
-            "statusCode": 200 if decision else 400,
-            "body": {
-                "decision_explain": assignment_validation.metadata["content"][
-                    "explanation"
-                ],
+            "decision": "accepted" if decision else "rejected",
+            "details": {
+                "decision_explain": assignment_validation.metadata["content"]["explanation"],
                 "request_info": assignment_validation.metadata["request_info"],
             },
         }
