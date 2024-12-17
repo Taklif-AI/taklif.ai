@@ -6,7 +6,9 @@ from concurrent.futures import ThreadPoolExecutor
 from utilites.pdf_ocr import process_pdf
 import json
 import os
+import sys
 
+sys.path.append('/var/task/utilites/')
 
 # TODO: atomic_counter_load_balancer
 
