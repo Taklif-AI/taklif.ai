@@ -7,12 +7,19 @@ import fitz  # PyMuPDF
 import cv2
 import os
 
+
 # Custom exception classes
 class PDFDecodingError(Exception):
-    pass
+    def __init__(self, message):
+        super().__init__(message)
+        self.message = message
+
 
 class PDFProcessingError(Exception):
-    pass
+    def __init__(self, message):
+        super().__init__(message)
+        self.message = message
+
 
 # Helper function to decode PDF base64
 def decode_pdf(base64_pdf):
@@ -20,6 +27,7 @@ def decode_pdf(base64_pdf):
         return base64.b64decode(base64_pdf)  # Return the raw byte content
     except Exception as e:
         raise PDFDecodingError(f"Error decoding base64 PDF: {str(e)}")
+
 
 # Helper function to process a single page and extract text
 def process_page(page):
@@ -40,6 +48,7 @@ def process_page(page):
         return pytesseract.image_to_string(gray)
     except Exception as e:
         raise PDFProcessingError(f"Error processing page: {str(e)}")
+
 
 # Main OCR function
 def pdf_ocr(base64_pdf, max_threads):
