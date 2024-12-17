@@ -1,14 +1,17 @@
-from utilites.llm_gen_utils import assignment, simplify
-from utilites.llm_guard import guard_interest, guard_assignment
-from utilites.input_parser import generation_parser, simplify_parser
-from utilites.general_utils.exceptions import GenerateError, BadRequestError, PDFDecodingError, PDFProcessingError
-from concurrent.futures import ThreadPoolExecutor
-from utilites.pdf_ocr import process_pdf
-import json
 import os
 import sys
 
 sys.path.append('/var/task/utilites/')
+sys.path.append(os.getenv('LAMBDA_TASK_ROOT'))
+
+from utilites.input_parser import generation_parser, simplify_parser
+from utilites.pdf_ocr import process_pdf
+from utilites.custom_exceptions import GenerateError, BadRequestError, PDFDecodingError, PDFProcessingError
+from utilites.llm_gen_utils import assignment, simplify
+from utilites.guardrails_utils.llm_guard import guard_interest, guard_assignment
+from concurrent.futures import ThreadPoolExecutor
+import json
+
 
 # TODO: atomic_counter_load_balancer
 
