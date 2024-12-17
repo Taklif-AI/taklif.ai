@@ -11,7 +11,7 @@ def generation_parser(body:dict):
     
     return {
         "interest" : params.get("interest"),
-        "is_pdf" : bool(params.get("is_pdf")),
+        "is_pdf" : params.get("is_pdf"),
         "general_assignment" : params.get("general_assignment")
     }
 

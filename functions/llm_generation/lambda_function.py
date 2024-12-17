@@ -56,7 +56,7 @@ def handler(event, context):
         }
      
     # PDF assignment processing
-    if task == "generation" and params.get("is_pdf") == True:
+    if task == "generation" and params.get("is_pdf") == "true":
         try:
             params['general_assignment'] = process_pdf(params.get('general_assignment'), max_threads)
         except PDFDecodingError as e:
