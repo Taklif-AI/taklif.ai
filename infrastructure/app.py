@@ -68,6 +68,7 @@ InfrastructureStack(
     lambda_memory_size=production_env["lambda_memory_size"],
     lambda_timeout=production_env["lambda_timeout"],
     LANGCHAIN_API_KEY=production_env["LANGCHAIN_API_KEY"],
+    OPENROUTER_API_KEY=develop_env["OPENROUTER_API_KEY"]
 )
 
 app.synth()
