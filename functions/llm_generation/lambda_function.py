@@ -41,7 +41,7 @@ def handler(event, context):
         }
   
     # Interest guardrails
-    interest_validation = guard_interest(params['interest'], {'litellm_call': ''})
+    interest_validation = guard_interest(params['interest'], {'litellm_call': 'openrouter/meta-llama/llama-3.2-3b-instruct:free'})
 
     if interest_validation['decision'] == 'rejected':
         return {
@@ -71,7 +71,7 @@ def handler(event, context):
             }
 
     # Assignment guardrails
-    assignment_validation = guard_assignment(params['interest'], {'litellm_call': ''})
+    assignment_validation = guard_assignment(params['interest'], {'litellm_call': 'openrouter/meta-llama/llama-3.2-3b-instruct:free'})
 
     if assignment_validation['decision'] == 'rejected':
         return {
