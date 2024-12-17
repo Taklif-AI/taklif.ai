@@ -1,7 +1,7 @@
 from utilites.llm_gen_utils import assignment, simplify
 from utilites.llm_guard import guard_interest, guard_assignment
 from utilites.input_parser import generation_parser, simplify_parser
-import utilites.general_utils.exceptions as exceptions
+from utilites.general_utils.exceptions import GenerateError, BadRequestError, PDFDecodingError, PDFProcessingError
 from concurrent.futures import ThreadPoolExecutor
 from utilites.pdf_ocr import process_pdf
 import json
@@ -36,7 +36,7 @@ def handler(event, context):
             params = generation_parser(body.get('params'))
         elif task == "simplify":
             params = simplify_parser(body.get('params'))     
-    except exceptions.BadRequestError as e:
+    except BadRequestError as e:
         return {
         "statusCode": 400,
         "body": json.dumps({"error": e.message}),
@@ -56,12 +56,12 @@ def handler(event, context):
     if task == "generation" and params.get("is_pdf") == True:
         try:
             params['general_assignment'] = process_pdf(params.get('general_assignment'), max_threads)
-        except exceptions.PDFDecodingError as e:
+        except PDFDecodingError as e:
             return {
                 "statusCode": 400,
                 "body": json.dumps({"error": f"PDF Decoding error occurred: {str(e)}"})
             }
-        except exceptions.PDFProcessingError as e:
+        except PDFProcessingError as e:
             return {
                 "statusCode": 400,
                 "body": json.dumps({"error": f"PDF Processing error occurred: {str(e)}"})
@@ -89,7 +89,7 @@ def handler(event, context):
             response = assignment.generate(body.get('params'), "openrouter/meta-llama/llama-3.2-3b-instruct:free")
         elif task == "simplify":
             response = simplify.generate(body.get('params'), "openrouter/meta-llama/llama-3.2-3b-instruct:free")     
-    except exceptions.GenerateError as e:
+    except GenerateError as e:
         return {
         "statusCode": 500,
         "body": json.dumps({"error": "Internal Server Error: " + str(e)}),
