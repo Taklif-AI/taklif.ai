@@ -12,20 +12,21 @@ import json
   run_type= "llm",
   metadata={"app": "taklif.ai"},
 )
-def generate(prompt_params:dict, metadata: dict): # TODO: select a predefined levels
+def generate(prompt_params:dict, metadata: dict):
     try:
-        general_assignment = prompt_params.get("general_assignment")
-        level = prompt_params.get("level")
+        personalized_assignment = prompt_params.get("personalized_assignment")
+        interest = prompt_params.get("interest")
+        complexity_level = prompt_params.get("complexity_level")
 
         # Prepare the prompt  
-        langsmith_prompt = metadata['langsmith_client'].pull_prompt( prompt_identifier = f"{level.lower}-assignment-simplify-prompt")
+        langsmith_prompt = metadata['langsmith_client'].pull_prompt(prompt_identifier = "rephrase-assignment-prompt")
 
         # Invoke the LLM
         llm = ChatLiteLLM(model=metadata['litellm_call']) # example model name: "openrouter/meta-llama/llama-3.2-3b-instruct:free"
         
         simple_chain = langsmith_prompt | llm | StrOutputParser()
 
-        response = simple_chain.invoke(input = {"general_assignment": general_assignment})
+        response = simple_chain.invoke(input = {"assignment" : personalized_assignment, "interest" : interest, "complexity_level" : complexity_level })
 
         # Return the content from the LLM response
         return response

@@ -16,7 +16,7 @@ def generation_parser(body:dict):
     }
 
 
-def simplify_parser(body:dict):
+def rephrase_parser(body:dict):
     # Extract params from body
     params = body.get('params')
 
@@ -24,6 +24,7 @@ def simplify_parser(body:dict):
         raise BadRequestError("Bad Request: Missing 'params' in the event payload")
   
     return {
-        "level" : params.get("level"),
+        "complexity_level" : params.get("complexity_level"),
+        "interest" : params.get("interest"),
         "personalized_assignment" : params.get("personalized_assignment")
     }
