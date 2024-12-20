@@ -3,7 +3,6 @@ from langchain_core.tracers.langchain import wait_for_all_tracers
 from langchain_core.output_parsers import StrOutputParser
 from langchain_community.chat_models import ChatLiteLLM
 from langsmith import traceable
-from langchain import hub
 import json
 
 
@@ -12,16 +11,16 @@ import json
   run_type= "llm",
   metadata={"app": "taklif.ai"},
 )
-def generate(prompt_params:dict, litellm_call:str):
+def generate(prompt_params:dict, metadata: dict):
     try:
         interest = prompt_params.get("interest")
         general_assignment = prompt_params.get("general_assignment")
 
         # Prepare the prompt  
-        langsmith_prompt = hub.pull("personalize-assignment-prompt")
+        langsmith_prompt = metadata['langsmith_client'].pull_prompt(prompt_identifier = "personalize-assignment-prompt")
 
         # Invoke the LLM
-        llm = ChatLiteLLM(model=litellm_call) # example model name: "openrouter/meta-llama/llama-3.2-3b-instruct:free"
+        llm = ChatLiteLLM(model=metadata['litellm_call']) # example model name: "openrouter/meta-llama/llama-3.2-3b-instruct:free"
         
         simple_chain = langsmith_prompt | llm | StrOutputParser()
 

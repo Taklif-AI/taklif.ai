@@ -8,7 +8,6 @@ from guardrails.validator_base import (
     ErrorSpan,
 )
 from typing import Optional, Callable
-from langchain import hub
 from litellm import completion
 import ast
 
@@ -49,7 +48,7 @@ class InterestValidator(Validator):
         """Implement a function that will build a request and perform inference on a
         remote machine. This is not required if you will always use local mode.
         """
-        interest_guardrail_prompt = hub.pull("interest-guardrails-prompt")
+        interest_guardrail_prompt = metadata['langsmith_client'].pull_prompt(prompt_identifier = "interest-guardrails-prompt")
         prompt = interest_guardrail_prompt.format(interest=interest)
 
         # send request to guardrails LLM

@@ -9,7 +9,6 @@ from guardrails.validator_base import (
 )
 from typing import Optional, Callable
 from litellm import completion
-from langchain import hub
 import ast
 
 
@@ -49,7 +48,7 @@ class AssignmentValidator(Validator):
         """Implement a function that will build a request and perform inference on a
         remote machine. This is not required if you will always use local mode.
         """
-        assignment_guardrail_prompt = hub.pull("assignment-guardrails-prompt")
+        assignment_guardrail_prompt = metadata['langsmith_client'].pull_prompt(prompt_identifier = "assignment-guardrails-prompt")
         prompt = assignment_guardrail_prompt.format(assignment=assignment)
         # send request to guardrails LLM
         evaluated_assignment = completion(
