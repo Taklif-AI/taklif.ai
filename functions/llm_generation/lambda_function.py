@@ -51,7 +51,7 @@ def handler(event, context):
     interest_validation = guard_interest(
         interest=params["interest"],
         metadata={
-            "litellm_call": "groq/llama-3.3-70b-versatile",
+            "litellm_call": "groq/llama-3.3-70b-specdec",
             "langsmith_client": langsmith_client,
         },
     )
@@ -92,7 +92,7 @@ def handler(event, context):
     assignment_validation = guard_assignment(
         assignment=params["general_assignment"] if task == "generation" else params["personalized_assignment"],
         metadata={
-            "litellm_call": "groq/llama-3.3-70b-versatile",
+            "litellm_call": "groq/llama-3.3-70b-specdec",
             "langsmith_client": langsmith_client,
         },
     )
