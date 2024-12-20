@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { AssignmentResult } from "@/components/assignment/additional-components/assigment-res";
-import { AssignmentActions } from "@/components/assignment/additional-components/assigment-action";
+import { AssignmentResult } from "@/components/assignment/additional-components/assignment-res";
+import { AssignmentActions } from "@/components/assignment/additional-components/assignment-action";
 import { Card } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
-import { Assignment } from "@/lib/utils/assigment-typs";
+import { Assignment } from "@/lib/types/assigment-type";
 import { Toast } from "@/lib/utils/toast";
 import { motion } from "framer-motion";
 import { Brain, Sparkles, Stars, Wand2 } from "lucide-react";

@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
-import { Assignment } from "@/lib/utils/assigment-typs";
+import { Assignment } from "@/lib/types/assigment-type";
 import { Toast } from "@/lib/utils/toast";
 import { formatDistanceToNow } from "date-fns";
 import { ThumbsUp, ThumbsDown, RefreshCw, Wand2 } from "lucide-react";
