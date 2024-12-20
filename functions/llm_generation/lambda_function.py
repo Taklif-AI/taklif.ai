@@ -90,7 +90,7 @@ def handler(event, context):
 
     # Assignment guardrails
     assignment_validation = guard_assignment(
-        assignment=params["general_assignment"],
+        assignment=params["general_assignment"] if task == "generation" else params["personalized_assignment"],
         metadata={
             "litellm_call": "groq/llama-3.3-70b-versatile",
             "langsmith_client": langsmith_client,
