@@ -76,13 +76,8 @@ export default function AssignmentPage() {
   };
 
   const handleSubmit = async () => {
-    let fileName = '';
+    // let fileName = '';
     let title = '';
-    const sleep = (ms: number): Promise<void> => {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    };
-    router.push('assignment-generation/loading/');
-    await sleep(10000);
 
 
 
@@ -93,10 +88,14 @@ export default function AssignmentPage() {
       is_pdf: false,
     }
 
+    // redirect user to loadings page
+    router.push('assignment-generation/loading/');
+
+
     try {
       if (assignmentData.file instanceof File) {
-        fileName = assignmentData.file?.name || 'Untitled';
-        title = fileName.replace(/\.pdf$/i, '');
+        // fileName = assignmentData.file?.name || 'Untitled';
+        title = assignmentData.file?.name.replace(/\.pdf$/i, '');
         try {
           const base64 = await fileToBase64(assignmentData.file);
           dataToBackend.general_assignment = base64;
@@ -106,7 +105,7 @@ export default function AssignmentPage() {
           Toast.error("Failed to process your file. Please try again.");
         }
       } else if (typeof assignmentData.file === 'string') {
-        fileName = assignmentData.file;
+        // fileName = 'Text-based assignment';
         title = 'Text-based assignment';
         dataToBackend.general_assignment = assignmentData.file;
         dataToBackend.is_pdf = false;
@@ -126,6 +125,7 @@ export default function AssignmentPage() {
       // check the incoming response
       if (!res.ok) {
         Toast.error("Failed to create assignment. Please try again.1");
+        router.push('/assignment-generation');
         return;
       }
 
@@ -133,16 +133,21 @@ export default function AssignmentPage() {
       // check the parsed result
       if (!result || result.error) {
         Toast.error(result.error);
+        router.push('/assignment-generation');
         return;
       }
+
       console.log(result);
 
       const newAssignment = {
         id: Date.now().toString(),
         title,
-        fileName: fileName || 'unknown.pdf',
+        // fileName: fileName || 'unknown.pdf',
         createdAt: new Date().toISOString(),
         interest: assignmentData.interest,
+        text: result,
+        likes: 0,
+        dislikes: 0
       };
       const existingAssignments = JSON.parse(localStorage.getItem('assignments') || '[]');
       localStorage.setItem('assignments', JSON.stringify([...existingAssignments, newAssignment]));

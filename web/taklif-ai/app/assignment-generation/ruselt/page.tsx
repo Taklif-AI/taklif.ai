@@ -21,6 +21,7 @@ export default function AssignmentResultPage() {
       id: Date.now().toString(),
       title: "Introduction to Physics",
       text: "Create a comprehensive explanation of Newton's laws of motion with practical examples from everyday life. Include mathematical formulas and their applications.",
+      interest: '',
       createdAt: new Date().toISOString(),
       likes: 0,
       dislikes: 0
@@ -63,7 +64,7 @@ export default function AssignmentResultPage() {
                 key={index}
                 className="absolute text-violet-100 dark:text-violet-900/20"
                 initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ 
+                animate={{
                   opacity: 0.5,
                   scale: 1,
                   x: Math.random() * 100 - 50,
@@ -98,7 +99,7 @@ export default function AssignmentResultPage() {
                 </div>
 
                 <AssignmentResult assignment={assignment} />
-                <AssignmentActions 
+                <AssignmentActions
                   assignment={assignment}
                   onAction={handleAction}
                 />
