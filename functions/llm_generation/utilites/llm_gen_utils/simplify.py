@@ -3,7 +3,6 @@ from utilites.custom_exceptions import GenerateError
 from langchain_community.chat_models import ChatLiteLLM
 from langchain_core.output_parsers import StrOutputParser
 from langsmith import traceable
-from langchain import hub
 import json
 
 
@@ -13,16 +12,16 @@ import json
   run_type= "llm",
   metadata={"app": "taklif.ai"},
 )
-def generate(prompt_params:dict, litellm_call:str): # TODO: select a predefined levels
+def generate(prompt_params:dict, metadata: dict): # TODO: select a predefined levels
     try:
         general_assignment = prompt_params.get("general_assignment")
         level = prompt_params.get("level")
 
         # Prepare the prompt  
-        langsmith_prompt = hub.pull(f"{level.lower}-assignment-simplify-prompt")
+        langsmith_prompt = metadata['langsmith_client'].pull_prompt( prompt_identifier = f"{level.lower}-assignment-simplify-prompt")
 
         # Invoke the LLM
-        llm = ChatLiteLLM(model=litellm_call) # example model name: "openrouter/meta-llama/llama-3.2-3b-instruct:free"
+        llm = ChatLiteLLM(model=metadata['litellm_call']) # example model name: "openrouter/meta-llama/llama-3.2-3b-instruct:free"
         
         simple_chain = langsmith_prompt | llm | StrOutputParser()
 

@@ -10,6 +10,7 @@ from utilites.custom_exceptions import GenerateError, BadRequestError, PDFDecodi
 from utilites.llm_gen_utils import assignment, simplify
 from utilites.guardrails_utils.llm_guard import guard_interest, guard_assignment
 from concurrent.futures import ThreadPoolExecutor
+from langsmith import Client as LangSmith
 import json
 
 
@@ -44,10 +45,13 @@ def handler(event, context):
         "statusCode": 400,
         "body": json.dumps({"error": e.message}),
         }
-  
+    
+    langsmith_client = LangSmith()
+    
     # Interest guardrails
-    interest_validation = guard_interest(params['interest'], {'litellm_call': 'openrouter/meta-llama/llama-3.2-3b-instruct:free'})
-
+    interest_validation = guard_interest(interest = params['interest'], metadata = {'litellm_call': 'openrouter/meta-llama/llama-3.2-3b-instruct:free',
+                                                              'langsmith_client': langsmith_client})
+    
     if interest_validation['decision'] == 'rejected':
         return {
             'statusCode': 400,
@@ -76,8 +80,8 @@ def handler(event, context):
             }
 
     # Assignment guardrails
-    assignment_validation = guard_assignment(params['interest'], {'litellm_call': 'openrouter/meta-llama/llama-3.2-3b-instruct:free'})
-
+    assignment_validation = guard_assignment(assignment = params['general_assignment'], metadata={'litellm_call': 'openrouter/meta-llama/llama-3.2-3b-instruct:free',
+                                                                  'langsmith_client': langsmith_client})
     if assignment_validation['decision'] == 'rejected':
         return {
             'statusCode': 400,
@@ -89,9 +93,13 @@ def handler(event, context):
     response = ''
     try:
         if task == "generation":
-            response = assignment.generate(body.get('params'), "openrouter/meta-llama/llama-3.2-3b-instruct:free")
+            response = assignment.generate(body.get('params'), metadata = {'litellm_call': "openrouter/meta-llama/llama-3.2-3b-instruct:free",
+                                                                           'langsmith_client': langsmith_client,
+                                                                           })
         elif task == "simplify":
-            response = simplify.generate(body.get('params'), "openrouter/meta-llama/llama-3.2-3b-instruct:free")     
+            response = simplify.generate(body.get('params'),  metadata = {'litellm_call': "openrouter/meta-llama/llama-3.2-3b-instruct:free",
+                                                                           'langsmith_client': langsmith_client,
+                                                                           })
     except GenerateError as e:
         return {
         "statusCode": 500,
