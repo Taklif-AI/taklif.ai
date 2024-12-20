@@ -1,5 +1,5 @@
-from utilites.custom_exceptions import BadRequestError 
 import json
+from utilites.custom_exceptions import BadRequestError
 
 
 def generation_parser(body:dict):
@@ -22,9 +22,8 @@ def simplify_parser(body:dict):
 
     if not params:
         raise BadRequestError("Bad Request: Missing 'params' in the event payload")
-    
+  
     return {
         "level" : params.get("level"),
-        "general_assignment" : params.get("general_assignment")
-    } 
-     
+        "personalized_assignment" : params.get("personalized_assignment")
+    }
