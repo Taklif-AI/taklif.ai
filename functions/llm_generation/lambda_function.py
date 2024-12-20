@@ -51,7 +51,7 @@ def handler(event, context):
     interest_validation = guard_interest(
         interest=params["interest"],
         metadata={
-            "litellm_call": "nvidia_nim/meta/llama-3.3-70b-instruct",
+            "litellm_call": "groq/llama-3.3-70b-versatile",
             "langsmith_client": langsmith_client,
         },
     )
@@ -92,7 +92,7 @@ def handler(event, context):
     assignment_validation = guard_assignment(
         assignment=params["general_assignment"],
         metadata={
-            "litellm_call": "nvidia_nim/meta/llama-3.3-70b-instruct",
+            "litellm_call": "groq/llama-3.3-70b-versatile",
             "langsmith_client": langsmith_client,
         },
     )
@@ -111,7 +111,7 @@ def handler(event, context):
             response = assignment.generate(
                 body.get("params"),
                 metadata={
-                    "litellm_call": "nvidia_nim/meta/llama-3.3-70b-instruct",
+                    "litellm_call": "groq/llama-3.3-70b-versatile",
                     "langsmith_client": langsmith_client,
                 },
             )
@@ -119,7 +119,7 @@ def handler(event, context):
             response = simplify.generate(
                 body.get("params"),
                 metadata={
-                    "litellm_call": "nvidia_nim/meta/llama-3.3-70b-instruct",
+                    "litellm_call": "groq/llama-3.3-70b-versatile",
                     "langsmith_client": langsmith_client,
                 },
             )
