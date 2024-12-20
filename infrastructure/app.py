@@ -8,10 +8,10 @@ environments = {
         "account": os.getenv("CDK_DEFAULT_ACCOUNT"), # example: 123456789101
         "region": os.getenv("CDK_DEFAULT_REGION"), # example: us-east-1
         "env_name": "Development",
-        "lambda_memory_size": 512,
-        "lambda_timeout": 30,
+        "lambda_memory_size": 1024,
+        "lambda_timeout": 90,
         "LANGCHAIN_API_KEY": os.getenv("LANGCHAIN_API_KEY"),
-        "OPENROUTER_API_KEY": os.getenv("OPENROUTER_API_KEY")
+        "NVIDIA_NIM_API_KEY": os.getenv("NVIDIA_NIM_API_KEY")
     },
     "production": {
         "account": os.getenv("CDK_DEFAULT_ACCOUNT"),
@@ -55,7 +55,7 @@ InfrastructureStack(
     lambda_memory_size=develop_env["lambda_memory_size"],
     lambda_timeout=develop_env["lambda_timeout"],
     LANGCHAIN_API_KEY=develop_env["LANGCHAIN_API_KEY"],
-    OPENROUTER_API_KEY=develop_env["OPENROUTER_API_KEY"]
+    NVIDIA_NIM_API_KEY=develop_env["NVIDIA_NIM_API_KEY"]
 )
 
 # Production environment stack
@@ -68,7 +68,7 @@ InfrastructureStack(
     lambda_memory_size=production_env["lambda_memory_size"],
     lambda_timeout=production_env["lambda_timeout"],
     LANGCHAIN_API_KEY=production_env["LANGCHAIN_API_KEY"],
-    OPENROUTER_API_KEY=develop_env["OPENROUTER_API_KEY"]
+    NVIDIA_NIM_API_KEY=develop_env["NVIDIA_NIM_API_KEY"]
 )
 
 app.synth()
