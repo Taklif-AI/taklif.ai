@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { ThumbsUp, ThumbsDown, RefreshCw, Wand2 } from "lucide-react";
-import { Assignment } from "@/lib/utils/assigment-typs";
+import { Assignment } from "@/lib/types/assigment-type";
 import { motion } from "framer-motion";
 
 interface AssignmentActionsProps {

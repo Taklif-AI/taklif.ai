@@ -7,7 +7,7 @@ export interface Assignment {
   dislikes: number;
 }
 
-export interface AssignmentAction {
-  type: 'like' | 'dislike' | 'regenerate' | 'simplify';
-  assignmentId: string;
-}
+// export interface AssignmentAction {
+//   type: 'like' | 'dislike' | 'regenerate' | 'simplify';
+//   assignmentId: string;
+// }

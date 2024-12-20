@@ -1,7 +1,7 @@
 "use client";
 
 import { formatDistanceToNow } from "date-fns";
-import { Assignment } from "@/lib/utils/assigment-typs";
+import { Assignment } from "@/lib/types/assigment-type";
 import { motion } from "framer-motion";
 
 interface AssignmentResultProps {
