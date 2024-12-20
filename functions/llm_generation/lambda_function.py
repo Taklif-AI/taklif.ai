@@ -109,7 +109,7 @@ def handler(event, context):
     try:
         if task == "generation":
             response = assignment.generate(
-                body.get("params"),
+                params,
                 metadata={
                     "litellm_call": "groq/llama-3.3-70b-versatile",
                     "langsmith_client": langsmith_client,
@@ -117,7 +117,7 @@ def handler(event, context):
             )
         elif task == "rephrase":
             response = rephrase.generate(
-                body.get("params"),
+                params,
                 metadata={
                     "litellm_call": "groq/llama-3.3-70b-versatile",
                     "langsmith_client": langsmith_client,
