@@ -7,8 +7,8 @@ from utilites.custom_exceptions import (BadRequestError, GenerateError,
                                         PDFDecodingError, PDFProcessingError)
 from utilites.guardrails_utils.llm_guard import (guard_assignment,
                                                  guard_interest)
-from utilites.input_parser import generation_parser, simplify_parser
-from utilites.llm_gen_utils import assignment, simplify
+from utilites.input_parser import generation_parser, rephrase_parser
+from utilites.llm_gen_utils import assignment, rephrase
 from utilites.pdf_ocr import process_pdf
 
 #TODO: atomic_counter_load_balancer
@@ -36,8 +36,8 @@ def handler(event, context):
     try:
         if task == "generation":
             params = generation_parser(body)
-        elif task == "simplify":
-            params = simplify_parser(body)
+        elif task == "rephrase":
+            params = rephrase_parser(body)
     except BadRequestError as e:
         return {
             "statusCode": 400,
@@ -115,8 +115,8 @@ def handler(event, context):
                     "langsmith_client": langsmith_client,
                 },
             )
-        elif task == "simplify":
-            response = simplify.generate(
+        elif task == "rephrase":
+            response = rephrase.generate(
                 body.get("params"),
                 metadata={
                     "litellm_call": "groq/llama-3.3-70b-versatile",
