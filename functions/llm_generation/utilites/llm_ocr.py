@@ -22,8 +22,6 @@ def save_base64_to_pdf(base64_string, file_path):
         with open(file_path, 'wb') as pdf_file:
             pdf_file.write(pdf_data)
             
-        while not os.path.exists(file_path):
-            time.sleep(1)
     except Exception as e:
         raise PDFDecodingError(f"Error decoding base64 PDF: {str(e)}")
 
@@ -51,7 +49,7 @@ async def convert_pdf_to_markdown(
     """
     
     custom_system_prompt = langsmith_client.pull_prompt(prompt_identifier = "pdf-ocr-prompt")
-    pdf_path = "/var/task/temp.pdf"
+    pdf_path = "temp.pdf"
     save_base64_to_pdf(base64_pdf, pdf_path)
     
     return await zerox(
