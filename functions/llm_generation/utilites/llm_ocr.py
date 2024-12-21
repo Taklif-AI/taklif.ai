@@ -13,17 +13,15 @@ def save_base64_to_pdf(base64_string, file_path):
     :param file_path: The path where the PDF will be saved.
     """
     try:
-        os.makedirs(os.path.dirname(file_path), exist_ok=True)
-
         # Decode the Base64 string
         pdf_data = base64.b64decode(base64_string)
-        
+
         os.chmod(file_path, 0o666)
 
         # Write the binary PDF data to the specified file
-        with open(file_path, 'wb') as pdf_file:
-            pdf_file.write(pdf_data)
-            print(f"File successfully saved at {file_path}")
+        temp_pdf = open(file_path, 'wb')
+        temp_pdf.write(pdf_data)
+        temp_pdf.close()    
             
     except Exception as e:
         raise PDFDecodingError(f"Error decoding base64 PDF: {str(e)}")
