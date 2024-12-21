@@ -22,6 +22,7 @@ class InfrastructureStack(Stack):
         lambda_timeout: int,
         LANGCHAIN_API_KEY: str,
         GROQ_API_KEY: str,
+        GEMINI_API_KEY: str,
         **kwargs,
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
@@ -151,7 +152,8 @@ class InfrastructureStack(Stack):
                 "LANGCHAIN_ENDPOINT": "https://api.smith.langchain.com",
                 "LANGCHAIN_PROJECT": "Taklif.AI",
                 "LANGCHAIN_API_KEY": LANGCHAIN_API_KEY,
-                "GROQ_API_KEY": GROQ_API_KEY
+                "GROQ_API_KEY": GROQ_API_KEY,
+                "GEMINI_API_KEY": GEMINI_API_KEY,
             },
             role=lambda_role
         )

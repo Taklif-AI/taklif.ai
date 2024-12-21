@@ -1,7 +1,7 @@
 import json
 import os
 from concurrent.futures import ThreadPoolExecutor
-
+import asyncio
 from langsmith import Client as LangSmith
 from utilites.custom_exceptions import (BadRequestError, GenerateError,
                                         PDFDecodingError, PDFProcessingError)
@@ -10,6 +10,7 @@ from utilites.guardrails_utils.llm_guard import (guard_assignment,
 from utilites.input_parser import generation_parser, rephrase_parser
 from utilites.llm_gen_utils import assignment, rephrase
 from utilites.pdf_ocr import process_pdf
+from utilites.llm_ocr import convert_pdf_to_markdown
 
 #TODO: atomic_counter_load_balancer
 
@@ -67,9 +68,18 @@ def handler(event, context):
     # PDF assignment processing
     if task == "generation" and params.get("is_pdf") == "true":
         try:
-            params["general_assignment"] = process_pdf(
-                params.get("general_assignment"), max_threads
-            )
+            # # Tesseract OCR
+            # params["general_assignment"] = process_pdf(
+            #     params.get("general_assignment"), max_threads
+            # )
+            
+            params["general_assignment"] = asyncio.run(
+                convert_pdf_to_markdown(
+                    base64_pdf=params.get("general_assignment"),
+                    model="gemini/gemini-2.0-flash-exp",
+                    concurrency=max_threads,
+                    langsmith_client=langsmith_client
+                ))     
         except PDFDecodingError as e:
             return {
                 "statusCode": 400,
@@ -87,7 +97,7 @@ def handler(event, context):
                 "statusCode": 500,
                 "body": json.dumps({"error": f"Unexpected error: {str(e)}"}),
             }
-
+       
     # Assignment guardrails
     assignment_validation = guard_assignment(
         assignment=params["general_assignment"] if task == "generation" else params["personalized_assignment"],
