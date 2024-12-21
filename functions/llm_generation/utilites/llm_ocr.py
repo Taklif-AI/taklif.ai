@@ -16,7 +16,7 @@ def save_base64_to_pdf(base64_string, file_path):
         # Decode the Base64 string
         pdf_data = base64.b64decode(base64_string)
 
-        os.chmod('/var/task/', stat.S_IRWXU)
+        #os.chmod('/var/tmp/', stat.S_IRWXU)
         
         # Write the binary PDF data to the specified file
         temp_pdf = open(file_path, 'wb')
@@ -51,7 +51,7 @@ async def convert_pdf_to_markdown(
     """
     
     custom_system_prompt = langsmith_client.pull_prompt(prompt_identifier = "pdf-ocr-prompt")
-    pdf_path = "/var/task/temp.pdf"
+    pdf_path = "/var/tmp/temp.pdf"
     save_base64_to_pdf(base64_pdf, pdf_path)
     
     return await zerox(
