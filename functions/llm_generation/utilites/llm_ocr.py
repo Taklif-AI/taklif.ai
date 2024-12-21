@@ -16,8 +16,6 @@ def save_base64_to_pdf(base64_string, file_path):
         # Decode the Base64 string
         pdf_data = base64.b64decode(base64_string)
 
-        os.chmod(file_path, 0o666)
-
         # Write the binary PDF data to the specified file
         temp_pdf = open(file_path, 'wb')
         temp_pdf.write(pdf_data)
