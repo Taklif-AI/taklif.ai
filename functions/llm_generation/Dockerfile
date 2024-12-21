@@ -22,6 +22,9 @@ COPY utilites ${LAMBDA_TASK_ROOT}/utilites
 
 # RUN chmod +x /var/opt/bin/tesseract
 
+# Grant permissions to ${LAMBDA_TASK_ROOT} directory
+RUN chmod 777 ${LAMBDA_TASK_ROOT}
+
 # Install Poppler utils
 RUN yum install -y poppler-utils.x86_64
 
