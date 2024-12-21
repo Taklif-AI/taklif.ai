@@ -2,7 +2,8 @@ export interface Assignment {
   id: string;
   title: string;
   text: string;
-  interest: string,
+  interest: string;
+  type: string;
   createdAt: string;
   likes: number;
   dislikes: number;
