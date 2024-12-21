@@ -1,5 +1,5 @@
 from pyzerox import zerox
-import os
+import os, stat
 import asyncio
 import base64
 from utilites.custom_exceptions import PDFDecodingError
@@ -15,7 +15,7 @@ def save_base64_to_pdf(base64_string, file_path):
     try:
         # Decode the Base64 string
         pdf_data = base64.b64decode(base64_string)
-        
+
         os.chmod(file_path, stat.S_IRWXU)
         
         # Write the binary PDF data to the specified file
