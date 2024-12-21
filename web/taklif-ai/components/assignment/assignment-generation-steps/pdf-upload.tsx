@@ -73,19 +73,6 @@ export function PDFUpload({ onNext, initialFile }: PDFUploadProps) {
     fileInputRef.current?.click();
   };
 
-  // const handleContinue = () => {
-  //   if (selectedFile) {
-  //     onNext(selectedFile);
-  //   }
-  // };
-
-  // const handleRemoveFile = () => {
-  //   setSelectedFile(null);
-  //   if (fileInputRef.current) {
-  //     fileInputRef.current.value = '';
-  //   }
-  // };
-
   const handleTextSubmit = () => {
     if (textContent.trim()) {
       onNext(textContent);

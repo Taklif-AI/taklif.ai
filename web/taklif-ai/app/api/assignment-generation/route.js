@@ -13,6 +13,7 @@ export async function POST(req) {
 
         // check the assignment is pdf or text
         if (body.is_pdf) {
+            console.log(body.is_pdf);
 
             // Extract MIME type and base64 data
             const [prefix, base64Data] = body.general_assignment.split(',');
@@ -48,17 +49,13 @@ export async function POST(req) {
             headers: { 'Content-Type': 'application/json', },
             body: JSON.stringify(dataToApi),
         })
-
-        if (!res.ok) {
-            return new Response(JSON.stringify({ error: 'Failed to generate assignment' }), { status: 500 });
+        const data = await res.json();
+        console.log(data);
+        if (!res.ok || data.error) {
+            return new Response(JSON.stringify({ error: data.error }), { status: 400 });
         }
 
-        const custmoized_assignment = await res.json();
-        if (custmoized_assignment.body?.error) {
-            return new Response(JSON.stringify({ error: 'Failed to generate assignment2' }), { status: 500 });
-        }
-
-        return new Response(JSON.stringify({ success: true, custmoized_assignment }), { status: 200 });
+        return new Response(JSON.stringify({ success: true, customized_assignment: data.response }), { status: 200 });
     } catch (error) {
         console.log(error);
         return new Response(JSON.stringify({ error: 'Failed to generate assignment' }), { status: 500 });
