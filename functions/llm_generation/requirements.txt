@@ -16,3 +16,4 @@ pillow
 requests
 urllib3
 guardrails-ai
+py-zerox

@@ -12,15 +12,18 @@ COPY lambda_function.py ${LAMBDA_TASK_ROOT}
 # Copy utilites folder
 COPY utilites ${LAMBDA_TASK_ROOT}/utilites
 
-# Copy tesseract binary
-COPY tesseract_ocr /var/opt
+# # Copy tesseract binary
+# COPY tesseract_ocr /var/opt
 
-# Setting environment variables for tesseract
-ENV PATH="/var/opt/bin:$PATH"
-RUN cp -r /var/opt/lib/* /var/lang/lib
-ENV TESSDATA_PREFIX=/var/opt/tesseract/share/tessdata
+# # Setting environment variables for tesseract
+# ENV PATH="/var/opt/bin:$PATH"
+# RUN cp -r /var/opt/lib/* /var/lang/lib
+# ENV TESSDATA_PREFIX=/var/opt/tesseract/share/tessdata
 
-RUN chmod +x /var/opt/bin/tesseract
+# RUN chmod +x /var/opt/bin/tesseract
+
+# Install Poppler utils
+RUN yum install -y poppler-utils.x86_64
 
 # Set the CMD to your handler
 CMD [ "lambda_function.handler" ]

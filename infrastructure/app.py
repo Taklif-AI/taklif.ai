@@ -11,7 +11,8 @@ environments = {
         "lambda_memory_size": 1024,
         "lambda_timeout": 90,
         "LANGCHAIN_API_KEY": os.getenv("LANGCHAIN_API_KEY"),
-        "GROQ_API_KEY": os.getenv("GROQ_API_KEY")
+        "GROQ_API_KEY": os.getenv("GROQ_API_KEY"),
+        "GEMINI_API_KEY": os.getenv("GEMINI_API_KEY"),
     },
     "production": {
         "account": os.getenv("CDK_DEFAULT_ACCOUNT"),
@@ -20,6 +21,8 @@ environments = {
         "lambda_memory_size": 1024,
         "lambda_timeout": 60,
         "LANGCHAIN_API_KEY": os.getenv("LANGCHAIN_API_KEY"),
+        "GROQ_API_KEY": os.getenv("GROQ_API_KEY"),
+        "GEMINI_API_KEY": os.getenv("GEMINI_API_KEY"),
     }
 }
 
@@ -55,7 +58,8 @@ InfrastructureStack(
     lambda_memory_size=develop_env["lambda_memory_size"],
     lambda_timeout=develop_env["lambda_timeout"],
     LANGCHAIN_API_KEY=develop_env["LANGCHAIN_API_KEY"],
-    GROQ_API_KEY=develop_env["GROQ_API_KEY"]
+    GROQ_API_KEY=develop_env["GROQ_API_KEY"],
+    GEMINI_API_KEY=develop_env["GEMINI_API_KEY"],
 )
 
 # Production environment stack
@@ -68,7 +72,8 @@ InfrastructureStack(
     lambda_memory_size=production_env["lambda_memory_size"],
     lambda_timeout=production_env["lambda_timeout"],
     LANGCHAIN_API_KEY=production_env["LANGCHAIN_API_KEY"],
-    GROQ_API_KEY=develop_env["GROQ_API_KEY"]
+    GROQ_API_KEY=production_env["GROQ_API_KEY"],
+    GEMINI_API_KEY=production_env["GEMINI_API_KEY"],
 )
 
 app.synth()
