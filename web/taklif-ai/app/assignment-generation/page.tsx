@@ -9,6 +9,7 @@ import { ProgressSteps } from "@/components/ui/progress-steps";
 import { storage } from "@/lib/utils/local-storage";
 import { Toast } from "@/lib/utils/toast";
 import { fileToBase64 } from "@/lib/utils/file-to-base64";
+import { extractTitleAndText } from "@/lib/utils/extract-title";
 
 const steps = ["Upload PDF", "Choose Interests", "Review Inputs"];
 
@@ -31,8 +32,6 @@ export default function AssignmentPage() {
       setAssignmentData(prev => ({
         ...prev,
         file: savedFile,
-        difficulty: "easy",
-        wordCount: 400,
         interest: savedInterests,
       }));
     }
@@ -76,10 +75,6 @@ export default function AssignmentPage() {
   };
 
   const handleSubmit = async () => {
-    // let fileName = '';
-    let title = '';
-
-
 
     // prepare the assignment-data to the backend
     const dataToBackend = {
@@ -94,8 +89,6 @@ export default function AssignmentPage() {
 
     try {
       if (assignmentData.file instanceof File) {
-        // fileName = assignmentData.file?.name || 'Untitled';
-        title = assignmentData.file?.name.replace(/\.pdf$/i, '');
         try {
           const base64 = await fileToBase64(assignmentData.file);
           dataToBackend.general_assignment = base64;
@@ -105,8 +98,6 @@ export default function AssignmentPage() {
           Toast.error("Failed to process your file. Please try again.");
         }
       } else if (typeof assignmentData.file === 'string') {
-        // fileName = 'Text-based assignment';
-        title = 'Text-based assignment';
         dataToBackend.general_assignment = assignmentData.file;
         dataToBackend.is_pdf = false;
       }
@@ -122,39 +113,34 @@ export default function AssignmentPage() {
 
       });
 
-      // check the incoming response
-      if (!res.ok) {
-        Toast.error("Failed to create assignment. Please try again.1");
-        router.push('/assignment-generation');
-        return;
-      }
-
       const result = await res.json();
-      // check the parsed result
-      if (!result || result.error) {
+      // check the incoming response
+      if (!res.ok || !result || result.error) {
         Toast.error(result.error);
         router.push('/assignment-generation');
         return;
       }
-
-      console.log(result);
-
+  
+      const parts = extractTitleAndText(result.customized_assignment);
       const newAssignment = {
         id: Date.now().toString(),
-        title,
-        // fileName: fileName || 'unknown.pdf',
+        title: parts?.title,
         createdAt: new Date().toISOString(),
         interest: assignmentData.interest,
-        text: result,
+        text: parts?.text,
+        type: 'generated',
         likes: 0,
         dislikes: 0
       };
+
       const existingAssignments = JSON.parse(localStorage.getItem('assignments') || '[]');
       localStorage.setItem('assignments', JSON.stringify([...existingAssignments, newAssignment]));
-
+      localStorage.setItem('lastCreatedAssignmentId', newAssignment.id);
+      localStorage.setItem('lastRequestData', JSON.stringify(dataToBackend));
       storage.clearProgress();
+
       Toast.success("Assignment created successfully!");
-      router.push('/assignment-generation/ruselt/');
+      router.push('/assignment-generation/result/');
       /* eslint-disable */
     } catch (error) {
       Toast.error("Failed to create assignment. Please try again.2");
