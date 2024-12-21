@@ -50,7 +50,7 @@ async def convert_pdf_to_markdown(
     """
     
     custom_system_prompt = langsmith_client.pull_prompt(prompt_identifier = "pdf-ocr-prompt")
-    pdf_path = "temp.pdf"
+    pdf_path = "/var/task/temp.pdf"
     save_base64_to_pdf(base64_pdf, pdf_path)
     
     return await zerox(
