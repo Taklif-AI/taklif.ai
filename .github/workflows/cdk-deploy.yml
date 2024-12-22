@@ -49,33 +49,33 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.CDK_DEFAULT_REGION }}
       
-      - name: Process lambda layers
-        working-directory: infrastructure
-        run: |
-          for layer_dir in layers/*; do
-            if [ -d "$layer_dir" ]; then
-              if [ -f "$layer_dir/requirements.txt" ]; then
-                echo "Processing Python dependencies in $layer_dir..."
-                python_dir="$layer_dir/python"
-                mkdir -p "$python_dir"
-                pip install --target="$python_dir" -r "$layer_dir/requirements.txt"
-                echo "Removing *.dist-info files in $python_dir"
-                find "$python_dir" -type d -name "*.dist-info" -exec rm -rf {} +
-              elif [ -f "$layer_dir/package.json" ]; then
-                echo "Processing Node.js dependencies in $layer_dir..."
-                cd "$layer_dir"
-                npm install
-                cd "../.."
-                nodejs_dir="$layer_dir/nodejs"
-                mkdir -p "$nodejs_dir"
-                mv "$layer_dir/node_modules" "$nodejs_dir"
-                mv "$layer_dir/package.json" "$nodejs_dir"
-                mv "$layer_dir/package-lock.json" "$nodejs_dir"
-              else
-                echo "Skipping $layer_dir: No valid setup found."
-              fi
-            fi
-          done
+      # - name: Process lambda layers
+      #   working-directory: infrastructure
+      #   run: |
+      #     for layer_dir in layers/*; do
+      #       if [ -d "$layer_dir" ]; then
+      #         if [ -f "$layer_dir/requirements.txt" ]; then
+      #           echo "Processing Python dependencies in $layer_dir..."
+      #           python_dir="$layer_dir/python"
+      #           mkdir -p "$python_dir"
+      #           pip install --target="$python_dir" -r "$layer_dir/requirements.txt"
+      #           echo "Removing *.dist-info files in $python_dir"
+      #           find "$python_dir" -type d -name "*.dist-info" -exec rm -rf {} +
+      #         elif [ -f "$layer_dir/package.json" ]; then
+      #           echo "Processing Node.js dependencies in $layer_dir..."
+      #           cd "$layer_dir"
+      #           npm install
+      #           cd "../.."
+      #           nodejs_dir="$layer_dir/nodejs"
+      #           mkdir -p "$nodejs_dir"
+      #           mv "$layer_dir/node_modules" "$nodejs_dir"
+      #           mv "$layer_dir/package.json" "$nodejs_dir"
+      #           mv "$layer_dir/package-lock.json" "$nodejs_dir"
+      #         else
+      #           echo "Skipping $layer_dir: No valid setup found."
+      #         fi
+      #       fi
+      #     done
 
       - name: Deploy to Development
         if: |
@@ -84,9 +84,8 @@ jobs:
         env: 
           CDK_DEFAULT_ACCOUNT: ${{ secrets.CDK_DEFAULT_ACCOUNT }}
           CDK_DEFAULT_REGION: ${{ secrets.CDK_DEFAULT_REGION }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           LANGCHAIN_API_KEY: ${{ secrets.LANGCHAIN_API_KEY }}
-          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           cdk deploy InfrastructureStackDev --require-approval never
         working-directory: infrastructure
@@ -97,9 +96,8 @@ jobs:
         env:
           CDK_DEFAULT_ACCOUNT: ${{ secrets.CDK_DEFAULT_ACCOUNT }}
           CDK_DEFAULT_REGION: ${{ secrets.CDK_DEFAULT_REGION }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           LANGCHAIN_API_KEY: ${{ secrets.LANGCHAIN_API_KEY }}
-          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           cdk deploy InfrastructureStackProd --require-approval never
         working-directory: infrastructure
