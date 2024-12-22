@@ -20,8 +20,9 @@ class InfrastructureStack(Stack):
         env_name: str,
         lambda_memory_size: int,
         lambda_timeout: int,
-        OPENROUTER_API_KEY: str,
         LANGCHAIN_API_KEY: str,
+        GROQ_API_KEY: str,
+        GEMINI_API_KEY: str,
         **kwargs,
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
@@ -134,60 +135,27 @@ class InfrastructureStack(Stack):
 
 
         # <LAMBDA RESOURCES> ---------------------------------------------------------------------
-        # LLM Calling Lambda Function 
-        llm_call_lambda_layer = lambda_.LayerVersion.from_layer_version_arn( # Add lambda layer by ARN
-            self, 
-            "LLMsBasicDependencies",
-            "arn:aws:lambda:eu-north-1:491085403164:layer:LLMsBasicsDependencies:1"
+        # LLM Generation Lambda Function
+        llm_generation_code_path = os.path.join(
+            os.path.dirname(__file__), "../../functions/llm_generation"
         )
 
-        llm_call_lambda_code_path = os.path.join(
-            os.path.dirname(__file__), "../../functions/llm_call"
-        )
-
-        llm_call_function = lambda_.Function(
+        llm_generation_function = lambda_.DockerImageFunction(
             self,
-            id=f"{env_name}-LLMCallFunction",
-            code=lambda_.Code.from_asset(llm_call_lambda_code_path),
-            handler="llm_call.lambda_handler",
-            runtime=lambda_.Runtime.PYTHON_3_10,
-            layers=[llm_call_lambda_layer],
+            id=f"{env_name}-LLMGenerationFunction",
+            code=lambda_.DockerImageCode.from_image_asset(llm_generation_code_path),
             timeout=Duration.seconds(lambda_timeout),
             memory_size=lambda_memory_size,
             environment={
                 "ENV_NAME": env_name,
                 "LANGCHAIN_TRACING_V2": "true",
                 "LANGCHAIN_ENDPOINT": "https://api.smith.langchain.com",
-                "OPENROUTER_API_KEY": OPENROUTER_API_KEY,
                 "LANGCHAIN_PROJECT": "Taklif.AI",
                 "LANGCHAIN_API_KEY": LANGCHAIN_API_KEY,
+                "GROQ_API_KEY": GROQ_API_KEY,
+                "GEMINI_API_KEY": GEMINI_API_KEY,
             },
-        )
-
-        # LLM crud Lambda Function ---------------------------------
-        llm_crud_lambda_layer = lambda_.LayerVersion.from_layer_version_arn( # Add lambda layer by ARN
-            self, 
-            "LLMCrudDependencies",
-            "arn:aws:lambda:eu-north-1:770693421928:layer:Klayers-p310-boto3:21"
-        )
-
-        llm_crud_lambda_code_path = os.path.join(
-            os.path.dirname(__file__), "../../functions/llm_crud"
-        )
-
-        llm_crud_function = lambda_.Function(
-            self,
-            id=f"{env_name}-LLMCrudFunction",
-            code=lambda_.Code.from_asset(llm_crud_lambda_code_path),
-            handler="llm_crud.lambda_handler",
-            runtime=lambda_.Runtime.PYTHON_3_10,
-            layers=[llm_crud_lambda_layer],
-            timeout=Duration.seconds(lambda_timeout),
-            memory_size=lambda_memory_size,
-            environment={
-                "ENV_NAME": env_name,
-            },
-            role=lambda_role,
+            role=lambda_role
         )
         # </LAMBDA RESOURCES> ---------------------------------------------------------------------
 
@@ -206,56 +174,14 @@ class InfrastructureStack(Stack):
             ),
         )
 
-        llm_call_resource = orchestration_api.root.add_resource("llm_call")
-        llm_call_resource.add_method(
-            "POST", apigateway.LambdaIntegration(llm_call_function)
+        llm_generation_resource = orchestration_api.root.add_resource("llm_generation")
+        llm_generation_resource.add_method(
+            "POST", apigateway.LambdaIntegration(llm_generation_function)
         )
-        llm_call_resource.add_cors_preflight(
-            allow_origins=apigateway.Cors.ALL_ORIGINS, # Allow all origins, or specify a list of allowed origins (it can be replaced with our frontend domain)
-        )
-
-        models_resource = orchestration_api.root.add_resource("models")
-        models_resource.add_method(
-            "GET", apigateway.LambdaIntegration(llm_crud_function)
-        )
-        models_resource.add_method(
-            "PUT", apigateway.LambdaIntegration(llm_crud_function)
-        )
-
-        model_name_resource = models_resource.add_resource("{name}")
-        model_provider_resource = model_name_resource.add_resource("{provider}")
-        model_provider_resource.add_method(
-            "DELETE", apigateway.LambdaIntegration(llm_crud_function)
-        )
-        model_provider_resource.add_method(
-            "GET", apigateway.LambdaIntegration(llm_crud_function)
-        )
-
-        models_resource.add_cors_preflight(
-            allow_origins=apigateway.Cors.ALL_ORIGINS, # Allow all origins, or specify a list of allowed origins (it can be replaced with our frontend domain)
-        )
-        model_name_resource.add_cors_preflight(
-            allow_origins=apigateway.Cors.ALL_ORIGINS, # Allow all origins, or specify a list of allowed origins (it can be replaced with our frontend domain)
-        )
-        model_provider_resource.add_cors_preflight(
+        llm_generation_resource.add_cors_preflight(
             allow_origins=apigateway.Cors.ALL_ORIGINS, # Allow all origins, or specify a list of allowed origins (it can be replaced with our frontend domain)
         )
         # </API GATEWAY RESOURCES> ---------------------------------------------------------------------
-
-
-        # <DYNAMODB RESOURCES> ---------------------------------------------------------------------
-        LLMsTable = dynamodb.Table(
-            self,
-            id=f"{env_name}-LLMsTable",
-            table_name=f"{env_name}-LLMsMetaData",
-            partition_key=dynamodb.Attribute(
-                name="name", type=dynamodb.AttributeType.STRING
-            ),
-            sort_key=dynamodb.Attribute(
-                name='provider', type=dynamodb.AttributeType.STRING
-            )
-        )
-        # </DYNAMODB RESOURCES> ---------------------------------------------------------------------
 
 
         # <Amplify RESOURCES/> created through GUI
