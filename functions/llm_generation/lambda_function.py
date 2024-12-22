@@ -97,7 +97,8 @@ def handler(event, context):
                 "statusCode": 500,
                 "body": json.dumps({"error": f"Unexpected error: {str(e)}"}),
             }
-    '''   
+            
+    
     # Assignment guardrails
     assignment_validation = guard_assignment(
         assignment=params["general_assignment"] if task == "generation" else params["personalized_assignment"],
@@ -113,7 +114,6 @@ def handler(event, context):
                 {"error": assignment_validation["details"]["decision_explain"]}
             ),
         }
-    '''    
 
     # LLM calling
     response = ""
