@@ -13,8 +13,6 @@ export async function POST(req) {
 
         // check the assignment is pdf or text
         if (body.is_pdf) {
-            console.log(body.is_pdf);
-
             // Extract MIME type and base64 data
             const [prefix, base64Data] = body.general_assignment.split(',');
             const mimeType = prefix.split(':')[1].split(';')[0];
@@ -38,21 +36,22 @@ export async function POST(req) {
             task: "generation",
             params: {
                 interest: body.student_interest,
-                is_pdf: body.is_pdf,
+                is_pdf: body.is_pdf ? "true" : "false",
                 general_assignment: body.is_pdf ? pdf_base64_data : body.general_assignment,
             }
         };
-
+        // return new Response(JSON.stringify({ success: true, customized_assignment: dataToApi }), { status: 200 });
         // Send data to llm api
         const res = await fetch('https://pdgr6qk367.execute-api.eu-north-1.amazonaws.com/Development/llm_generation', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', },
             body: JSON.stringify(dataToApi),
         })
+
+        
         const data = await res.json();
-        console.log(data);
-        if (!res.ok || data.error) {
-            return new Response(JSON.stringify({ error: data.error }), { status: 400 });
+        if (!res.ok || data.error || data.message) {
+            return new Response(JSON.stringify({ error: data.error ? data.error : data.message }), { status: 400 });
         }
 
         return new Response(JSON.stringify({ success: true, customized_assignment: data.response }), { status: 200 });

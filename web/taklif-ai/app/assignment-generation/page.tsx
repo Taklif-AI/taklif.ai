@@ -8,7 +8,7 @@ import { ReviewStep } from "@/components/assignment/assignment-generation-steps/
 import { ProgressSteps } from "@/components/ui/progress-steps";
 import { storage } from "@/lib/utils/local-storage";
 import { Toast } from "@/lib/utils/toast";
-import { fileToBase64 } from "@/lib/utils/file-to-base64";
+import { fileToBase64 } from "@/lib/utils/files/file-to-base64";
 import { extractTitleAndText } from "@/lib/utils/extract-title";
 
 const steps = ["Upload PDF", "Choose Interests", "Review Inputs"];
@@ -75,7 +75,10 @@ export default function AssignmentPage() {
   };
 
   const handleSubmit = async () => {
-
+    const apiUrl =
+      process.env.NODE_ENV === "production"
+        ? "https://feature-landing-assignment-wizard.d12qitwd23x8o0.amplifyapp.com/api/assignment-generation"
+        : "/api/assignment-generation";
     // prepare the assignment-data to the backend
     const dataToBackend = {
       student_interest: assignmentData.interest,
@@ -92,6 +95,8 @@ export default function AssignmentPage() {
         try {
           const base64 = await fileToBase64(assignmentData.file);
           dataToBackend.general_assignment = base64;
+          console.log(base64);
+
           dataToBackend.is_pdf = true;
         } catch (error) {
           console.log(error);
@@ -102,15 +107,13 @@ export default function AssignmentPage() {
         dataToBackend.is_pdf = false;
       }
 
-
       // send the assignment to the backend
-      const res = await fetch('/api/assignment-generation', {
+      const res = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(dataToBackend)
-
       });
 
       const result = await res.json();
@@ -120,7 +123,7 @@ export default function AssignmentPage() {
         router.push('/assignment-generation');
         return;
       }
-  
+
       const parts = extractTitleAndText(result.customized_assignment);
       const newAssignment = {
         id: Date.now().toString(),
@@ -140,10 +143,11 @@ export default function AssignmentPage() {
       storage.clearProgress();
 
       Toast.success("Assignment created successfully!");
-      router.push('/assignment-generation/result/');
+      router.push('/assignment-generation/result');
       /* eslint-disable */
     } catch (error) {
       Toast.error("Failed to create assignment. Please try again.2");
+      router.push('/assignment-generation');
     }
     /* eslint-enable */
   };
