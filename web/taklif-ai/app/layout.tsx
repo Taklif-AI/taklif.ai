@@ -5,7 +5,6 @@ import { Navigation } from '@/components/ui/navigation';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from "@/components/ui/sonner";
 import { Footer } from '@/components/ui/footer';
-
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
@@ -29,9 +28,9 @@ export default function RootLayout({
         >
           <div className="flex min-h-screen flex-col">
             <Navigation />
-            <div className="flex-1 pt-16">
-              {children}
-            </div>
+              <div className="flex-1 pt-16">
+                {children}
+              </div>
             <Footer />
           </div>
           <Toaster />

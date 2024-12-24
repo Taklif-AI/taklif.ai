@@ -6,8 +6,8 @@ import { ArrowLeft, Send } from "lucide-react";
 
 interface ReviewStepProps {
   data: {
-    file: File | string |null;
-   
+    file: File | string | null;
+
     interest: string;
   };
   onBack: () => void;
@@ -18,7 +18,7 @@ export function ReviewStep({ data, onBack, onSubmit }: ReviewStepProps) {
 
   console.log(data)
 
-  
+
   const getContentPreview = () => {
     if (!data.file) return null;
 
@@ -45,43 +45,43 @@ export function ReviewStep({ data, onBack, onSubmit }: ReviewStepProps) {
 
   return (
     <Card className="p-8 max-w-xl mx-auto">
-    <div className="text-center mb-8">
-      <h1 className="text-3xl font-bold mb-2">Review Your Assignment Setup</h1>
-      <p className="text-muted-foreground">
-        Please review your selections before generating the assignment
-      </p>
-    </div>
-
-    <div className="space-y-6">
-      <div className="p-4 bg-secondary/50 rounded-lg">
-        <h2 className="font-semibold mb-2">Content</h2>
-        {getContentPreview()}
+      <div className="text-center mb-8">
+        <h1 className="text-3xl font-bold mb-2">Review Your Assignment Setup</h1>
+        <p className="text-muted-foreground">
+          Please review your selections before generating the assignment
+        </p>
       </div>
 
-      <div className="p-4 bg-secondary/50 rounded-lg">
-        <h2 className="font-semibold mb-2">Selected Topics</h2>
-        <div className="flex flex-wrap gap-2">
-          
+      <div className="space-y-6">
+        <div className="p-4 bg-secondary/50 rounded-lg">
+          <h2 className="font-semibold mb-2">Content</h2>
+          {getContentPreview()}
+        </div>
+
+        <div className="p-4 bg-secondary/50 rounded-lg">
+          <h2 className="font-semibold mb-2">Selected Topics</h2>
+          <div className="flex flex-wrap gap-2">
+
             <span
               className="px-2 py-1 bg-primary/10 rounded-md text-sm"
             >
               {data.interest}
             </span>
-          
+
+          </div>
         </div>
       </div>
-    </div>
 
-    <div className="flex justify-between mt-8">
-      <Button variant="outline" onClick={onBack}>
-        <ArrowLeft className="h-4 w-4 mr-2" />
-        Back to Edit
-      </Button>
-      <Button onClick={onSubmit}>
-        Generate Assignment
-        <Send className="h-4 w-4 ml-2" />
-      </Button>
-    </div>
-  </Card>
+      <div className="flex justify-between mt-8">
+        <Button variant="outline" onClick={onBack}>
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to Edit
+        </Button>
+        <Button onClick={onSubmit}>
+          Customize
+          <Send className="h-4 w-4 ml-2" />
+        </Button>
+      </div>
+    </Card>
   );
 }

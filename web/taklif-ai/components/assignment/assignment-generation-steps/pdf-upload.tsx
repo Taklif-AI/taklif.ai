@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Upload, File, AlertCircle, FileText } from "lucide-react";
 import { Toast } from "@/lib/utils/toast";
 import { validatePDF } from "@/lib/validators/assignment-validator";
-import { truncateFilename } from "@/lib/utils/truncate-file";
+import { truncateFilename } from "@/lib/utils/files/truncate-file";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert } from "@/components/ui/alert";
 import { Textarea } from "@/components/ui/textarea";
