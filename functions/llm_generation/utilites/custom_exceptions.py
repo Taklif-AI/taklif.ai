@@ -1,5 +1,5 @@
-class GenerateError(Exception):
-    """Custom exception for errors in the `generate` function."""
+class GenerationError(Exception):
+    """Custom exception for errors in the `llm generation` functions."""
     def __init__(self, message):
         super().__init__(message)
 
