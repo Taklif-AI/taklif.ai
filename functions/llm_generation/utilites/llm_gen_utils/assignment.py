@@ -1,4 +1,4 @@
-from utilites.custom_exceptions import GenerateError
+from utilites.custom_exceptions import GenerationError
 from langchain_core.tracers.langchain import wait_for_all_tracers
 from langchain_core.output_parsers import StrOutputParser
 from langchain_community.chat_models import ChatLiteLLM
@@ -7,11 +7,11 @@ import json
 
 
 @traceable(
-# TODO: Add ls_provider, ls_model_name
-  run_type= "llm",
-  metadata={"app": "taklif.ai"},
+    name="Personalize",
+    run_type="llm",
+    metadata={"app": "taklif.ai"},
 )
-def generate(prompt_params:dict, metadata: dict):
+def personalize(prompt_params:dict, metadata: dict):
     try:
         interest = prompt_params.get("interest")
         general_assignment = prompt_params.get("general_assignment")
@@ -31,7 +31,7 @@ def generate(prompt_params:dict, metadata: dict):
 
         return response
     except Exception as e:
-        raise GenerateError(f"Internal Server Error: {str(e)}")
+        raise GenerationError(f"Internal Server Error: {str(e)}")
 
     # Wait for langsmith tracer to finish    
     finally:
