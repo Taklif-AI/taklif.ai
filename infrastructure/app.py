@@ -13,6 +13,7 @@ environments = {
         "LANGCHAIN_API_KEY": os.getenv("LANGCHAIN_API_KEY"),
         "GROQ_API_KEY": os.getenv("GROQ_API_KEY"),
         "GEMINI_API_KEY": os.getenv("GEMINI_API_KEY"),
+        "LLAMA_CLOUD_API_KEY": os.getenv("LLAMA_CLOUD_API_KEY")
     },
     "production": {
         "account": os.getenv("CDK_DEFAULT_ACCOUNT"),
@@ -23,6 +24,7 @@ environments = {
         "LANGCHAIN_API_KEY": os.getenv("LANGCHAIN_API_KEY"),
         "GROQ_API_KEY": os.getenv("GROQ_API_KEY"),
         "GEMINI_API_KEY": os.getenv("GEMINI_API_KEY"),
+        "LLAMA_CLOUD_API_KEY": os.getenv("LLAMA_CLOUD_API_KEY")
     }
 }
 
@@ -60,6 +62,7 @@ InfrastructureStack(
     LANGCHAIN_API_KEY=develop_env["LANGCHAIN_API_KEY"],
     GROQ_API_KEY=develop_env["GROQ_API_KEY"],
     GEMINI_API_KEY=develop_env["GEMINI_API_KEY"],
+    LLAMA_CLOUD_API_KEY=develop_env["LLAMA_CLOUD_API_KEY"]
 )
 
 # Production environment stack
@@ -74,6 +77,7 @@ InfrastructureStack(
     LANGCHAIN_API_KEY=production_env["LANGCHAIN_API_KEY"],
     GROQ_API_KEY=production_env["GROQ_API_KEY"],
     GEMINI_API_KEY=production_env["GEMINI_API_KEY"],
+    LLAMA_CLOUD_API_KEY=production_env["LLAMA_CLOUD_API_KEY"]
 )
 
 app.synth()
