@@ -13,7 +13,7 @@ from utilites.llm_ocr import convert_pdf_to_markdown
 #TODO: atomic_counter_load_balancer
 
 GUARDRAILS_MODEL = "groq/llama-3.3-70b-specdec"
-PERSONALIZATION_MODEL = ""
+PERSONALIZATION_MODEL = "groq/llama-3.3-70b-versatile"
 
 def handler(event, context):
     # Get the available memory in MB from the Lambda function
