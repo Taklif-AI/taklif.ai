@@ -4,16 +4,7 @@ langchain_community
 langsmith
 openai
 boto3
-opencv-python-headless
 pymupdf
-pytesseract
 PyPDF2
-certifi
-charset-normalizer
-idna
-packaging
-pillow
-requests
-urllib3
 guardrails-ai
-py-zerox
+llama-parse
