@@ -2,18 +2,26 @@ import json
 import os
 from concurrent.futures import ThreadPoolExecutor
 from langsmith import Client as LangSmith
-from utilites.custom_exceptions import (BadRequestError, GenerationError,
-                                        PDFDecodingError, PDFProcessingError)
-from utilites.guardrails_utils.llm_guard import (guard_assignment,
-                                                 guard_interest)
+from utilites.custom_exceptions import (
+    BadRequestError,
+    GenerationError,
+    PDFDecodingError,
+    PDFProcessingError,
+)
+from utilites.guardrails_utils.llm_guard import (
+    guard_assignment,
+    guard_interest,
+    guard_llm_output,
+)
 from utilites.input_parser import generation_parser, simplify_parser
 from utilites.llm_gen_utils import assignment, simplify
 from utilites.llm_ocr import convert_pdf_to_markdown
 
-#TODO: atomic_counter_load_balancer
+# TODO: atomic_counter_load_balancer
 
 GUARDRAILS_MODEL = "groq/llama-3.3-70b-specdec"
 PERSONALIZATION_MODEL = "groq/llama-3.3-70b-versatile"
+
 
 def handler(event, context):
     # Get the available memory in MB from the Lambda function
@@ -61,22 +69,25 @@ def handler(event, context):
         if interest_validation["decision"] == "rejected":
             return {
                 "statusCode": 400,
-                "body": json.dumps(
-                    {"error": interest_validation["details"]["decision_explain"]}
-                ),
+                  "body": {
+                    "invalid_input": interest_validation["details"]["invalid_input"],
+                    "explanation": interest_validation["details"]["decision_explain"],
+                },
             }
 
         # PDF assignment processing
         if task == "generation" and params.get("is_pdf") is True:
-            try:        
+            try:
                 params["general_assignment"] = convert_pdf_to_markdown(
                     base64_pdf=params.get("general_assignment"),
-                    langsmith_client=langsmith_client
-                    )
+                    langsmith_client=langsmith_client,
+                )
             except PDFDecodingError as e:
                 return {
                     "statusCode": 400,
-                    "body": json.dumps({"error": f"PDF Decoding error occurred: {str(e)}"}),
+                    "body": json.dumps(
+                        {"error": f"PDF Decoding error occurred: {str(e)}"}
+                    ),
                 }
             except PDFProcessingError as e:
                 return {
@@ -88,7 +99,9 @@ def handler(event, context):
 
         # Assignment guardrails
         assignment_validation = guard_assignment(
-            assignment=params["general_assignment"] if task == "generation" else params["personalized_assignment"],
+            assignment=params["general_assignment"]
+            if task == "generation"
+            else params["personalized_assignment"],
             metadata={
                 "litellm_call": GUARDRAILS_MODEL,
                 "langsmith_client": langsmith_client,
@@ -97,9 +110,10 @@ def handler(event, context):
         if assignment_validation["decision"] == "rejected":
             return {
                 "statusCode": 400,
-                "body": json.dumps(
-                    {"error": assignment_validation["details"]["decision_explain"]}
-                ),
+                  "body": {
+                    "invalid_input": assignment_validation["details"]["invalid_input"],
+                    "explanation": assignment_validation["details"]["decision_explain"],
+                },
             }
 
         # LLM calling
@@ -128,11 +142,25 @@ def handler(event, context):
             }
 
         # Output guardrails
-
+        output_validation = guard_llm_output(
+            assignment=response["content"],
+            metadata={
+                "litellm_call": GUARDRAILS_MODEL,
+                "langsmith_client": langsmith_client,
+            },
+        )
+        if output_validation["decision"] == "rejected":
+            return {
+                "statusCode": 400,
+                "body": {
+                    "invalid_input": output_validation["details"]["invalid_input"],
+                    "explanation": output_validation["details"]["decision_explain"],
+                },
+            }
         # Return the content from the LLM response
         return {"statusCode": 200, "body": json.dumps({"response": response})}
     except Exception as e:
         return {
-                "statusCode": 500,
-                "body": json.dumps({"error": "Internal Server Error: " + str(e)}),
-            }
+            "statusCode": 500,
+            "body": json.dumps({"error": "Internal Server Error: " + str(e)}),
+        }
