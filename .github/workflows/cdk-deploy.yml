@@ -16,8 +16,8 @@ jobs:
   deploy:
     if: >
       (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/develop')) ||
-      (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/feature/')) ||
-      (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
+      (github.event_name == 'pull_request' && github.event.pull_request.merged == true) ||
+      (github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
 
     steps:
@@ -79,8 +79,7 @@ jobs:
 
       - name: Deploy to Development
         if: |
-          github.ref == 'refs/heads/develop' ||
-          startsWith(github.ref, 'refs/heads/feature/') 
+          github.ref == 'refs/heads/develop'
         env: 
           CDK_DEFAULT_ACCOUNT: ${{ secrets.CDK_DEFAULT_ACCOUNT }}
           CDK_DEFAULT_REGION: ${{ secrets.CDK_DEFAULT_REGION }}
