@@ -13,6 +13,7 @@ from utilites.guardrails_utils.llm_guard import (
     guard_interest,
     guard_llm_output,
 )
+from utilites.guardrails_utils.guard import Guardrails
 from utilites.input_parser import generation_parser, simplify_parser
 from utilites.llm_gen_utils import assignment, simplify
 from utilites.llm_ocr import convert_pdf_to_markdown
@@ -28,7 +29,6 @@ def handler(event, context):
     available_memory = int(os.getenv("AWS_LAMBDA_FUNCTION_MEMORY_SIZE", "128"))
     # Estimate max threads based on available memory, use 1 thread per 128 MB of memory
     max_threads = max(1, available_memory // 128)
-
     try:
         body = json.loads(event.get("body", "{}"))
 
@@ -57,21 +57,23 @@ def handler(event, context):
 
         # Register langsmith client
         langsmith_client = LangSmith()
+        # Register guardrails object
+        guard = Guardrails()
 
         # Interest guardrails
-        interest_validation = guard_interest(
+        interest_validation = guard.validate(
             interest=params["interest"],
             metadata={
                 "litellm_call": GUARDRAILS_MODEL,
                 "langsmith_client": langsmith_client,
             },
         )
-        if interest_validation["decision"] == "rejected":
+        if not interest_validation["content"]["decision"]:
             return {
                 "statusCode": 400,
                   "body": {
-                    "invalid_input": interest_validation["details"]["invalid_input"],
-                    "explanation": interest_validation["details"]["decision_explain"],
+                    "invalid_input": interest_validation["content"]["invalid_input"],
+                    "explanation": interest_validation["content"]["decision_explain"],
                 },
             }
 
@@ -98,7 +100,7 @@ def handler(event, context):
                 }
 
         # Assignment guardrails
-        assignment_validation = guard_assignment(
+        assignment_validation = guard.validate(
             assignment=params["general_assignment"]
             if task == "generation"
             else params["personalized_assignment"],
@@ -107,12 +109,12 @@ def handler(event, context):
                 "langsmith_client": langsmith_client,
             },
         )
-        if assignment_validation["decision"] == "rejected":
+        if not assignment_validation["content"]["decision"]:
             return {
                 "statusCode": 400,
                   "body": {
-                    "invalid_input": assignment_validation["details"]["invalid_input"],
-                    "explanation": assignment_validation["details"]["decision_explain"],
+                    "invalid_input": assignment_validation["content"]["invalid_input"],
+                    "explanation": assignment_validation["content"]["decision_explain"],
                 },
             }
 
@@ -142,19 +144,19 @@ def handler(event, context):
             }
 
         # Output guardrails
-        output_validation = guard_llm_output(
+        output_validation = guard.validate(
             assignment=response["content"],
             metadata={
                 "litellm_call": GUARDRAILS_MODEL,
                 "langsmith_client": langsmith_client,
             },
         )
-        if output_validation["decision"] == "rejected":
+        if not output_validation["content"]["decision"]:
             return {
                 "statusCode": 400,
                 "body": {
-                    "invalid_input": output_validation["details"]["invalid_input"],
-                    "explanation": output_validation["details"]["decision_explain"],
+                    "invalid_input": output_validation["content"]["invalid_input"],
+                    "explanation": output_validation["content"]["decision_explain"],
                 },
             }
         # Return the content from the LLM response
