@@ -67,10 +67,10 @@ def handler(event, context):
         if not interest_validation["content"]["decision"]:
             return {
                 "statusCode": 400,
-                  "body": {
+                  "body": json.dumps({
                     "invalid_input": interest_validation["content"]["invalid_input"],
                     "explanation": interest_validation["content"]["decision_explain"],
-                },
+                }),
             }
 
         # PDF assignment processing
@@ -109,10 +109,10 @@ def handler(event, context):
         if not assignment_validation["content"]["decision"]:
             return {
                 "statusCode": 400,
-                  "body": {
+                  "body": json.dumps({
                     "invalid_input": assignment_validation["content"]["invalid_input"],
                     "explanation": assignment_validation["content"]["decision_explain"],
-                },
+                }),
             }
 
         # LLM calling
@@ -143,7 +143,7 @@ def handler(event, context):
         # Output guardrails
         output_validation = guard.validate(
             validator_type="output",
-            content=response["content"],
+            content=response,
             metadata={
                 "litellm_call": GUARDRAILS_MODEL,
                 "langsmith_client": langsmith_client,
@@ -152,10 +152,10 @@ def handler(event, context):
         if not output_validation["content"]["decision"]:
             return {
                 "statusCode": 400,
-                "body": {
+                "body": json.dumps({
                     "invalid_input": output_validation["content"]["invalid_input"],
                     "explanation": output_validation["content"]["decision_explain"],
-                },
+                }),
             }
         # Return the content from the LLM response
         return {"statusCode": 200, "body": json.dumps({"response": response})}
