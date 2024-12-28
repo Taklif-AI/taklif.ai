@@ -1,5 +1,3 @@
-import json
-import os
 from concurrent.futures import ThreadPoolExecutor
 from langsmith import Client as LangSmith
 from utilites.custom_exceptions import (
@@ -8,12 +6,13 @@ from utilites.custom_exceptions import (
     PDFDecodingError,
     PDFProcessingError,
 )
-from utilites.guard import Guardrails
 from utilites.input_parser import generation_parser, simplify_parser
-from utilites.llm_gen_utils import assignment, simplify
+from utilites.guardrails import Guardrails
 from utilites.llm_ocr import convert_pdf_to_markdown
+from utilites.llm_gen_utils import assignment, simplify
+import json
+import os
 
-# TODO: atomic_counter_load_balancer
 
 GUARDRAILS_MODEL = "groq/llama-3.3-70b-specdec"
 PERSONALIZATION_MODEL = "groq/llama-3.3-70b-versatile"
@@ -24,6 +23,7 @@ def handler(event, context):
     available_memory = int(os.getenv("AWS_LAMBDA_FUNCTION_MEMORY_SIZE", "128"))
     # Estimate max threads based on available memory, use 1 thread per 128 MB of memory
     max_threads = max(1, available_memory // 128)
+    
     try:
         body = json.loads(event.get("body", "{}"))
 
@@ -52,10 +52,11 @@ def handler(event, context):
 
         # Register langsmith client
         langsmith_client = LangSmith()
+        
         # Register guardrails object
         guard = Guardrails()
 
-        # Interest guardrails
+        # Interest guardrail
         interest_validation = guard.validate(
             validator_type = "interest",
             content=params["interest"],
@@ -95,7 +96,7 @@ def handler(event, context):
                     ),
                 }
 
-        # Assignment guardrails
+        # Assignment guardrail
         assignment_validation = guard.validate(
             validator_type="assignment",
             content=params["general_assignment"]
@@ -140,7 +141,7 @@ def handler(event, context):
                 "body": json.dumps({"error": "LLM Generation Error: " + str(e)}),
             }
 
-        # Output guardrails
+        # Output guardrail
         output_validation = guard.validate(
             validator_type="output",
             content=response,
@@ -157,6 +158,7 @@ def handler(event, context):
                     "explanation": output_validation["content"]["decision_explain"],
                 }),
             }
+            
         # Return the content from the LLM response
         return {"statusCode": 200, "body": json.dumps({"response": response})}
     except Exception as e:
