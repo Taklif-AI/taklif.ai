@@ -6,5 +6,4 @@ openai
 boto3
 pymupdf
 PyPDF2
-guardrails-ai
 llama-parse
