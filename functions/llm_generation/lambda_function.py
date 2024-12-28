@@ -57,7 +57,8 @@ def handler(event, context):
 
         # Interest guardrails
         interest_validation = guard.validate(
-            interest=params["interest"],
+            validator_type = "interest",
+            content=params["interest"],
             metadata={
                 "litellm_call": GUARDRAILS_MODEL,
                 "langsmith_client": langsmith_client,
@@ -96,7 +97,8 @@ def handler(event, context):
 
         # Assignment guardrails
         assignment_validation = guard.validate(
-            assignment=params["general_assignment"]
+            validator_type="assignment",
+            content=params["general_assignment"]
             if task == "generation"
             else params["personalized_assignment"],
             metadata={
@@ -140,7 +142,8 @@ def handler(event, context):
 
         # Output guardrails
         output_validation = guard.validate(
-            assignment=response["content"],
+            validator_type="output",
+            content=response["content"],
             metadata={
                 "litellm_call": GUARDRAILS_MODEL,
                 "langsmith_client": langsmith_client,
