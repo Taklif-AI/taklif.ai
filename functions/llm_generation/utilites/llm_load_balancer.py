@@ -81,7 +81,7 @@ def get_model_list():
         models: models list
     """
     dynamodb = boto3.resource("dynamodb")
-    table = dynamodb.Table(f"{env_name}-ServingLLMs"
+    table = dynamodb.Table(f"{env_name}-ServingLLMs")
     
     models_list = table.scan()
     models = models_list["Items"]
