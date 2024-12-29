@@ -198,16 +198,15 @@ class InfrastructureStack(Stack):
         rule.add_target(targets.LambdaFunction(llm_generation_function))
         # </EventBridge RESOURCES> ---------------------------------------------------------------------
 
+        
         # <Amplify RESOURCES/> created through GUI
 
 
-        
-
-          # <DYNAMODB RESOURCES> ---------------------------------------------------------------------
+        # <DYNAMODB RESOURCES> ---------------------------------------------------------------------
         LLMsTable = dynamodb.Table(
             self,
-            id=f"{env_name}-LLMsTable",
-            table_name=f"{env_name}-LLMsMetaData",
+            id=f"{env_name}-ServingLLMs",
+            table_name=f"{env_name}-ServingLLMs",
             partition_key=dynamodb.Attribute(
                 name="litellm_call", type=dynamodb.AttributeType.STRING
             ),
