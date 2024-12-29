@@ -208,10 +208,7 @@ class InfrastructureStack(Stack):
             id=f"{env_name}-ServingLLMs",
             table_name=f"{env_name}-ServingLLMs",
             partition_key=dynamodb.Attribute(
-                name="litellm_call", type=dynamodb.AttributeType.STRING
-            ),
-            sort_key=dynamodb.Attribute(
-                name='api_key', type=dynamodb.AttributeType.STRING
+                name="llm_id", type=dynamodb.AttributeType.STRING # llm_id: litellm_call concatenated with the last 5 characters of the API key
             )
         )
         # </DYNAMODB RESOURCES> ---------------------------------------------------------------------
