@@ -1,7 +1,6 @@
 from litellm import completion
 import ast
-
-
+from llm_load_balancer import send_request
 class Guardrails:
     def __init__(self):
         self.validators = [
@@ -18,7 +17,7 @@ class Guardrails:
         if validator_type == 'interest':
             guardrail_prompt = metadata['langsmith_client'].pull_prompt(prompt_identifier = "interest-guardrails-prompt")
             prompt = guardrail_prompt.format(interest = content)
-            
+
             return self.litellm_request(prompt = prompt, metadata = metadata)
         elif validator_type == 'assignment':
             guardrail_prompt = metadata['langsmith_client'].pull_prompt(prompt_identifier = "assignment-guardrails-prompt")
@@ -34,21 +33,16 @@ class Guardrails:
 
     def litellm_request(self, prompt: str, metadata:dict):
         # Send request to guardrails LLM
-        evaluation_result = completion(
-            model= metadata['litellm_call'],
-            messages=[{"content": prompt, "role": "system"}],
-        )
+        
+        response = send_request(prompt= prompt, metadata= {})
         result = {
             "content": ast.literal_eval(
-                evaluation_result["choices"][0]["message"]["content"]
+                response.content
             ),
             "request_info": {
-                "model": evaluation_result["model"],
-                "completion_tokens": evaluation_result["usage"].completion_tokens,
-                "prompt_tokens": evaluation_result["usage"].prompt_tokens,
-                "total_tokens": evaluation_result["usage"].total_tokens,
-                "completion_tokens_details" :evaluation_result["usage"].completion_tokens_details,
-                "prompt_tokens_details": evaluation_result["usage"].prompt_tokens_details
+                "model_group": response.response_metadata["model_group"],
+                "model": response.response_metadata['deployment'],
+                "token_usage": response.response_metadata["token_usage"],
             },
         }
         
