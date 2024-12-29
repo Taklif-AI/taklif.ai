@@ -20,7 +20,7 @@ def send_request(prompt: str, metadata: dict):
     """
     model_list = [
         {
-            'model_name': item['model_name'],
+            'model_name': item['model_name'], # model alias
             'litellm_params': {
                 key: int(value) if isinstance(value, Decimal) else value
                 for key, value in item['litellm_params'].items()
@@ -52,18 +52,20 @@ def setup_router(model_list: list):
     Returns:
         router (litellm.Router): Router object balances the load between LLMs
     """
+    
+    model_names = [item['model_name'] for item in model_list]
 
-    enable_pre_call_checks = True                                  # check before calling on two things: deployment.context_window < message, deployments outside of region
-    allowed_fails = 1                                              # cooldown model if it fails > 1 call in a minute.
-    cooldown_time = 100                                            # cooldown the deployment for 100 seconds if it num_fails > allowed_fails
-    num_retries = 3                                                # number of retries for failed requests.
-    retry_after = 5                                                # waits min 5s before retrying request
-    #fallbacks = [{"model_1": "model_2"}, {"model_2": ["model_1"]}] # define fallbacks to each model
+    enable_pre_call_checks = True    # check before calling on two things: deployment.context_window < message, deployments outside of region
+    allowed_fails = 1                # cooldown model if it fails > 1 call in a minute.
+    cooldown_time = 100              # cooldown the deployment for 100 seconds if it num_fails > allowed_fails
+    num_retries = 3                  # number of retries for failed requests.
+    retry_after = 5                  # waits min 5s before retrying request
+    fallbacks = [{model: [m for m in model_names if m != model]} for model in model_names] # define fallbacks for each model
 
     router = Router(
         model_list=model_list,
         routing_strategy="usage-based-routing-v2",
-     #   fallbacks=fallbacks,
+        fallbacks=fallbacks,
         enable_pre_call_checks=enable_pre_call_checks,
         allowed_fails=allowed_fails,
         cooldown_time=cooldown_time,
