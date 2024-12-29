@@ -1,7 +1,7 @@
 from utilites.custom_exceptions import GenerationError
 from langchain_core.tracers.langchain import wait_for_all_tracers
 from langsmith import traceable
-from ..llm_load_balancer import send_request
+from utilites.llm_load_balancer import send_request
 
 
 # TODO: use llm_load_balancer functions
