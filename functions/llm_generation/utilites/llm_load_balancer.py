@@ -1,14 +1,15 @@
 from langchain_community.chat_models import ChatLiteLLMRouter
 from litellm import Router
 from langchain_core.messages import SystemMessage
-from decimal import Decimal
 import boto3
+from boto3.dynamodb.conditions import Key
+from decimal import Decimal
 import os
 
 env_name = os.environ.get("ENV_NAME", "Development")
 
 
-def send_request(prompt: str, metadata: dict):
+def send_request(task: str, prompt: str, metadata: dict):
     """Send request to LLM using the litellm router
 
     Args:
@@ -26,7 +27,7 @@ def send_request(prompt: str, metadata: dict):
                 for key, value in item['litellm_params'].items()
             }
         }
-        for item in get_model_list()
+        for item in get_model_list(task= task)
     ]
     
     router = setup_router(model_list=model_list)
@@ -76,7 +77,7 @@ def setup_router(model_list: list):
     return router
 
 
-def get_model_list():
+def get_model_list(task: str):
     """Returns the list of serving LLMs
 
     Returns:
@@ -85,7 +86,7 @@ def get_model_list():
     dynamodb = boto3.resource("dynamodb")
     table = dynamodb.Table(f"{env_name}-ServingLLMs")
     
-    models_list = table.scan()
+    models_list = table.scan(FilterExpression=Key('task').eq(task))
     models = models_list["Items"]
 
     return models

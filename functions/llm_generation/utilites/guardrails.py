@@ -49,7 +49,7 @@ class Guardrails:
 
     def litellm_request(self, prompt: str, metadata:dict):
         # Send request to guardrails LLM
-        response = send_request(prompt= prompt, metadata= {})
+        response = send_request(task= "guardrails", prompt= prompt, metadata= {})
         result = {
             "content": ast.literal_eval(response.content),
             "request_info": {
