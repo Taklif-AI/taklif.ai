@@ -65,12 +65,11 @@ def handler(event, context):
                 "langsmith_client": langsmith_client,
             },
         )
-        if not interest_validation["content"]["decision"]:
+        if interest_validation["content"]["decision"] == "rejected":
             return {
                 "statusCode": 400,
                   "body": json.dumps({
-                    "invalid_input": interest_validation["content"]["invalid_input"],
-                    "explanation": interest_validation["content"]["decision_explain"],
+                    "rejected": interest_validation["content"]["explanation"],
                 }),
             }
 
