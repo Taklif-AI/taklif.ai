@@ -22,7 +22,7 @@ def simplify(prompt_params: dict, metadata: dict):
         )
 
         # Use load_balancer to make llm request
-        response = send_request(prompt=langsmith_prompt, metadata={})
+        response = send_request(task="simplification", prompt=langsmith_prompt, metadata={})
         # Return the content from the LLM response
         return response.content
 
