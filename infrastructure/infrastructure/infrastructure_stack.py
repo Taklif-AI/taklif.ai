@@ -205,7 +205,7 @@ class InfrastructureStack(Stack):
         # <DYNAMODB RESOURCES> ---------------------------------------------------------------------
         LLMsTable = dynamodb.Table(
             self,
-            id=f"{env_name}-ServingLLMs",
+            id=f"{env_name}ServingLLMs",
             table_name=f"{env_name}-ServingLLMs",
             partition_key=dynamodb.Attribute(
                 name="llm_id", type=dynamodb.AttributeType.STRING # llm_id: litellm_call concatenated with the last 5 characters of the API key
