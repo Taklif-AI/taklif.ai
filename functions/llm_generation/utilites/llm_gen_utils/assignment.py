@@ -24,7 +24,7 @@ def personalize(prompt_params: dict, metadata: dict):
         # Use load_balancer to make llm request
         response = send_request(prompt=langsmith_prompt, metadata={})
 
-        return response
+        return response.content
     except Exception as e:
         raise GenerationError(f"Internal Server Error: {str(e)}")
 
