@@ -199,3 +199,20 @@ class InfrastructureStack(Stack):
         # </EventBridge RESOURCES> ---------------------------------------------------------------------
 
         # <Amplify RESOURCES/> created through GUI
+
+
+        
+
+          # <DYNAMODB RESOURCES> ---------------------------------------------------------------------
+        LLMsTable = dynamodb.Table(
+            self,
+            id=f"{env_name}-LLMsTable",
+            table_name=f"{env_name}-LLMsMetaData",
+            partition_key=dynamodb.Attribute(
+                name="litellm_call", type=dynamodb.AttributeType.STRING
+            ),
+            sort_key=dynamodb.Attribute(
+                name='api_key', type=dynamodb.AttributeType.STRING
+            )
+        )
+        # </DYNAMODB RESOURCES> ---------------------------------------------------------------------
