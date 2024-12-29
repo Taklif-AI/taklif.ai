@@ -14,10 +14,6 @@ import json
 import os
 
 
-GUARDRAILS_MODEL = "groq/llama-3.3-70b-specdec"
-PERSONALIZATION_MODEL = "groq/llama-3.3-70b-versatile"
-
-
 def handler(event, context):
     # Get the available memory in MB from the Lambda function
     available_memory = int(os.getenv("AWS_LAMBDA_FUNCTION_MEMORY_SIZE", "128"))
@@ -61,7 +57,6 @@ def handler(event, context):
             validator_type = "interest",
             content=params["interest"],
             metadata={
-                "litellm_call": GUARDRAILS_MODEL,
                 "langsmith_client": langsmith_client,
             },
         )
@@ -102,7 +97,6 @@ def handler(event, context):
             if task == "generation"
             else params["personalized_assignment"],
             metadata={
-                "litellm_call": GUARDRAILS_MODEL,
                 "langsmith_client": langsmith_client,
             },
         )
@@ -122,7 +116,6 @@ def handler(event, context):
                 response = assignment.personalize(
                     params,
                     metadata={
-                        "litellm_call": PERSONALIZATION_MODEL,
                         "langsmith_client": langsmith_client,
                     },
                 )
@@ -130,7 +123,6 @@ def handler(event, context):
                 response = simplify.simplify(
                     params,
                     metadata={
-                        "litellm_call": PERSONALIZATION_MODEL,
                         "langsmith_client": langsmith_client,
                     },
                 )
@@ -145,7 +137,6 @@ def handler(event, context):
             validator_type="output",
             content=response,
             metadata={
-                "litellm_call": GUARDRAILS_MODEL,
                 "langsmith_client": langsmith_client,
             },
         )
