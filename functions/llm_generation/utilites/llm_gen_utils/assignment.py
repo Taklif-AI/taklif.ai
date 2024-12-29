@@ -4,7 +4,6 @@ from langsmith import traceable
 from utilites.llm_load_balancer import send_request
 
 
-# TODO: use llm_load_balancer functions
 @traceable(
     name="Personalize",
     run_type="llm",
@@ -22,7 +21,7 @@ def personalize(prompt_params: dict, metadata: dict):
             .format(interest=interest, general_assignment=general_assignment)
         )
 
-        # use load_balancer to make litellm request
+        # Use load_balancer to make llm request
         response = send_request(prompt=langsmith_prompt, metadata={})
 
         return response
