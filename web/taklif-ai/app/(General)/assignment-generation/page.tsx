@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { PDFUpload } from "../../components/assignment/assignment-generation-steps/pdf-upload";
-import { InterestsSelect } from "../../components/assignment/assignment-generation-steps/interests-select";
+import { PDFUpload } from "../../../components/assignment/assignment-generation-steps/pdf-upload";
+import { InterestsSelect } from "../../../components/assignment/assignment-generation-steps/interests-select";
 import { ReviewStep } from "@/components/assignment/assignment-generation-steps/review-step";
 import { ProgressSteps } from "@/components/ui/progress-steps";
 import { storage } from "@/lib/utils/local-storage";
