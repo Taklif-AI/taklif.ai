@@ -7,7 +7,9 @@ from aws_cdk import (
     aws_apigateway as apigateway,
     aws_dynamodb as dynamodb,
     aws_iam as iam,
-    aws_amplify as amplify
+    aws_events as events,
+    aws_events_targets as targets,
+    aws_amplify as amplify,
 )
 
 
@@ -184,6 +186,16 @@ class InfrastructureStack(Stack):
             allow_origins=apigateway.Cors.ALL_ORIGINS, # Allow all origins, or specify a list of allowed origins (it can be replaced with our frontend domain)
         )
         # </API GATEWAY RESOURCES> ---------------------------------------------------------------------
+        
+        # <EventBridge RESOURCES> ---------------------------------------------------------------------
+        rule = events.Rule(
+            self,
+            "LambdaWarmPing",
+            description="Event rule to keep lambda function warm",
+            schedule=events.Schedule.rate(duration=Duration.minutes(5))
+        )
 
+        rule.add_target(targets.LambdaFunction(llm_generation_function))
+        # </EventBridge RESOURCES> ---------------------------------------------------------------------
 
         # <Amplify RESOURCES/> created through GUI
