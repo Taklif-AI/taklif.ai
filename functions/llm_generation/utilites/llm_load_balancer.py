@@ -39,7 +39,7 @@ def send_request(prompt: str, metadata: dict):
     messages = [SystemMessage(content=prompt)]
     response = chat(messages=messages)
 
-    return response
+    return response.content
 
 
 def setup_router(model_list: list):
