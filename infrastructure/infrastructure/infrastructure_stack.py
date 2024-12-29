@@ -208,7 +208,10 @@ class InfrastructureStack(Stack):
             id=f"{env_name}ServingLLMs",
             table_name=f"{env_name}-ServingLLMs",
             partition_key=dynamodb.Attribute(
-                name="llm_id", type=dynamodb.AttributeType.STRING # llm_id: litellm_call concatenated with the last 5 characters of the API key
+                name="llm_id", type=dynamodb.AttributeType.STRING # llm_id: litellm_call/the last 5 characters of the API key, example: github/llama-3.2/VWXYZ
+            ),
+            sort_key=dynamodb.Attribute(
+                name='task', type=dynamodb.AttributeType.STRING # llm task: personalization, simplification, guardrails, or other
             )
         )
         # </DYNAMODB RESOURCES> ---------------------------------------------------------------------
