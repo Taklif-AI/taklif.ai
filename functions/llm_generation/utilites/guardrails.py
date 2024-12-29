@@ -6,11 +6,7 @@ from litellm import completion
 import ast
 
 
-@traceable(
-    name="Guardrails",
-    run_type="llm",
-    metadata={"app": "taklif.ai"},
-)
+
 class Guardrails:
     def __init__(self):
         self.validators = [
@@ -19,7 +15,11 @@ class Guardrails:
             "output"
         ]
 
-
+    @traceable(
+        name="Guardrails",
+        run_type="llm",
+        metadata={"app": "taklif.ai"},
+    )
     def validate(self, validator_type: str, content: str, metadata: dict):
         try:
             if validator_type not in self.validators:
