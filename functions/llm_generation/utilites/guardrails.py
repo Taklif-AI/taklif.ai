@@ -51,9 +51,7 @@ class Guardrails:
         # Send request to guardrails LLM
         response = send_request(prompt= prompt, metadata= {})
         result = {
-            "content": ast.literal_eval(
-                response.content
-            ),
+            "content": ast.literal_eval(response),
             "request_info": {
                 "model_group": response.response_metadata["model_group"],
                 "model": response.response_metadata['deployment'],
