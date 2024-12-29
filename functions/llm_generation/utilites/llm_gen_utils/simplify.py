@@ -3,8 +3,6 @@ from utilites.custom_exceptions import GenerationError
 from langsmith import traceable
 from utilites.llm_load_balancer import send_request
 
-# TODO: use llm_load_balancer functions
-
 
 @traceable(
     name="Simplify",
@@ -19,11 +17,11 @@ def simplify(prompt_params: dict, metadata: dict):
         # Prepare the prompt
         langsmith_prompt = (
             metadata["langsmith_client"]
-            .pull_prompt(prompt_identifier="simplify-assignment-prompt") #TODO: change prompt id to rephrase-assignment-prompt 
+            .pull_prompt(prompt_identifier="simplify-assignment-prompt")
             .format(assignment=personalized_assignment, interest=interest)
         )
 
-        # use load_balancer
+        # Use load_balancer to make llm request
         response = send_request(prompt=langsmith_prompt, metadata={})
         # Return the content from the LLM response
         return response
