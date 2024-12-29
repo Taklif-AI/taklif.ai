@@ -1,6 +1,8 @@
+from utilites.llm_load_balancer import send_request
 from litellm import completion
 import ast
-from llm_load_balancer import send_request
+
+
 class Guardrails:
     def __init__(self):
         self.validators = [
@@ -33,7 +35,6 @@ class Guardrails:
 
     def litellm_request(self, prompt: str, metadata:dict):
         # Send request to guardrails LLM
-        
         response = send_request(prompt= prompt, metadata= {})
         result = {
             "content": ast.literal_eval(
