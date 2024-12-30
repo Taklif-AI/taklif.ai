@@ -49,7 +49,7 @@ def convert_pdf_to_markdown(
     
     try: 
         document = LlamaParse(result_type="markdown",
-                            parsing_instruction = custom_system_prompt
+                            parsing_instruction = custom_system_prompt.messages[0].prompt.template
                             ).load_data(pdf_path)
         
         content = ''.join(page.text for page in document)
