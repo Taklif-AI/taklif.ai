@@ -36,11 +36,11 @@ export async function POST(req) {
             task: "generation",
             params: {
                 interest: body.student_interest,
-                is_pdf: body.is_pdf ? "true" : "false",
+                is_pdf: body.is_pdf,
                 general_assignment: body.is_pdf ? pdf_base64_data : body.general_assignment,
             }
         };
-        // return new Response(JSON.stringify({ success: true, customized_assignment: dataToApi }), { status: 200 });
+        
         // Send data to llm api
         const res = await fetch('https://pdgr6qk367.execute-api.eu-north-1.amazonaws.com/Development/llm_generation', {
             method: 'POST',
@@ -48,10 +48,13 @@ export async function POST(req) {
             body: JSON.stringify(dataToApi),
         })
 
-        
+
         const data = await res.json();
+        if (res.status == 400 && data?.rejected) {
+            return new Response(JSON.stringify({ error: data.rejected }), { status: 400 });
+        }
         if (!res.ok || data.error || data.message) {
-            return new Response(JSON.stringify({ error: data.error ? data.error : data.message }), { status: 400 });
+            return new Response(JSON.stringify({ error: 'Failed to generate assignment' }), { status: 500 });
         }
 
         return new Response(JSON.stringify({ success: true, customized_assignment: data.response }), { status: 200 });
