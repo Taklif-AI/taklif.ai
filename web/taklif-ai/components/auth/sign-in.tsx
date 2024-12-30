@@ -7,8 +7,36 @@ import Link from "next/link";
 import { SocialAuthButtons } from "@/components/auth/social-auth-buttons";
 import { FormError } from "@/components/auth/form-error";
 import { FormSuccess } from "@/components/auth/form-success";
+import { login } from "@/actions/login";
+import { useState, useTransition } from "react";
 
-export const  SignIn = ()=> {
+export const SignIn = () => {
+    const [formData, setFormData] = useState({ email: '', password: '' });
+    const [error, setError] = useState<string | undefined>("");
+    const [success, setSuccess] = useState<string | undefined>("");
+    const [isPending, startTransition] = useTransition();
+
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        setError("");
+        setSuccess("");
+
+        startTransition(() => {
+            login(formData)
+                .then((data) => {
+                    setError(data.error);
+                    setSuccess(data.success);
+                })
+        })
+
+    }
     return (
         <div className="min-h-screen w-full bg-gradient-to-br from-indigo-950 via-purple-900 to-indigo-900 flex items-center justify-center p-4">
             <div className="w-full max-w-md relative">
@@ -28,24 +56,33 @@ export const  SignIn = ()=> {
 
                         <SocialAuthButtons /*mode="sign-in"*/ />
 
-                        <form className="mt-6 space-y-6">
+                        <form className="mt-6 space-y-6" method="POST" onSubmit={handleSubmit}>
                             <div>
                                 <Input
+                                    name="email"
                                     type="email"
+                                    value={formData.email}
+                                    disabled={isPending}
                                     placeholder="Email address"
                                     className="w-full bg-gray-800/50 border-gray-700 text-white placeholder:text-gray-400"
+                                    onChange={handleChange}
                                 />
                             </div>
                             <div>
                                 <Input
+                                    name="password"
                                     type="password"
+                                    value={formData.password}
+                                    disabled={isPending}
                                     placeholder="Password"
                                     className="w-full bg-gray-800/50 border-gray-700 text-white placeholder:text-gray-400"
+                                    onChange={handleChange}
                                 />
                             </div>
-                            <FormError message="" />
-                            <FormSuccess message="" />
-                            <Button className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white">
+
+                            <FormError message={error} />
+                            <FormSuccess message={success} />
+                            <Button type="submit" disabled={isPending} className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white">
                                 Sign In
                             </Button>
                         </form>
@@ -58,7 +95,8 @@ export const  SignIn = ()=> {
                         </p>
                     </div>
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
+
     );
 }
