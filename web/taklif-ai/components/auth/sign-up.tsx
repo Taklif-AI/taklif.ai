@@ -6,8 +6,39 @@ import { Input } from "@/components/ui/input";
 import { Brain } from "lucide-react";
 import Link from "next/link";
 import { SocialAuthButtons } from "@/components/auth/social-auth-buttons";
+import { FormError } from "@/components/auth/form-error";
+import { FormSuccess } from "@/components/auth/form-success";
+import { useState, useTransition } from "react";
+import { register } from "@/actions/register";
 
 export const SignUp = () => {
+    const [formData, setFormData] = useState({ name: '', email: '', password: '', confirmPassword: '' });
+    const [error, setError] = useState<string | undefined>("");
+    const [success, setSuccess] = useState<string | undefined>("");
+    const [isPending, startTransition] = useTransition();
+
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        setError("");
+        setSuccess("");
+
+        startTransition(() => {
+            register(formData)
+                .then((data) => {
+                    setError(data.error);
+                    setSuccess(data.success);
+                })
+        })
+
+    }
+
     return (
         <div className="min-h-screen w-full bg-gradient-to-br from-indigo-950 via-purple-900 to-indigo-900 flex items-center justify-center p-4">
             <div className="w-full max-w-md relative">
@@ -27,29 +58,58 @@ export const SignUp = () => {
 
                         <SocialAuthButtons /*mode="sign-up"*/ />
 
-                        <form className="mt-6 space-y-6">
+
+
+                        <form className="mt-6 space-y-6" method="POST" onSubmit={handleSubmit}>
                             <div>
                                 <Input
+                                    name="name"
+                                    value={formData.name}
                                     type="text"
-                                    placeholder="Full name"
+                                    disabled={isPending}
+                                    placeholder="Name"
                                     className="w-full bg-gray-800/50 border-gray-700 text-white placeholder:text-gray-400"
+                                    onChange={handleChange}
                                 />
                             </div>
                             <div>
                                 <Input
+                                    name="email"
+                                    value={formData.email}
                                     type="email"
-                                    placeholder="Email address"
+                                    disabled={isPending}
+                                    placeholder="Email"
                                     className="w-full bg-gray-800/50 border-gray-700 text-white placeholder:text-gray-400"
+                                    onChange={handleChange}
                                 />
                             </div>
                             <div>
                                 <Input
+                                    name="password"
+                                    value={formData.password}
                                     type="password"
+                                    disabled={isPending}
                                     placeholder="Password"
                                     className="w-full bg-gray-800/50 border-gray-700 text-white placeholder:text-gray-400"
+                                    onChange={handleChange}
                                 />
                             </div>
-                            <Button className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white">
+                            <div>
+                                <Input
+                                    name="confirmPassword"
+                                    value={formData.confirmPassword}
+                                    type="password"
+                                    disabled={isPending}
+                                    placeholder="Password Confirmation"
+                                    className="w-full bg-gray-800/50 border-gray-700 text-white placeholder:text-gray-400"
+                                    onChange={handleChange}
+                                />
+                            </div>
+
+                            <FormError message={error} />
+                            <FormSuccess message={success} />
+
+                            <Button type="submit" disabled={isPending} className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white">
                                 Create Account
                             </Button>
                         </form>
@@ -62,7 +122,7 @@ export const SignUp = () => {
                         </p>
                     </div>
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 }
