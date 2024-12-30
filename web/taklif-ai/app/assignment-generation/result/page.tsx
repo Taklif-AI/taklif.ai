@@ -10,7 +10,6 @@ import { Toast } from "@/lib/utils/toast";
 import { motion } from "framer-motion";
 import { Brain, Sparkles, Stars, Wand2 } from "lucide-react";
 import { storage } from "@/lib/utils/local-storage";
-import { extractTitleAndText } from "@/lib/utils/extract-title";
 const backgroundIcons = [Brain, Wand2, Stars, Sparkles];
 
 export default function AssignmentResultPage() {
@@ -62,17 +61,18 @@ export default function AssignmentResultPage() {
           const result = await res.json();
           // check the incoming response
           if (!res.ok || !result || result.error) {
-            Toast.error(result.error);
+            Toast.error(result.error ? result.error : "Failed to generate assignment. Please try again.");
             router.push('/assignment-generation');
             return;
           }
-          const parts = extractTitleAndText(result.customized_assignment);
+          const data = JSON.parse(result.customized_assignment)
+
           const newAssignment = {
             id: Date.now().toString(),
-            title: parts?.title,
+            title: data.assignment_title,
             createdAt: new Date().toISOString(),
             interest: dataToBackend.student_interest,
-            text: parts?.text,
+            text: data.assignment_content,
             type: 're-generated',
             likes: 0,
             dislikes: 0
@@ -89,6 +89,7 @@ export default function AssignmentResultPage() {
         } catch (error) {
           console.log(error);
           Toast.error("Failed to create assignment. Please try again.2");
+          router.push('/assignment-generation/result/');
         }
         break;
       case 'simplify':
@@ -107,31 +108,23 @@ export default function AssignmentResultPage() {
             body: JSON.stringify(assignment),
           });
 
-          // check the incoming response
-          if (!res.ok) {
-            Toast.error("Failed to simplify assignment. Please try again.1");
-            router.push('/assignment-generation/result');
-            return;
-          }
-
           const result = await res.json();
-          // check the parsed result
-          if (!result || result.error) {
-            Toast.error(result.error);
-            router.push('/assignment-generation/result');
+          // check the incoming response
+          if (!res.ok || !result || result.error) {
+            Toast.error(result.error ? result.error : "Failed to simplify assignment. Please try again.");
+            router.push('/assignment-generation');
             return;
           }
           console.log(result);
-
-          const parts = extractTitleAndText(result.simplified_assignment);
-          console.log(parts);
+          
+          const data = JSON.parse(result.simplified_assignment)
 
           const newAssignment = {
             id: Date.now().toString(),
-            title: parts?.title,
+            title: data.assignment_title,
             createdAt: new Date().toISOString(),
             interest: assignment.interest,
-            text: parts?.text,
+            text: data.assignment_content,
             type: 'simplified',
             likes: 0,
             dislikes: 0
@@ -146,7 +139,8 @@ export default function AssignmentResultPage() {
           router.push('/assignment-generation/result/');
           /* eslint-disable */
         } catch (error) {
-          Toast.error("Failed to create assignment. Please try again.2");
+          Toast.error("Failed to simplified assignment. Please try again");
+          router.push('/assignment-generation/result/');
         }
         /* eslint-enable */
 
