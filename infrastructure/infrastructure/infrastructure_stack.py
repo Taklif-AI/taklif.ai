@@ -134,6 +134,39 @@ class InfrastructureStack(Stack):
         lambda_role.add_managed_policy(
             iam.ManagedPolicy.from_aws_managed_policy_name("AmazonDynamoDBFullAccess")
         )
+        
+        # Create User for NextAuthJS to access DynamoDB
+        dynamodb_authjs_user = iam.User(self, "NextAuthJSUser")
+        
+        # Create an inline policy with specified DynamoDB actions
+        dynamodb_policy = iam.Policy(
+            self,
+            "DynamoDBAccessPolicy",
+            statements=[
+                iam.PolicyStatement(
+                    actions=[
+                        "dynamodb:BatchGetItem",
+                        "dynamodb:BatchWriteItem",
+                        "dynamodb:Describe*",
+                        "dynamodb:List*",
+                        "dynamodb:PutItem",
+                        "dynamodb:DeleteItem",
+                        "dynamodb:GetItem",
+                        "dynamodb:Scan",
+                        "dynamodb:Query",
+                        "dynamodb:UpdateItem",
+                    ],
+                    resources=[
+                        "arn:aws:dynamodb:eu-north-1:***REMOVED-AWS-ACCOUNT-ID***:table/next-auth",
+                        "arn:aws:dynamodb:eu-north-1:***REMOVED-AWS-ACCOUNT-ID***:table/next-auth/index/GSI1"
+                    ],
+                )
+            ],
+        )
+        
+        # Attach the policy to the user
+        dynamodb_policy.attach_to_user(dynamodb_authjs_user)
+    
         # </IAM RESOURCES> ---------------------------------------------------------------------
 
 
