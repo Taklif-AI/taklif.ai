@@ -187,6 +187,7 @@ class InfrastructureStack(Stack):
         )
         # </API GATEWAY RESOURCES> ---------------------------------------------------------------------
         
+        
         # <EventBridge RESOURCES> ---------------------------------------------------------------------
         rule = events.Rule(
             self,
@@ -198,12 +199,12 @@ class InfrastructureStack(Stack):
         rule.add_target(targets.LambdaFunction(llm_generation_function))
         # </EventBridge RESOURCES> ---------------------------------------------------------------------
 
-        
+
         # <Amplify RESOURCES/> created through GUI
 
 
         # <DYNAMODB RESOURCES> ---------------------------------------------------------------------
-        LLMsTable = dynamodb.Table(
+        ServingLLMsTable = dynamodb.Table(
             self,
             id=f"{env_name}ServingLLMs",
             table_name=f"{env_name}-ServingLLMs",
@@ -212,6 +213,29 @@ class InfrastructureStack(Stack):
             ),
             sort_key=dynamodb.Attribute(
                 name='task', type=dynamodb.AttributeType.STRING # llm task: personalization, simplification, guardrails, or other
+            )
+        )
+        
+        NextAuthTable = dynamodb.Table(
+            self,
+            id=f"{env_name}NextAuthTable",
+            table_name="next-auth",
+            partition_key=dynamodb.Attribute(
+                name="pk", type=dynamodb.AttributeType.STRING
+            ),
+            sort_key=dynamodb.Attribute(
+                name="sk", type=dynamodb.AttributeType.STRING
+            ),
+            time_to_live_attribute="expires"
+        )
+
+        NextAuthTable.add_global_secondary_index(
+            index_name="GSI1",
+            partition_key=dynamodb.Attribute(
+                name="GSI1PK", type=dynamodb.AttributeType.STRING
+            ),
+            sort_key=dynamodb.Attribute(
+                name="GSI1SK", type=dynamodb.AttributeType.STRING
             )
         )
         # </DYNAMODB RESOURCES> ---------------------------------------------------------------------
