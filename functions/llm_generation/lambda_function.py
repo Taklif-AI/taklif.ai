@@ -100,15 +100,14 @@ def handler(event, context):
                 "langsmith_client": langsmith_client,
             },
         )
-        if not assignment_validation["content"]["decision"]:
+        if assignment_validation["content"]["decision"] == "rejected":
             return {
                 "statusCode": 400,
                   "body": json.dumps({
-                    "invalid_input": assignment_validation["content"]["invalid_input"],
-                    "explanation": assignment_validation["content"]["decision_explain"],
+                    "rejected": assignment_validation["content"]["explanation"],
                 }),
             }
-
+        
         # LLM calling
         response = ""
         try:
@@ -133,22 +132,21 @@ def handler(event, context):
             }
 
         # Output guardrail
-        output_validation = guard.validate(
-            validator_type="output",
+        assignment_output_validation = guard.validate(
+            validator_type="assignment",
             content=response,
             metadata={
                 "langsmith_client": langsmith_client,
             },
         )
-        if not output_validation["content"]["decision"]:
+        if assignment_output_validation["content"]["decision"] == "rejected":
             return {
                 "statusCode": 400,
-                "body": json.dumps({
-                    "invalid_input": output_validation["content"]["invalid_input"],
-                    "explanation": output_validation["content"]["decision_explain"],
+                  "body": json.dumps({
+                    "rejected": assignment_output_validation["content"]["explanation"],
                 }),
             }
-            
+
         # Return the content from the LLM response
         return {"statusCode": 200, "body": json.dumps({"response": response})}
     except Exception as e:
