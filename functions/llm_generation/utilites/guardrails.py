@@ -11,8 +11,7 @@ class Guardrails:
     def __init__(self):
         self.validators = [
             "interest",
-            "assignment",
-            "output"
+            "assignment"
         ]
 
     @traceable(
@@ -33,11 +32,6 @@ class Guardrails:
             elif validator_type == 'assignment':
                 guardrail_prompt = metadata['langsmith_client'].pull_prompt(prompt_identifier = "assignment-guardrails-prompt")
                 prompt = guardrail_prompt.format(general_assignment= content)
-                
-                return self.litellm_request(prompt = prompt, metadata = metadata)
-            elif validator_type == 'output':
-                guardrail_prompt = metadata['langsmith_client'].pull_prompt(prompt_identifier = "output-guardrails-prompt")
-                prompt = guardrail_prompt.format(personalized_assignment = content)
                 
                 return self.litellm_request(prompt = prompt, metadata = metadata)
         except Exception as e:
