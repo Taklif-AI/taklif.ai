@@ -1,10 +1,11 @@
 'use server';
 
 import { RegisterSchema } from "@/lib/schemas/register-schema";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { client } from '@/lib/database/dynamo-client';
-import { QueryCommand, PutCommand } from "@aws-sdk/lib-dynamodb";
+import { PutCommand } from "@aws-sdk/lib-dynamodb";
 import { v4 as uuidv4 } from "uuid";
+import { getUserByEmail } from "@/data/user";
 
 
 export async function register(formData: object) {
@@ -26,26 +27,10 @@ export async function register(formData: object) {
     // password hashing
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const checkParams = {
-        TableName: "next-auth",
-        IndexName: "GSI1",
-        KeyConditionExpression: "GSI1PK = :email",
-        ExpressionAttributeValues: {
-            ":email": `USER#${email}`,
-        },
-        Limit: 1
-    };
-
     // check if the user is exist or not
-    try {
-        const result = await client.send(new QueryCommand(checkParams));
-        if (result.Items && result.Items.length > 0) {
-            console.log(result.Items);
-            return { error: "Email already in use!" };
-        }
-    } catch (error) {
-        console.log(error);
-        return { error: "Failed to create an account. Please try again." };
+    const result = await getUserByEmail(email);
+    if (result) {
+        return { error: 'Email already in use!' }
     }
 
     const user_id = uuidv4();
