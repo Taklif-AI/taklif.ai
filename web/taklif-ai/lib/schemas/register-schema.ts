@@ -1,6 +1,9 @@
 import * as z from 'zod';
 
 export const RegisterSchema = z.object({
+    name: z.string().min(1, {
+        message: "Name is required"
+    }),
     email: z.string().email({
         message: "Email is required",
     }),
@@ -10,12 +13,7 @@ export const RegisterSchema = z.object({
         .regex(/[a-z]/, { message: "Password must include at least one lowercase letter" })
         .regex(/\d/, { message: "Password must include at least one number" })
         .regex(/[@$!%*?&]/, { message: "Password must include at least one special character (@, $, !, %, *, ?, &)" }),
-    confirmPassword: z.string(),
-    name: z.string().min(1, {
-        message: "Name is required"
+    confirmPassword: z.string().min(1, {
+        message: "Confirm Password is required"
     }),
 })
-    .refine((data) => data.password === data.confirmPassword, {
-        message: "Passwords do not match",
-        path: ["confirmPassword"],
-    })
