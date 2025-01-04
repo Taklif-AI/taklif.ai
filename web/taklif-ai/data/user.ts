@@ -15,8 +15,7 @@ export const getUserByEmail = async (email: string) => {
 
         const result = await client.send(new QueryCommand(params));
         if (result.Items && result.Items.length > 0) {
-            console.log(result.Items);
-            return result.Items;
+            return result.Items[0];
         }
     } catch (error) {
         return null;
@@ -28,13 +27,12 @@ export const getUserById = async (id: string) => {
         const params = {
             TableName: "next-auth",
             Key: {
-                pk: `USER#${id}`,
-                sk: `USER#${id}`,
+                pk: id,
+                sk: id,
             }
         };
         const result = await client.send(new GetCommand(params));
         if (result.Item) {
-            console.log(result.Item);
             return result.Item;
         }
     } catch (error) {
