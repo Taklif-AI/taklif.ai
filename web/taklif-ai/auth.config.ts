@@ -1,27 +1,34 @@
+import bcrypt from "bcryptjs";
 import type { NextAuthConfig } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
-
+import { LoginSchema } from "@/lib/schemas/login-schema";
+import { getUserByEmail } from "@/data/user";
 export default {
     providers: [
         Credentials({
-            authorize: async (credentials) => {
-                // let user = null
+            async authorize(credentials) {
+                const validatedData = LoginSchema.safeParse(credentials);
+                if (validatedData.success) {
+                    const { email, password } = validatedData.data;
 
-                // logic to salt and hash password
-                // const pwHash = saltAndHashPassword(credentials.password)
+                    const user = await getUserByEmail(email);
 
-                // logic to verify if the user exists
-                // user = await getUserFromDb(credentials.email, pwHash)
+                    if (!user || !user.password) return null;
 
-                // if (!user) {
-                //     // No user found, so this is their first attempt to login
-                //     // Optionally, this is also the place you could do a user registration
-                //     throw new Error("Invalid credentials.")
-                // }
-
-                // return user object with their profile data
-                // return user
+                    const passwordsMatch = await bcrypt.compare(
+                        password,
+                        user.password
+                    );
+                    if (passwordsMatch) {
+                        user.id = user.pk
+                        return user;
+                    }
+                }
+                return null;
             }
         })
     ],
+    pages:{
+        signIn:'/auth/sign-in',
+    }
 } satisfies NextAuthConfig
