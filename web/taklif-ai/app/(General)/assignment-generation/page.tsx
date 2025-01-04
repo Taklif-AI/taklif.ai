@@ -18,8 +18,6 @@ export default function AssignmentPage() {
   const [currentStep, setCurrentStep] = useState(0);
   const [assignmentData, setAssignmentData] = useState({
     file: null as File | "" | null,
-    // difficulty: "easy",
-    // wordCount: 400,
     interest: "",
   });
 
