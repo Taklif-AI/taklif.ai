@@ -31,7 +31,7 @@ export function Navigation() {
               Sign out
             </Button>
           )}
-          <Link href="../profile">
+          <Link href="/profile">
             <Button variant="ghost" size="icon" className="rounded-full">
               <Settings className="h-5 w-5" />
               <span className="sr-only">Profile</span>
