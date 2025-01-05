@@ -1,5 +1,5 @@
 import { client } from '@/lib/database/dynamo-client';
-import { QueryCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
+import { QueryCommand, GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 
 export const getUserByEmail = async (email: string) => {
     try {
@@ -35,6 +35,30 @@ export const getUserById = async (id: string) => {
         if (result.Item) {
             return result.Item;
         }
+    } catch (error) {
+        return null;
+    }
+}
+
+export const updateUserField = async (id: string, fieldToUpdate: string, newValue) => {
+    try {
+        const params = {
+            TableName: 'next-auth',
+            Key: {
+                pk: id,
+                sk: id,
+            },
+            UpdateExpression: `set #field = :value`,
+            ExpressionAttributeNames: {
+                "#field": fieldToUpdate, // Prevents conflicts with reserved keywords
+            },
+            ExpressionAttributeValues: {
+                ":value": newValue,
+            },
+
+        };
+
+        await client.send(new UpdateCommand(params));
     } catch (error) {
         return null;
     }
