@@ -4,7 +4,7 @@ import Credentials from "next-auth/providers/credentials"
 export default {
     providers: [
         Credentials({
-            authorize: async (credentials) => {
+            //authorize: async (credentials) => {
                 // let user = null
 
                 // logic to salt and hash password
@@ -21,7 +21,7 @@ export default {
 
                 // return user object with their profile data
                 // return user
-            }
+           // }
         })
     ],
 } satisfies NextAuthConfig
