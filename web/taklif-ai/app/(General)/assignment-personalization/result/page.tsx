@@ -25,7 +25,7 @@ export default function AssignmentResultPage() {
     setAssignment(foundAssignment);
   }, []);
 
-  const handleAction = async (action: 'like' | 'dislike' | 'regenerate' | 'simplify') => {
+  const handleAction = async (action: 'like' | 'dislike' | 'repersonalized' | 'simplify') => {
     if (!assignment) return;
 
     switch (action) {
@@ -37,20 +37,20 @@ export default function AssignmentResultPage() {
         setAssignment(prev => prev ? { ...prev, dislikes: prev.dislikes + 1 } : null);
         Toast.success("Feedback recorded");
         break;
-      case 'regenerate':
-        Toast.success("Regenerating assignment...");
+      case 'repersonalized':
+        Toast.success("repersonaling assignment...");
         // redirect user to loadings page
-        router.push('/assignment-generation/loading/');
+        router.push('/assignment-personalization/loading/');
         try {
           const lastRequestData = localStorage.getItem('lastRequestData');
           if (!lastRequestData) {
             Toast.error('No previous request data found.');
-            router.push('/assignment-generation/result');
+            router.push('/assignment-personalization/result');
             return;
           }
           const dataToBackend = JSON.parse(lastRequestData);
           // send the assignment to the backend
-          const res = await fetch('/api/assignment-generation', {
+          const res = await fetch('/api/assignment-personalization', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -63,7 +63,7 @@ export default function AssignmentResultPage() {
           // check the incoming response
           if (!res.ok || !result || result.error) {
             Toast.error(result.error);
-            router.push('/assignment-generation');
+            router.push('/assignment-personalization');
             return;
           }
           const parts = extractTitleAndText(result.customized_assignment);
@@ -73,7 +73,7 @@ export default function AssignmentResultPage() {
             createdAt: new Date().toISOString(),
             interest: dataToBackend.student_interest,
             text: parts?.text,
-            type: 're-generated',
+            type: 're-personalized',
             likes: 0,
             dislikes: 0
           };
@@ -84,8 +84,8 @@ export default function AssignmentResultPage() {
           localStorage.setItem('lastRequestData', JSON.stringify(dataToBackend));
           storage.clearProgress();
 
-          Toast.success("Assignment re-generated successfully!");
-          router.push('/assignment-generation/result/');
+          Toast.success("Assignment re-personalized successfully!");
+          router.push('/assignment-personalization/result/');
         } catch (error) {
           console.log(error);
           Toast.error("Failed to create assignment. Please try again.2");
@@ -96,7 +96,7 @@ export default function AssignmentResultPage() {
 
 
         // redirect user to loadings page
-        router.push('/assignment-generation/loading/');
+        router.push('/assignment-personalization/loading/');
 
         try {
           const res = await fetch('/api/assignment-simplification', {
@@ -110,7 +110,7 @@ export default function AssignmentResultPage() {
           // check the incoming response
           if (!res.ok) {
             Toast.error("Failed to simplify assignment. Please try again.1");
-            router.push('/assignment-generation/result');
+            router.push('/assignment-personalization/result');
             return;
           }
 
@@ -118,7 +118,7 @@ export default function AssignmentResultPage() {
           // check the parsed result
           if (!result || result.error) {
             Toast.error(result.error);
-            router.push('/assignment-generation/result');
+            router.push('/assignment-personalization/result');
             return;
           }
           console.log(result);
@@ -143,7 +143,7 @@ export default function AssignmentResultPage() {
           storage.clearProgress();
 
           Toast.success("Assignment simplified successfully!");
-          router.push('/assignment-generation/result/');
+          router.push('/assignment-personalization/result/');
           /* eslint-disable */
         } catch (error) {
           Toast.error("Failed to create assignment. Please try again.2");
