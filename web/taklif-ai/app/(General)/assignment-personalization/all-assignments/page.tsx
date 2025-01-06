@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 import { Assignment } from "@/lib/types/assigment-type";
@@ -73,9 +72,9 @@ export default function AssignmentsPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto space-y-8">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2">Generated Assignments</h1>
+          <h1 className="text-3xl font-bold mb-2">Personalized Assignments</h1>
           <p className="text-muted-foreground">
-            View and manage your AI-generated assignments
+            View and manage your AI-personalized assignments
           </p>
         </div>
 
@@ -87,7 +86,7 @@ export default function AssignmentsPage() {
                   <div>
                     <h2 className="text-xl font-semibold mb-1">{assignment.title}</h2>
                     <p className="text-sm text-muted-foreground">
-                      Generated {formatDistanceToNow(new Date(assignment.createdAt))} ago
+                      Personalized {formatDistanceToNow(new Date(assignment.createdAt))} ago
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
@@ -107,7 +106,7 @@ export default function AssignmentsPage() {
                       className="text-violet-600 hover:text-violet-700"
                     >
                       <RefreshCw className="h-4 w-4 mr-1" />
-                      Regenerate
+                      Re-personaliz
                     </Button>
                   </div>
                 </div>
@@ -144,7 +143,7 @@ export default function AssignmentsPage() {
             <Card className="p-12 text-center">
               <h3 className="text-xl font-semibold mb-2">No assignments yet</h3>
               <p className="text-muted-foreground mb-4">
-                Your generated assignments will appear here
+                Your personalized assignments will appear here
               </p>
             </Card>
           )}

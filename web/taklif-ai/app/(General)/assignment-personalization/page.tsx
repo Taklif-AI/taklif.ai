@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { PDFUpload } from "../../../components/assignment/assignment-generation-steps/pdf-upload";
-import { InterestsSelect } from "../../../components/assignment/assignment-generation-steps/interests-select";
+import { PDFUpload } from "@/components/assignment/assignment-generation-steps/pdf-upload";
+import { InterestsSelect } from "@/components/assignment/assignment-generation-steps/interests-select";
 import { ReviewStep } from "@/components/assignment/assignment-generation-steps/review-step";
 import { ProgressSteps } from "@/components/ui/progress-steps";
 import { storage } from "@/lib/utils/local-storage";
@@ -76,7 +76,7 @@ export default function AssignmentPage() {
     const apiUrl =
       process.env.NODE_ENV === "production"
         ? "https://feature-landing-assignment-wizard.***REMOVED-AMPLIFY-DOMAIN***/api/assignment-generation"
-        : "/api/assignment-generation";
+        : "/api/assignment-personalization";
     // prepare the assignment-data to the backend
     const dataToBackend = {
       student_interest: assignmentData.interest,
@@ -85,7 +85,7 @@ export default function AssignmentPage() {
     }
 
     // redirect user to loadings page
-    router.push('assignment-generation/loading/');
+    router.push('assignment-personalization/loading/');
 
 
     try {
@@ -118,7 +118,7 @@ export default function AssignmentPage() {
       // check the incoming response
       if (!res.ok || !result || result.error) {
         Toast.error(result.error);
-        router.push('/assignment-generation');
+        router.push('/assignment-personalization');
         return;
       }
 
@@ -129,7 +129,7 @@ export default function AssignmentPage() {
         createdAt: new Date().toISOString(),
         interest: assignmentData.interest,
         text: parts?.text,
-        type: 'generated',
+        type: 'personalized',
         likes: 0,
         dislikes: 0
       };
@@ -141,11 +141,11 @@ export default function AssignmentPage() {
       storage.clearProgress();
 
       Toast.success("Assignment created successfully!");
-      router.push('/assignment-generation/result');
+      router.push('/assignment-personalization/result');
       /* eslint-disable */
     } catch (error) {
       Toast.error("Failed to create assignment. Please try again.2");
-      router.push('/assignment-generation');
+      router.push('/assignment-personalization');
     }
     /* eslint-enable */
   };
