@@ -40,7 +40,7 @@ export const getUserById = async (id: string) => {
     }
 }
 
-export const updateUserFields = async (id: string, field1, value1, field2, value2) => {
+export const updateUserFields = async (id: string, field1: string, value1, field2: string, value2) => {
     try {
         const params = {
             TableName: 'next-auth',
