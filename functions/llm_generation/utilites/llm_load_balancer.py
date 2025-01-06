@@ -5,6 +5,8 @@ import boto3
 from boto3.dynamodb.conditions import Key
 from decimal import Decimal
 import os
+import random
+
 
 env_name = os.environ.get("ENV_NAME", "Development")
 
@@ -19,22 +21,19 @@ def send_request(task: str, prompt: str, metadata: dict):
     Returns:
         response (AIMessage): response of LLM
     """
-    model_list = [
-        {
-            'model_name': item['model_name'], # model alias
-            'litellm_params': {
-                key: int(value) if isinstance(value, Decimal) else value
-                for key, value in item['litellm_params'].items()
-            }
-        }
-        for item in get_model_list(task= task)
-    ]
+    # get model list with specific task
+    model_list = get_model_list(task=task)
+
+    # define the starting model
+    primary_model = random.choice(model_list)['model_name']
     
+    # setup the litellm router with required configuration to balance load across the model list
     router = setup_router(model_list=model_list)
 
+    # integrate litellm router with langchain
     chat = ChatLiteLLMRouter(
         router=router,
-        model_name="model_1",
+        model_name=primary_model,
     )
 
     messages = [SystemMessage(content=prompt)]
@@ -88,5 +87,14 @@ def get_model_list(task: str):
     
     models_list = table.scan(FilterExpression=Key('task').eq(task))
     models = models_list["Items"]
-
-    return models
+    model_list = [
+        {
+            'model_name': item['model_name'], # model alias
+            'litellm_params': {
+                key: int(value) if isinstance(value, Decimal) else value
+                for key, value in item['litellm_params'].items()
+            }
+        }
+        for item in models
+    ]
+    return model_list
