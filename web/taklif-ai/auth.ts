@@ -2,9 +2,8 @@ import NextAuth, { type DefaultSession } from "next-auth"
 import { DynamoDBAdapter } from "@auth/dynamodb-adapter"
 import { client } from '@/lib/database/dynamo-client';
 import authConfig from "@/auth.config";
-import { getUserById, updateUserField } from "./data/user";
+import { getUserById, updateUserFields } from "./data/user";
 import { JWT } from "next-auth/jwt"
-import { log } from "console";
 
 declare module "next-auth/jwt" {
     interface JWT {
@@ -34,7 +33,7 @@ export const {
         async linkAccount({ user }) {
             if (user.id) {
                 user.id = `USER#${user.id}`;
-                await updateUserField(user.id, 'emailVerified', new Date().toISOString());
+                await updateUserFields(user.id, 'emailVerified', new Date().toISOString(), 'createdAt', new Date().toISOString());
             }
         }
     },

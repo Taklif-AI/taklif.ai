@@ -40,7 +40,7 @@ export const getUserById = async (id: string) => {
     }
 }
 
-export const updateUserField = async (id: string, fieldToUpdate: string, newValue) => {
+export const updateUserFields = async (id: string, field1, value1, field2, value2) => {
     try {
         const params = {
             TableName: 'next-auth',
@@ -48,12 +48,14 @@ export const updateUserField = async (id: string, fieldToUpdate: string, newValu
                 pk: id,
                 sk: id,
             },
-            UpdateExpression: `set #field = :value`,
+            UpdateExpression: `SET #field1 = :value1, #field2 = :value2`,
             ExpressionAttributeNames: {
-                "#field": fieldToUpdate, // Prevents conflicts with reserved keywords
+                '#field1': field1,
+                '#field2': field2,
             },
             ExpressionAttributeValues: {
-                ":value": newValue,
+                ':value1': value1,
+                ':value2': value2,
             },
 
         };
