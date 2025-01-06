@@ -23,8 +23,6 @@ class InfrastructureStack(Stack):
         lambda_memory_size: int,
         lambda_timeout: int,
         LANGCHAIN_API_KEY: str,
-        GROQ_API_KEY: str,
-        GEMINI_API_KEY: str,
         LLAMA_CLOUD_API_KEY: str,
         **kwargs,
     ) -> None:
@@ -166,7 +164,6 @@ class InfrastructureStack(Stack):
         
         # Attach the policy to the user
         dynamodb_policy.attach_to_user(dynamodb_authjs_user)
-    
         # </IAM RESOURCES> ---------------------------------------------------------------------
 
 
