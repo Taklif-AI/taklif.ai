@@ -185,8 +185,6 @@ class InfrastructureStack(Stack):
                 "LANGCHAIN_ENDPOINT": "https://api.smith.langchain.com",
                 "LANGCHAIN_PROJECT": "Taklif.AI",
                 "LANGCHAIN_API_KEY": LANGCHAIN_API_KEY,
-                "GROQ_API_KEY": GROQ_API_KEY,
-                "GEMINI_API_KEY": GEMINI_API_KEY,
                 "LLAMA_CLOUD_API_KEY": LLAMA_CLOUD_API_KEY
             },
             role=lambda_role
