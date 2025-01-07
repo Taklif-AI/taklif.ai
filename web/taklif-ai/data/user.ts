@@ -65,3 +65,27 @@ export const updateUserFields = async (id: string, field1: string, value1, field
         return null;
     }
 }
+
+export const updateOneUserField = async (id: string, field: string, value) => {
+    try {
+        const params = {
+            TableName: 'next-auth',
+            Key: {
+                pk: id,
+                sk: id,
+            },
+            UpdateExpression: `SET #field = :value`,
+            ExpressionAttributeNames: {
+                '#field': field,
+            },
+            ExpressionAttributeValues: {
+                ':value': value,
+            },
+
+        };
+
+        await client.send(new UpdateCommand(params));
+    } catch (error) {
+        return null;
+    }
+}
