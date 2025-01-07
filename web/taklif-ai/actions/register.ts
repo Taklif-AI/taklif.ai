@@ -6,6 +6,8 @@ import { client } from '@/lib/database/dynamo-client';
 import { PutCommand } from "@aws-sdk/lib-dynamodb";
 import { v4 as uuidv4 } from "uuid";
 import { getUserByEmail } from "@/data/user";
+import { generateVerificationToken } from "@/lib/utils/tokens";
+import { sendVerificationEmail } from "@/lib/utils/mail";
 
 
 export async function register(formData: object) {
@@ -52,9 +54,15 @@ export async function register(formData: object) {
     // Store the user data in the database
     try {
         await client.send(new PutCommand(insertParams));
-        return { success: "User created!" };
 
-        // TODO: Send Verification token email
+        const verificationToken = await generateVerificationToken(email);
+
+        await sendVerificationEmail(
+            verificationToken.email,
+            verificationToken.token
+        );
+
+        return { success: "Confirmation email sent!" };
     } catch (error) {
         return { error: "Failed to create an account. Please try again2." };
     }
