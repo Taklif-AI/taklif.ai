@@ -4,22 +4,22 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Brain } from "lucide-react";
 import Link from "next/link";
-import { SocialAuthButtons } from "@/components/auth/social-auth-buttons";
 import { FormError } from "@/components/auth/form-error";
 import { FormSuccess } from "@/components/auth/form-success";
-import { login } from "@/actions/login";
 import { useState, useTransition } from "react";
 import { useSearchParams } from "next/navigation";
+import { newPassword } from "@/actions/new-password";
 
-export const SignIn = () => {
-    const [formData, setFormData] = useState({ email: '', password: '' });
+
+export const NewPasswordForm = () => {
+    const searchParams = useSearchParams();
+    const token = searchParams.get('token');
+
+    const [formData, setFormData] = useState({ password: '', confirmPassword: '' });
     const [error, setError] = useState<string | undefined>("");
     const [success, setSuccess] = useState<string | undefined>("");
     const [isPending, startTransition] = useTransition();
-    const searchParams = useSearchParams();
-    const urlError = searchParams.get("error") === "OAuthAccountNotLinked"
-        ? "Email already in use with different provider!"
-        : "";
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -32,8 +32,10 @@ export const SignIn = () => {
         setError("");
         setSuccess("");
 
+        console.log(formData);
+
         startTransition(() => {
-            login(formData)
+            newPassword(formData,token)
                 .then((data) => {
                     setError(data?.error);
                     setSuccess(data?.success);
@@ -55,58 +57,44 @@ export const SignIn = () => {
                             <Brain className="h-12 w-12 text-purple-500" />
                         </div>
 
-                        <h2 className="text-3xl font-bold text-center text-white mb-2">Welcome Back</h2>
-                        <p className="text-gray-400 text-center mb-8">Sign in to continue to your AI workspace</p>
-
-                        <SocialAuthButtons />
+                        <h2 className="text-3xl font-bold text-center text-white mb-2">New password</h2>
+                        <p className="text-gray-400 text-center mb-8">Enter password to continue to your AI workspace</p>
 
                         <form className="mt-6 space-y-6" method="POST" onSubmit={handleSubmit}>
                             <div>
                                 <Input
-                                    name="email"
-                                    type="email"
-                                    value={formData.email}
-                                    disabled={isPending}
-                                    placeholder="Email address"
-                                    className="w-full bg-gray-800/50 border-gray-700 text-white placeholder:text-gray-400"
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div>
-                                <Input
                                     name="password"
-                                    type="password"
                                     value={formData.password}
+                                    type="password"
                                     disabled={isPending}
                                     placeholder="Password"
                                     className="w-full bg-gray-800/50 border-gray-700 text-white placeholder:text-gray-400"
                                     onChange={handleChange}
                                 />
-                                <Button
-                                    size="sm"
-                                    variant="link"
-                                    asChild
-                                    className="px-0 mt-1 font-normal"
-                                    color="purple"
-                                >
-
-                                    <Link href="/auth/reset" className="text-purple-400 hover:text-purple-300">
-                                        Forgot password?
-                                    </Link>
-                                </Button>
+                            </div>
+                            <div>
+                                <Input
+                                    name="confirmPassword"
+                                    value={formData.confirmPassword}
+                                    type="password"
+                                    disabled={isPending}
+                                    placeholder="Password Confirmation"
+                                    className="w-full bg-gray-800/50 border-gray-700 text-white placeholder:text-gray-400"
+                                    onChange={handleChange}
+                                />
                             </div>
 
-                            <FormError message={error || urlError} />
+                            <FormError message={error} />
                             <FormSuccess message={success} />
                             <Button type="submit" disabled={isPending} className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white">
-                                Sign In
+                                Reset password
                             </Button>
                         </form>
 
                         <p className="mt-6 text-center text-gray-400">
-                            Don&apos;t have an account?{" "}
-                            <Link href="/auth/sign-up" className="text-purple-400 hover:text-purple-300">
-                                Sign up
+                            Back to {" "}
+                            <Link href="/auth/sign-in" className="text-purple-400 hover:text-purple-300">
+                                login
                             </Link>
                         </p>
                     </div>

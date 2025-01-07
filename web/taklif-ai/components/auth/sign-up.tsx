@@ -56,7 +56,7 @@ export const SignUp = () => {
                         <h2 className="text-3xl font-bold text-center text-white mb-2">Create Account</h2>
                         <p className="text-gray-400 text-center mb-8">Join our AI platform today</p>
 
-                        <SocialAuthButtons /*mode="sign-up"*/ />
+                        <SocialAuthButtons />
 
 
 
