@@ -26,7 +26,7 @@ export function HomeCTA() {
         </p>
 
         <div className="flex flex-col sm:flex-row justify-center gap-4 items-center">
-          <Link href="/assignment-generation">
+          <Link href="/assignment-personalization">
             <Button size="lg" className="w-full sm:w-auto bg-white text-violet-600 hover:bg-white/90">
               Create Your First Assignment
               <ArrowRight className="ml-2 h-4 w-4" />
