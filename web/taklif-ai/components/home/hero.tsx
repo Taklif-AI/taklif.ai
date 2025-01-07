@@ -55,7 +55,7 @@ export function HomeHero() {
           </p>
 
           <div className="flex flex-col sm:flex-row justify-center gap-4 items-center">
-            <Link href="/assignment-generation">
+            <Link href="/assignment-personalization">
               <Button size="lg" className="rounded-full w-full sm:w-auto text-white-500 bg-violet-600 hover:bg-violet-700">
                 Create Your First Assignment
                 <ArrowRight className="ml-2 h-4 w-4" />
