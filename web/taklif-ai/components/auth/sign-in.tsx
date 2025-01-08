@@ -12,7 +12,8 @@ import { useState, useTransition } from "react";
 import { useSearchParams } from "next/navigation";
 
 export const SignIn = () => {
-    const [formData, setFormData] = useState({ email: '', password: '' });
+    const [formData, setFormData] = useState({ email: '', password: '', code: '' });
+    const [showTwoFactor, setShowTwoFactor] = useState(false);
     const [error, setError] = useState<string | undefined>("");
     const [success, setSuccess] = useState<string | undefined>("");
     const [isPending, startTransition] = useTransition();
@@ -35,9 +36,19 @@ export const SignIn = () => {
         startTransition(() => {
             login(formData)
                 .then((data) => {
-                    setError(data?.error);
-                    setSuccess(data?.success);
+                    if (data?.error) {
+                        setError(data.error);
+                    }
+
+                    if (data?.success) {
+                        setSuccess(data.success);
+                    }
+
+                    if (data?.twoFactor) {
+                        setShowTwoFactor(true);
+                    }
                 })
+                .catch(() => setError('Something went wrong'))
         })
 
     }
@@ -55,51 +66,78 @@ export const SignIn = () => {
                             <Brain className="h-12 w-12 text-purple-500" />
                         </div>
 
-                        <h2 className="text-3xl font-bold text-center text-white mb-2">Welcome Back</h2>
-                        <p className="text-gray-400 text-center mb-8">Sign in to continue to your AI workspace</p>
+                        <h2 className="text-3xl font-bold text-center text-white mb-2">{showTwoFactor ? "2FA" : "Welcome Back"}</h2>
+                        {showTwoFactor && (
+                            <p className="text-gray-400 text-center mb-8">Enter the code you just received in your email</p>
+                        )}
+                        {!showTwoFactor && (
+                            <>
+                                <p className="text-gray-400 text-center mb-8">Sign in to continue to your AI workspace</p>
+                                <SocialAuthButtons />
+                            </>
+                        )}
 
-                        <SocialAuthButtons />
+
+
 
                         <form className="mt-6 space-y-6" method="POST" onSubmit={handleSubmit}>
-                            <div>
-                                <Input
-                                    name="email"
-                                    type="email"
-                                    value={formData.email}
-                                    disabled={isPending}
-                                    placeholder="Email address"
-                                    className="w-full bg-gray-800/50 border-gray-700 text-white placeholder:text-gray-400"
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div>
-                                <Input
-                                    name="password"
-                                    type="password"
-                                    value={formData.password}
-                                    disabled={isPending}
-                                    placeholder="Password"
-                                    className="w-full bg-gray-800/50 border-gray-700 text-white placeholder:text-gray-400"
-                                    onChange={handleChange}
-                                />
-                                <Button
-                                    size="sm"
-                                    variant="link"
-                                    asChild
-                                    className="px-0 mt-1 font-normal"
-                                    color="purple"
-                                >
 
-                                    <Link href="/auth/reset" className="text-purple-400 hover:text-purple-300">
-                                        Forgot password?
-                                    </Link>
-                                </Button>
-                            </div>
+                            {showTwoFactor && (
+                                <div>
+                                    <Input
+                                        name="code"
+                                        type="text"
+                                        value={formData.code}
+                                        disabled={isPending}
+                                        placeholder="Two Factor Code"
+                                        className="w-full bg-gray-800/50 border-gray-700 text-white placeholder:text-gray-400"
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            )}
 
+                            {!showTwoFactor && (
+                                <>
+                                    <div>
+                                        <Input
+                                            name="email"
+                                            type="email"
+                                            value={formData.email}
+                                            disabled={isPending}
+                                            placeholder="Email address"
+                                            className="w-full bg-gray-800/50 border-gray-700 text-white placeholder:text-gray-400"
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <div>
+                                        <Input
+                                            name="password"
+                                            type="password"
+                                            value={formData.password}
+                                            disabled={isPending}
+                                            placeholder="Password"
+                                            className="w-full bg-gray-800/50 border-gray-700 text-white placeholder:text-gray-400"
+                                            onChange={handleChange}
+                                        />
+                                        <Button
+                                            size="sm"
+                                            variant="link"
+                                            asChild
+                                            className="px-0 mt-1 font-normal"
+                                            color="purple"
+                                        >
+
+                                            <Link href="/auth/reset" className="text-purple-400 hover:text-purple-300">
+                                                Forgot password?
+                                            </Link>
+                                        </Button>
+                                    </div>
+                                </>
+                            )}
                             <FormError message={error || urlError} />
                             <FormSuccess message={success} />
                             <Button type="submit" disabled={isPending} className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white">
-                                Sign In
+                                {showTwoFactor ? 'Confirm' : 'Login'}
                             </Button>
                         </form>
 
