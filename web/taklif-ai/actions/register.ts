@@ -46,6 +46,7 @@ export async function register(formData: object) {
             name: name,
             email: email,
             password: hashedPassword,
+            isTwoFactorEnabled: false,
             createdAt: new Date().toISOString(),
         },
         ConditionExpression: "attribute_not_exists(pk)",

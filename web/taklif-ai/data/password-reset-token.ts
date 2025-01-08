@@ -1,5 +1,5 @@
 import { client } from '@/lib/database/dynamo-client';
-import { QueryCommand, GetCommand, DeleteCommand } from "@aws-sdk/lib-dynamodb";
+import { QueryCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
 
 
 export const getPasswordResetTokenByEmail = async (email: string) => {

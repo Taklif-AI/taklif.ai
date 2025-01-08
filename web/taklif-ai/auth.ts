@@ -3,7 +3,10 @@ import { DynamoDBAdapter } from "@auth/dynamodb-adapter"
 import { client } from '@/lib/database/dynamo-client';
 import authConfig from "@/auth.config";
 import { getUserById, updateUserFields } from "./data/user";
+import { getTwoFactorConfirmationByUserId } from "@/data/two-factor-confirmation";
 import { JWT } from "next-auth/jwt"
+import { DeleteCommand } from "@aws-sdk/lib-dynamodb";
+
 
 declare module "next-auth/jwt" {
     interface JWT {
@@ -47,12 +50,24 @@ export const {
             // prevent login if email is not verified yet
             if (!existingUser?.emailVerified) return false;
 
-            //TODO: Add 2FA check
+            if (existingUser.isTwoFactorEnabled) {
+
+                const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(existingUser.pk);
+
+                if (!twoFactorConfirmation) return false;
+
+                // Delete two factor confirmationfor next sign in process
+                await client.send(new DeleteCommand({
+                    TableName: 'next-auth',
+                    Key: {
+                        pk: twoFactorConfirmation.pk,
+                        sk: twoFactorConfirmation.sk,
+                    },
+                    ConditionExpression: "attribute_exists(pk)",
+                }))
+            }
             return true;
         },
-        // async redirect() {
-        //     return '/';
-        // },
         async session({ session, token }) {
             session.user.id = token.id as string; //extend the session with user id
             if (token.createdAt && session.user) {
