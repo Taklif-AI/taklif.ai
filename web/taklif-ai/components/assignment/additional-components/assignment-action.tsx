@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 
 interface AssignmentActionsProps {
   assignment: Assignment;
-  onAction: (action: 'like' | 'dislike' | 'regenerate' | 'simplify') => void;
+  onAction: (action: 'like' | 'dislike' | 'repersonalized' | 'simplify') => void;
 }
 
 export function AssignmentActions({ assignment, onAction }: AssignmentActionsProps) {
