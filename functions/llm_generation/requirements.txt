@@ -1,5 +1,9 @@
 langchain[all]
 litellm
 langchain_community
+langsmith
 openai
 boto3
+pymupdf
+PyPDF2
+llama-parse

@@ -7,9 +7,8 @@ export async function POST(req) {
         const body = await req.json();
 
         const dataToApi = {
-            task: 'rephrase',
+            task: 'simplify',
             params: {
-                complexity_level: 'Basic',
                 interest: body.interest,
                 personalized_assignment: body.text
             }
@@ -22,14 +21,15 @@ export async function POST(req) {
             body: JSON.stringify(dataToApi),
         })
 
-        if (!res.ok) {
-            return new Response(JSON.stringify({ error: 'Failed to generate assignment' }), { status: 500 });
+        const data = await res.json();
+        if (res.status == 400 && data?.rejected) {
+            return new Response(JSON.stringify({ error: data.rejected }), { status: 400 });
         }
 
-        const data = await res.json();
-        if (data?.error) {
-            return new Response(JSON.stringify({ error: data.error }), { status: 400 });
+        if (!res.ok || data.error || data.message) {
+            return new Response(JSON.stringify({ error: 'Failed to generate assignment' }), { status: 500 });
         }
+        
         return new Response(JSON.stringify({ success: true, simplified_assignment: data.response }), { status: 200 });
     } catch (error) {
         console.log(error);
