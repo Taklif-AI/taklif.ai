@@ -5,7 +5,6 @@ import authConfig from "@/auth.config";
 import { getUserById, updateUserFields } from "./data/user";
 import { deleteTwoFactorConfirmation, getTwoFactorConfirmationByUserId } from "@/data/two-factor-confirmation";
 import { JWT } from "next-auth/jwt"
-import { DeleteCommand } from "@aws-sdk/lib-dynamodb";
 
 
 declare module "next-auth/jwt" {
@@ -28,6 +27,7 @@ export const {
     signIn,
     signOut,
 } = NextAuth({
+    secret:process.env.AUTH_SECRET,
     pages: {
         signIn: 'auth/sign-in',
         error: 'auth/error',
