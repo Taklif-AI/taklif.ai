@@ -1,7 +1,7 @@
 'use server';
 
 import { signIn } from "@/auth";
-import { getTwoFactorTokenByEmail } from "@/data/two-factor-token";
+import { deleteTwoFactorToken, getTwoFactorTokenByEmail } from "@/data/two-factor-token";
 import { getUserByEmail } from "@/data/user";
 import { LoginSchema } from "@/lib/schemas/login-schema";
 import {
@@ -14,9 +14,7 @@ import {
 } from "@/lib/utils/tokens";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { AuthError } from "next-auth";
-import { client } from '@/lib/database/dynamo-client';
-import { PutCommand, DeleteCommand } from "@aws-sdk/lib-dynamodb";
-import { getTwoFactorConfirmationByUserId } from "@/data/two-factor-confirmation";
+import { createTwoFactorConfirmation, deleteTwoFactorConfirmation, getTwoFactorConfirmationByUserId } from "@/data/two-factor-confirmation";
 import { v4 as uuidv4 } from "uuid";
 
 
@@ -24,6 +22,7 @@ export async function login(formData: object) {
 
     const validateData = LoginSchema.safeParse(formData);
 
+    // validate the user credentials
     if (!validateData.success) {
         const errors = validateData.error.errors.map((err) => err.message)
         return { error: errors[0] };
@@ -31,18 +30,20 @@ export async function login(formData: object) {
 
     const { email, password, code } = validateData.data;
 
+    // check the email existence
     const existingUser = await getUserByEmail(email);
 
     if (!existingUser || !existingUser.email || !existingUser.password) {
         return { error: 'Email does not exist!' }
     }
 
-
+    // check the email verification
     if (!existingUser.emailVerified) {
         const verificationToken = await generateVerificationToken(
             existingUser.email
         );
 
+        // send verification token email
         await sendVerificationEmail(
             verificationToken.email,
             verificationToken.token
@@ -51,10 +52,14 @@ export async function login(formData: object) {
         return { success: 'Confirmation email sent!' };
     }
 
+    // check the two factor enabled or not
     if (existingUser.isTwoFactorEnabled && existingUser.email) {
+        // if the user entered the code
         if (code) {
+            // get the code from the DB
             const twoFactorToken = await getTwoFactorTokenByEmail(existingUser.email);
 
+            // check the code 
             if (!twoFactorToken) {
                 return { error: "Invalid code!" }
             }
@@ -70,26 +75,17 @@ export async function login(formData: object) {
                 return { error: "Code expired!" }
             }
 
-            await client.send(new DeleteCommand({
-                TableName: 'next-auth',
-                Key: {
-                    pk: twoFactorToken.pk,
-                    sk: twoFactorToken.sk,
-                },
-                ConditionExpression: "attribute_exists(pk)",
-            }));
+            // delete the token from DB
+            await deleteTwoFactorToken(twoFactorToken.pk, twoFactorToken.sk);
 
+            // get the last 2FA confirmation of the user
             const exisitingConfirmation = await getTwoFactorConfirmationByUserId(existingUser.pk);
             if (exisitingConfirmation) {
-                await client.send(new DeleteCommand({
-                    TableName: 'next-auth',
-                    Key: {
-                        pk: exisitingConfirmation.pk,
-                        sk: exisitingConfirmation.sk,
-                    },
-                    ConditionExpression: "attribute_exists(pk)",
-                }));
+
+                await deleteTwoFactorConfirmation(exisitingConfirmation.pk, exisitingConfirmation.sk);
             }
+
+            // create a new confirmation
             const twoFactorConfirmationId = uuidv4();
             const towFactorConfirmation = {
                 pk: `TFC#${twoFactorConfirmationId}`,
@@ -97,20 +93,11 @@ export async function login(formData: object) {
                 GSI1PK: existingUser.pk,
                 GSI1SK: existingUser.sk,
             };
-            const parmas = {
-                TableName: 'next-auth',
-                Item: towFactorConfirmation,
-                ConditionExpression: "attribute_not_exists(pk)",
-            };
 
-            try {
-                await client.send(new PutCommand(parmas));
-            } catch (error) {
-                console.error("Error inserting item:", error);
-                throw error;
-            }
+            await createTwoFactorConfirmation(towFactorConfirmation);
 
         } else {
+            // if there is no code , generate and send a code 
             const twoFactorToken = await generateTwoFactorToken(existingUser.email);
             await sendTwoFactorTokenEmail(
                 twoFactorToken.email,
@@ -121,6 +108,7 @@ export async function login(formData: object) {
         }
 
     }
+    // begin the sign-in process
     try {
         await signIn("credentials", {
             email,
