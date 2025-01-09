@@ -1,14 +1,20 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Poppins } from 'next/font/google';
 import { Navigation } from '@/components/ui/navigation';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from "@/components/ui/sonner";
 import { Footer } from '@/components/ui/footer';
-const inter = Inter({ subsets: ['latin'] });
 import { SessionProvider } from 'next-auth/react';
+
 import { auth } from '@/auth';
 
+const poppins = Poppins({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-poppins',
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900']
+});
 export const metadata: Metadata = {
   title: 'Taklif.AI',
   description: 'AI-powered assignment generation for personalized learning',
@@ -23,7 +29,7 @@ export default async function RootLayout({
   return (
     <SessionProvider session={session}>
       <html lang="en" suppressHydrationWarning>
-        <body className={inter.className}>
+        <body className={poppins.className}>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"

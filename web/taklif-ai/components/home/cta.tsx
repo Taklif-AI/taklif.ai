@@ -27,14 +27,14 @@ export function HomeCTA() {
 
         <div className="flex flex-col sm:flex-row justify-center gap-4 items-center">
           <Link href="/assignment-personalization">
-            <Button size="lg" className="w-full sm:w-auto bg-white text-violet-600 hover:bg-white/90">
+            <Button size="lg" className="rounded-full w-full sm:w-auto bg-white text-violet-600 hover:bg-white/90">
               Create Your First Assignment
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </Link>
           <Button
             size="lg"
-            className="w-full sm:w-auto bg-white text-violet-600 hover:bg-white/90"
+            className="rounded-full w-full sm:w-auto bg-white text-violet-600 hover:bg-white/90"
           >
             Watch Demo
           </Button>

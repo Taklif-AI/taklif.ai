@@ -18,9 +18,9 @@ interface TeamMember {
 
 const teamMembers: TeamMember[] = [
   {
-    name: "Sarah Chen",
-    role: "AI Research Lead",
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&auto=format&fit=crop&q=80",
+    name: "Zaki Kurdya",
+    role: "Lead, AI Engineer",
+    image: "/zaki.jpg",
     bio: "PhD in Machine Learning with focus on educational AI systems",
     social: {
       github: "#",
@@ -29,9 +29,9 @@ const teamMembers: TeamMember[] = [
     }
   },
   {
-    name: "Michael Rodriguez",
-    role: "Education Specialist",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&auto=format&fit=crop&q=80",
+    name: "Salem Amassi",
+    role: "LLM-for-production Dev",
+    image: "salem.jpg",
     bio: "15 years experience in curriculum development and educational technology",
     social: {
       linkedin: "#",
@@ -39,9 +39,9 @@ const teamMembers: TeamMember[] = [
     }
   },
   {
-    name: "Aisha Patel",
-    role: "Full Stack Developer",
-    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&auto=format&fit=crop&q=80",
+    name: "Mohammed Basil",
+    role: "Full-Stack Web Developer",
+    image: "mohammed.jpg",
     bio: "Expert in building scalable educational platforms and AI integration",
     social: {
       github: "#",
@@ -49,8 +49,8 @@ const teamMembers: TeamMember[] = [
     }
   },
   {
-    name: "David Kim",
-    role: "UX/UI Designer",
+    name: "Shady Telbany",
+    role: "Full-Stack Web Developer",
     image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&auto=format&fit=crop&q=80",
     bio: "Passionate about creating intuitive and accessible learning experiences",
     social: {
@@ -76,7 +76,7 @@ function TeamMemberCard({ member }: { member: TeamMember }) {
         </div>
         <h3 className="text-xl font-semibold mb-1">{member.name}</h3>
         <p className="text-violet-600 dark:text-violet-400 font-medium mb-2">{member.role}</p>
-        <p className="text-muted-foreground mb-4">{member.bio}</p>
+        {/* <p className="text-muted-foreground mb-4">{member.bio}</p> */}
         <div className="flex justify-center space-x-3">
           {member.social.github && (
             <a href={member.social.github} className="text-muted-foreground hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
