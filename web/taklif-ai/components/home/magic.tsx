@@ -37,7 +37,7 @@ export function HomeMagic() {
   };
 
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8">
+    <section id="magic" className="py-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <div className="inline-flex items-center justify-center p-2 mb-8 bg-violet-100 dark:bg-violet-900/30 rounded-full">

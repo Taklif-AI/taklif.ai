@@ -9,7 +9,8 @@ import { Brain, Sparkles, Lightbulb, Book, Atom } from "lucide-react";
 import { motion } from "framer-motion";
 import { validateInterest } from "@/lib/validators/assignment-validator";
 import { Toast } from "@/lib/utils/toast";
-
+import Image from "next/image";
+import SVGIMG from "../../../public/white.png";
 interface InterestsSelectProps {
   onNext: (interest: string) => void;
   onBack: () => void;
@@ -75,32 +76,19 @@ export function InterestsSelect({ onNext, onBack, initialInterests }: InterestsS
   return (
     <div className="relative">
       {/* Background Pattern */}
-      <div className="absolute inset-0 -z-10 overflow-hidden">
+      <div className="absolute inset-0 w-fit -z-10 overflow-hidden">
+
         <div className="absolute inset-0 bg-gradient-to-br from-violet-50/50 to-white dark:from-violet-950/20 dark:to-background" />
-        {backgroundIcons.map((Icon, index) => (
-          <motion.div
-            key={index}
-            className="absolute text-violet-100 dark:text-violet-900/20"
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{
-              opacity: 0.5,
-              scale: 1,
-              x: Math.random() * window.innerWidth,
-              y: Math.random() * window.innerHeight,
-            }}
-            transition={{
-              duration: 20,
-              repeat: Infinity,
-              repeatType: "reverse",
-              delay: index * 2,
-            }}
-          >
-            <Icon size={64} />
-          </motion.div>
-        ))}
+      
       </div>
 
       <Card className="p-8 max-w-xl mx-auto backdrop-blur-sm bg-white/80 dark:bg-gray-950/80">
+         
+        <div className="overflow-auto h-20 ;
+  ">
+
+        <Image className=" absolute   translate-y-[-1.9rem] translate-x-[-2rem] opacity-[0.04]	 -z-10  " src={SVGIMG} alt={""}/>
+        </div>
         <div className="text-center mb-6">
           <h2 className="text-2xl font-bold mb-2">Select Your Interest</h2>
           <p className="text-muted-foreground">
@@ -150,13 +138,13 @@ export function InterestsSelect({ onNext, onBack, initialInterests }: InterestsS
         </div>
 
         <div className="mt-6 flex justify-between">
-          <Button variant="outline" onClick={onBack}>
+          <Button className="rounded-full" variant="outline" onClick={onBack}>
             Back
           </Button>
-          <Button
+          <Button 
             onClick={handleNext}
             disabled={!selectedInterest.trim()}
-            className="bg-violet-600 hover:bg-violet-700"
+            className="bg-violet-600 hover:bg-violet-700 rounded-full"
           >
             Continue
           </Button>

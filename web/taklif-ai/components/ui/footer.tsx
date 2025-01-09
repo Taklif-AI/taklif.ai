@@ -1,6 +1,8 @@
 "use client";
 
 import { Github, Twitter, Mail } from "lucide-react";
+import Image from "next/image";
+import SVGIMG from "../../public/taklif-logo.svg";
 
 export function Footer() {
   return (
@@ -8,7 +10,8 @@ export function Footer() {
       <div className="container mx-auto px-4 py-6">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Taklif.ai. All rights reserved.
+        <Image className="w-40" src={SVGIMG} alt={""}/>
+            © {new Date().getFullYear()} Taklif.AI. All rights reserved.
           </div>
           <div className="flex items-center space-x-6">
             <a
@@ -17,8 +20,9 @@ export function Footer() {
             >
               <Mail className="h-4 w-4" />
               <span className="text-sm">taklif.ai.contact@gmail.com</span>
+
             </a>
-            <div className="flex items-center space-x-4">
+            {/* <div className="flex items-center space-x-4">
               <a
                 href="#"
                 className="text-muted-foreground hover:text-foreground transition-colors"
@@ -31,7 +35,7 @@ export function Footer() {
               >
                 <Twitter className="h-5 w-5" />
               </a>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
