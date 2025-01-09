@@ -16,7 +16,7 @@ export async function POST(req) {
         }
 
         // Send data to llm api
-        const res = await fetch('https://pdgr6qk367.execute-api.eu-north-1.amazonaws.com/Development/llm_generation', {
+        const res = await fetch('https://ne4754rnb8.execute-api.eu-north-1.amazonaws.com/Development/llm_generation', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', },
             body: JSON.stringify(dataToApi),
