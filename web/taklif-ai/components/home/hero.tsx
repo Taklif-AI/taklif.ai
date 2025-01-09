@@ -21,20 +21,20 @@ export function HomeHero() {
         />
       </div>
       
-      <div className="relative max-w-7xl mx-auto">
-        <div className="text-center">
+      <div className="relative max-w-7xl mx-auto justify-items: flex-start;">
+        <div className="text-center justify-start	 ">
           <Badge className="mb-4" variant="secondary">
             <Sparkles className="mr-1 h-3 w-3" />
             AI-Powered Learning
           </Badge>
           
           <div className="flex justify-center mb-8">
-            <div className="relative w-40 h-40">
+            <div className="relative w-90 h-40">
               <Image
                 src="/taklif-logo.svg"
                 alt="Taklif.ai Logo"
-                width={160}
-                height={160}
+                width={500}
+                height={500}
                 priority
                 className="object-contain"
               />
@@ -61,7 +61,7 @@ export function HomeHero() {
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
-            <Link href="#features">
+            <Link href="#magic">
               <Button size="lg" variant="outline" className="rounded-full w-full sm:w-auto">
                 See How It Works
               </Button>
