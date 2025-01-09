@@ -1,15 +1,14 @@
-import { getVerificationTokenByEmail } from "@/data/verification-token";
-import { getPasswordResetTokenByEmail } from "@/data/password-reset-token";
-import { getTwoFactorTokenByEmail } from "@/data/two-factor-token";
+import { createVerificationToken, deleteVerificationToken, getVerificationTokenByEmail } from "@/data/verification-token";
+import { createPasswordResetToken, deletePasswordResetToken, getPasswordResetTokenByEmail } from "@/data/password-reset-token";
+import { createTwoFactorToken, deleteTwoFactorToken, getTwoFactorTokenByEmail } from "@/data/two-factor-token";
 import { v4 as uuidv4 } from "uuid";
 import crypto from "crypto";
-import { client } from '@/lib/database/dynamo-client';
-import { PutCommand, DeleteCommand } from "@aws-sdk/lib-dynamodb";
 
 
 export const generateTwoFactorToken = async (
     email: string
 ) => {
+    const tokenId = uuidv4();
     const token = crypto.randomInt(100000, 1000000).toString(); // 6 digits number
     const now = Math.floor(Date.now() / 1000); // Current time in seconds
     const expires = now + 300; // expire the token in 1hour
@@ -17,20 +16,13 @@ export const generateTwoFactorToken = async (
     const existingToken = await getTwoFactorTokenByEmail(email);
 
     if (existingToken) {
-        await client.send(new DeleteCommand({
-            TableName: 'next-auth',
-            Key: {
-                pk: existingToken.pk,
-                sk: existingToken.sk,
-            },
-            ConditionExpression: "attribute_exists(pk)",
-        }))
+        await deleteTwoFactorToken(existingToken.pk, existingToken.sk);
     }
 
     // Create a new two factor token record in the database
-    const towFactorToken = {
-        pk: `TFT#${token}`,
-        sk: `TFT#${token}`,
+    const twoFactorToken = {
+        pk: `TFT#${tokenId}`,
+        sk: `TFT#${tokenId}`,
         GSI1PK: `TFT#${email}`,
         GSI1SK: `TFT#${email}`,
         email: email,
@@ -38,20 +30,8 @@ export const generateTwoFactorToken = async (
         expires: expires
     };
 
-    const parmas = {
-        TableName: 'next-auth',
-        Item: towFactorToken,
-        ConditionExpression: "attribute_not_exists(pk)",
-    };
-
-    try {
-        await client.send(new PutCommand(parmas));
-        return towFactorToken;
-    } catch (error) {
-        console.error("Error inserting item:", error);
-        throw error;
-    }
-
+    await createTwoFactorToken(twoFactorToken);
+    return twoFactorToken;
 }
 
 export const generatePasswordResetToken = async (email: string) => {
@@ -62,14 +42,7 @@ export const generatePasswordResetToken = async (email: string) => {
     const existingToken = await getPasswordResetTokenByEmail(email);
 
     if (existingToken) {
-        await client.send(new DeleteCommand({
-            TableName: 'next-auth',
-            Key: {
-                pk: existingToken.pk,
-                sk: existingToken.sk,
-            },
-            ConditionExpression: "attribute_exists(pk)",
-        }))
+        await deletePasswordResetToken(existingToken.pk, existingToken.sk);
     }
 
     // Create a new password reset token record in the database
@@ -83,18 +56,9 @@ export const generatePasswordResetToken = async (email: string) => {
         expires: expires
     };
 
-    const parmas = {
-        TableName: 'next-auth',
-        Item: passwordResetToken,
-        ConditionExpression: "attribute_not_exists(pk)",
-    };
-    try {
-        await client.send(new PutCommand(parmas));
-        return passwordResetToken;
-    } catch (error) {
-        console.error("Error inserting item:", error);
-        throw error;
-    }
+    await createPasswordResetToken(passwordResetToken);
+    return passwordResetToken;
+
 }
 
 
@@ -106,14 +70,7 @@ export const generateVerificationToken = async (email: string) => {
     const existingToken = await getVerificationTokenByEmail(email);
 
     if (existingToken) {
-        await client.send(new DeleteCommand({
-            TableName: 'next-auth',
-            Key: {
-                pk: existingToken.pk,
-                sk: existingToken.sk,
-            },
-            ConditionExpression: "attribute_exists(pk)",
-        }))
+        await deleteVerificationToken(existingToken.pk, existingToken.sk);
     }
 
     // Create a new verification token record in the database
@@ -127,17 +84,7 @@ export const generateVerificationToken = async (email: string) => {
         expires: expires
     };
 
-    const parmas = {
-        TableName: 'next-auth',
-        Item: verificationToken,
-        ConditionExpression: "attribute_not_exists(pk)",
-    };
-    try {
-        await client.send(new PutCommand(parmas));
-        return verificationToken;
-    } catch (error) {
-        console.error("Error inserting item:", error);
-        throw error;
-    }
+    await createVerificationToken(verificationToken);
+    return verificationToken;
 }
 

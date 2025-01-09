@@ -1,23 +1,39 @@
 import { client } from '@/lib/database/dynamo-client';
-import { QueryCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
+import { PutCommand, QueryCommand, DeleteCommand } from "@aws-sdk/lib-dynamodb";
 
-export const getTwoFactorTokenByToken = async (token: string) => {
+
+export const createTwoFactorToken = async (item: object) => {
+    const parmas = {
+        TableName: 'next-auth',
+        Item: item,
+        ConditionExpression: "attribute_not_exists(pk)",
+    };
+
     try {
-        const params = {
-            TableName: 'next-auth',
-            Key: {
-                pk: token,
-                sk: token,
-            }
-        };
-        const result = await client.send(new GetCommand(params));
-        if (result.Item) {
-            return result.Item;
-        }
+        await client.send(new PutCommand(parmas));
     } catch (error) {
-        return null;
+        console.error("Error inserting item:", error);
+        throw error;
     }
 }
+
+// export const getTwoFactorTokenByToken = async (token: string) => {
+//     try {
+//         const params = {
+//             TableName: 'next-auth',
+//             Key: {
+//                 pk: token,
+//                 sk: token,
+//             }
+//         };
+//         const result = await client.send(new GetCommand(params));
+//         if (result.Item) {
+//             return result.Item;
+//         }
+//     } catch (error) {
+//         return null;
+//     }
+// }
 
 export const getTwoFactorTokenByEmail = async (email: string) => {
     try {
@@ -34,6 +50,21 @@ export const getTwoFactorTokenByEmail = async (email: string) => {
         if (result.Items && result.Items.length > 0) {
             return result.Items[0];
         }
+    } catch (error) {
+        return null;
+    }
+}
+
+export const deleteTwoFactorToken = async (pk: string, sk: string) => {
+    try {
+        await client.send(new DeleteCommand({
+            TableName: 'next-auth',
+            Key: {
+                pk: pk,
+                sk: sk,
+            },
+            ConditionExpression: "attribute_exists(pk)",
+        }));
     } catch (error) {
         return null;
     }

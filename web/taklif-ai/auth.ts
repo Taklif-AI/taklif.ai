@@ -3,7 +3,7 @@ import { DynamoDBAdapter } from "@auth/dynamodb-adapter"
 import { client } from '@/lib/database/dynamo-client';
 import authConfig from "@/auth.config";
 import { getUserById, updateUserFields } from "./data/user";
-import { getTwoFactorConfirmationByUserId } from "@/data/two-factor-confirmation";
+import { deleteTwoFactorConfirmation, getTwoFactorConfirmationByUserId } from "@/data/two-factor-confirmation";
 import { JWT } from "next-auth/jwt"
 import { DeleteCommand } from "@aws-sdk/lib-dynamodb";
 
@@ -57,14 +57,7 @@ export const {
                 if (!twoFactorConfirmation) return false;
 
                 // Delete two factor confirmationfor next sign in process
-                await client.send(new DeleteCommand({
-                    TableName: 'next-auth',
-                    Key: {
-                        pk: twoFactorConfirmation.pk,
-                        sk: twoFactorConfirmation.sk,
-                    },
-                    ConditionExpression: "attribute_exists(pk)",
-                }))
+                await deleteTwoFactorConfirmation(twoFactorConfirmation.pk, twoFactorConfirmation.sk);
             }
             return true;
         },

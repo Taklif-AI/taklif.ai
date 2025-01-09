@@ -1,6 +1,20 @@
 import { client } from '@/lib/database/dynamo-client';
-import { QueryCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
+import { PutCommand, QueryCommand, GetCommand, DeleteCommand } from "@aws-sdk/lib-dynamodb";
 
+
+export const createPasswordResetToken = async (item: object) => {
+    const parmas = {
+        TableName: 'next-auth',
+        Item: item,
+        ConditionExpression: "attribute_not_exists(pk)",
+    };
+    try {
+        await client.send(new PutCommand(parmas));
+    } catch (error) {
+        console.error("Error inserting item:", error);
+        throw error;
+    }
+}
 
 export const getPasswordResetTokenByEmail = async (email: string) => {
     try {
@@ -36,6 +50,21 @@ export const getPasswordResetTokenByToken = async (token: string) => {
         if (result.Item) {
             return result.Item;
         }
+    } catch (error) {
+        return null;
+    }
+}
+
+export const deletePasswordResetToken = async (pk: string, sk: string) => {
+    try {
+        await client.send(new DeleteCommand({
+            TableName: 'next-auth',
+            Key: {
+                pk: pk,
+                sk: sk,
+            },
+            ConditionExpression: "attribute_exists(pk)",
+        }))
     } catch (error) {
         return null;
     }
