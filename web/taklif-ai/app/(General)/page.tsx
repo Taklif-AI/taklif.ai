@@ -10,7 +10,7 @@ export default async function HomePage() {
     <main className="min-h-screen">
       <HomeHero />
       <HomeFeatures />
-      <HomeStats />
+      {/* <HomeStats /> */}
       <HomeMagic />
       <HomeTeam />
       <HomeCTA />
