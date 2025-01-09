@@ -5,21 +5,23 @@ import { Navigation } from '@/components/ui/navigation';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from "@/components/ui/sonner";
 import { Footer } from '@/components/ui/footer';
-import Provider from '@/components/auth/auth-provider';
 const inter = Inter({ subsets: ['latin'] });
+import { SessionProvider } from 'next-auth/react';
+import { auth } from '@/auth';
 
 export const metadata: Metadata = {
   title: 'Taklif.AI',
   description: 'AI-powered assignment generation for personalized learning',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await auth();
   return (
-    <Provider>
+    <SessionProvider session={session}>
       <html lang="en" suppressHydrationWarning>
         <body className={inter.className}>
           <ThemeProvider
@@ -39,6 +41,6 @@ export default function RootLayout({
           </ThemeProvider>
         </body>
       </html>
-    </Provider>
+    </SessionProvider>
   );
 }
