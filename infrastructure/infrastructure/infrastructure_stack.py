@@ -7,7 +7,9 @@ from aws_cdk import (
     aws_apigateway as apigateway,
     aws_dynamodb as dynamodb,
     aws_iam as iam,
-    aws_amplify as amplify
+    aws_events as events,
+    aws_events_targets as targets,
+    aws_amplify as amplify,
 )
 
 
@@ -20,8 +22,8 @@ class InfrastructureStack(Stack):
         env_name: str,
         lambda_memory_size: int,
         lambda_timeout: int,
-        OPENROUTER_API_KEY: str,
         LANGCHAIN_API_KEY: str,
+        LLAMA_CLOUD_API_KEY: str,
         **kwargs,
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
@@ -130,64 +132,62 @@ class InfrastructureStack(Stack):
         lambda_role.add_managed_policy(
             iam.ManagedPolicy.from_aws_managed_policy_name("AmazonDynamoDBFullAccess")
         )
+        
+        # Create User for NextAuthJS to access DynamoDB
+        dynamodb_authjs_user = iam.User(self, "NextAuthJSUser")
+        
+        # Create an inline policy with specified DynamoDB actions
+        dynamodb_policy = iam.Policy(
+            self,
+            "DynamoDBAccessPolicy",
+            statements=[
+                iam.PolicyStatement(
+                    actions=[
+                        "dynamodb:BatchGetItem",
+                        "dynamodb:BatchWriteItem",
+                        "dynamodb:Describe*",
+                        "dynamodb:List*",
+                        "dynamodb:PutItem",
+                        "dynamodb:DeleteItem",
+                        "dynamodb:GetItem",
+                        "dynamodb:Scan",
+                        "dynamodb:Query",
+                        "dynamodb:UpdateItem",
+                    ],
+                    resources=[
+                        "arn:aws:dynamodb:eu-north-1:***REMOVED-AWS-ACCOUNT-ID***:table/next-auth",
+                        "arn:aws:dynamodb:eu-north-1:***REMOVED-AWS-ACCOUNT-ID***:table/next-auth/index/GSI1"
+                    ],
+                )
+            ],
+        )
+        
+        # Attach the policy to the user
+        dynamodb_policy.attach_to_user(dynamodb_authjs_user)
         # </IAM RESOURCES> ---------------------------------------------------------------------
 
 
         # <LAMBDA RESOURCES> ---------------------------------------------------------------------
-        # LLM Calling Lambda Function 
-        llm_call_lambda_layer = lambda_.LayerVersion.from_layer_version_arn( # Add lambda layer by ARN
-            self, 
-            "LLMsBasicDependencies",
-            "arn:aws:lambda:eu-north-1:***REMOVED-AWS-ACCOUNT-ID***:layer:LLMsBasicsDependencies:1"
+        # LLM Generation Lambda Function
+        llm_generation_code_path = os.path.join(
+            os.path.dirname(__file__), "../../functions/llm_generation"
         )
 
-        llm_call_lambda_code_path = os.path.join(
-            os.path.dirname(__file__), "../../functions/llm_call"
-        )
-
-        llm_call_function = lambda_.Function(
+        llm_generation_function = lambda_.DockerImageFunction(
             self,
-            id=f"{env_name}-LLMCallFunction",
-            code=lambda_.Code.from_asset(llm_call_lambda_code_path),
-            handler="llm_call.lambda_handler",
-            runtime=lambda_.Runtime.PYTHON_3_10,
-            layers=[llm_call_lambda_layer],
+            id=f"{env_name}-LLMCallingFunction",
+            code=lambda_.DockerImageCode.from_image_asset(llm_generation_code_path),
             timeout=Duration.seconds(lambda_timeout),
             memory_size=lambda_memory_size,
             environment={
                 "ENV_NAME": env_name,
                 "LANGCHAIN_TRACING_V2": "true",
                 "LANGCHAIN_ENDPOINT": "https://api.smith.langchain.com",
-                "OPENROUTER_API_KEY": OPENROUTER_API_KEY,
                 "LANGCHAIN_PROJECT": "Taklif.AI",
                 "LANGCHAIN_API_KEY": LANGCHAIN_API_KEY,
+                "LLAMA_CLOUD_API_KEY": LLAMA_CLOUD_API_KEY
             },
-        )
-
-        # LLM crud Lambda Function ---------------------------------
-        llm_crud_lambda_layer = lambda_.LayerVersion.from_layer_version_arn( # Add lambda layer by ARN
-            self, 
-            "LLMCrudDependencies",
-            "arn:aws:lambda:eu-north-1:770693421928:layer:Klayers-p310-boto3:21"
-        )
-
-        llm_crud_lambda_code_path = os.path.join(
-            os.path.dirname(__file__), "../../functions/llm_crud"
-        )
-
-        llm_crud_function = lambda_.Function(
-            self,
-            id=f"{env_name}-LLMCrudFunction",
-            code=lambda_.Code.from_asset(llm_crud_lambda_code_path),
-            handler="llm_crud.lambda_handler",
-            runtime=lambda_.Runtime.PYTHON_3_10,
-            layers=[llm_crud_lambda_layer],
-            timeout=Duration.seconds(lambda_timeout),
-            memory_size=lambda_memory_size,
-            environment={
-                "ENV_NAME": env_name,
-            },
-            role=lambda_role,
+            role=lambda_role
         )
         # </LAMBDA RESOURCES> ---------------------------------------------------------------------
 
@@ -206,56 +206,64 @@ class InfrastructureStack(Stack):
             ),
         )
 
-        llm_call_resource = orchestration_api.root.add_resource("llm_call")
-        llm_call_resource.add_method(
-            "POST", apigateway.LambdaIntegration(llm_call_function)
+        llm_generation_resource = orchestration_api.root.add_resource("llm_generation")
+        llm_generation_resource.add_method(
+            "POST", apigateway.LambdaIntegration(llm_generation_function)
         )
-        llm_call_resource.add_cors_preflight(
-            allow_origins=apigateway.Cors.ALL_ORIGINS, # Allow all origins, or specify a list of allowed origins (it can be replaced with our frontend domain)
-        )
-
-        models_resource = orchestration_api.root.add_resource("models")
-        models_resource.add_method(
-            "GET", apigateway.LambdaIntegration(llm_crud_function)
-        )
-        models_resource.add_method(
-            "PUT", apigateway.LambdaIntegration(llm_crud_function)
-        )
-
-        model_name_resource = models_resource.add_resource("{name}")
-        model_provider_resource = model_name_resource.add_resource("{provider}")
-        model_provider_resource.add_method(
-            "DELETE", apigateway.LambdaIntegration(llm_crud_function)
-        )
-        model_provider_resource.add_method(
-            "GET", apigateway.LambdaIntegration(llm_crud_function)
-        )
-
-        models_resource.add_cors_preflight(
-            allow_origins=apigateway.Cors.ALL_ORIGINS, # Allow all origins, or specify a list of allowed origins (it can be replaced with our frontend domain)
-        )
-        model_name_resource.add_cors_preflight(
-            allow_origins=apigateway.Cors.ALL_ORIGINS, # Allow all origins, or specify a list of allowed origins (it can be replaced with our frontend domain)
-        )
-        model_provider_resource.add_cors_preflight(
+        llm_generation_resource.add_cors_preflight(
             allow_origins=apigateway.Cors.ALL_ORIGINS, # Allow all origins, or specify a list of allowed origins (it can be replaced with our frontend domain)
         )
         # </API GATEWAY RESOURCES> ---------------------------------------------------------------------
-
-
-        # <DYNAMODB RESOURCES> ---------------------------------------------------------------------
-        LLMsTable = dynamodb.Table(
+        
+        
+        # <EventBridge RESOURCES> ---------------------------------------------------------------------
+        rule = events.Rule(
             self,
-            id=f"{env_name}-LLMsTable",
-            table_name=f"{env_name}-LLMsMetaData",
-            partition_key=dynamodb.Attribute(
-                name="name", type=dynamodb.AttributeType.STRING
-            ),
-            sort_key=dynamodb.Attribute(
-                name='provider', type=dynamodb.AttributeType.STRING
-            )
+            "LambdaWarmPing",
+            description="Event rule to keep lambda function warm",
+            schedule=events.Schedule.rate(duration=Duration.minutes(5))
         )
-        # </DYNAMODB RESOURCES> ---------------------------------------------------------------------
+
+        rule.add_target(targets.LambdaFunction(llm_generation_function))
+        # </EventBridge RESOURCES> ---------------------------------------------------------------------
 
 
         # <Amplify RESOURCES/> created through GUI
+
+
+        # <DYNAMODB RESOURCES> ---------------------------------------------------------------------
+        ServingLLMsTable = dynamodb.Table(
+            self,
+            id=f"{env_name}ServingLLMs",
+            table_name=f"{env_name}-ServingLLMs",
+            partition_key=dynamodb.Attribute(
+                name="llm_id", type=dynamodb.AttributeType.STRING # llm_id: litellm_call/the last 5 characters of the API key, example: github/llama-3.2/VWXYZ
+            ),
+            sort_key=dynamodb.Attribute(
+                name='task', type=dynamodb.AttributeType.STRING # llm task: personalization, simplification, guardrails, or other
+            )
+        )
+        
+        NextAuthTable = dynamodb.Table(
+            self,
+            id=f"{env_name}NextAuthTable",
+            table_name="next-auth",
+            partition_key=dynamodb.Attribute(
+                name="pk", type=dynamodb.AttributeType.STRING
+            ),
+            sort_key=dynamodb.Attribute(
+                name="sk", type=dynamodb.AttributeType.STRING
+            ),
+            time_to_live_attribute="expires"
+        )
+
+        NextAuthTable.add_global_secondary_index(
+            index_name="GSI1",
+            partition_key=dynamodb.Attribute(
+                name="GSI1PK", type=dynamodb.AttributeType.STRING
+            ),
+            sort_key=dynamodb.Attribute(
+                name="GSI1SK", type=dynamodb.AttributeType.STRING
+            )
+        )
+        # </DYNAMODB RESOURCES> ---------------------------------------------------------------------

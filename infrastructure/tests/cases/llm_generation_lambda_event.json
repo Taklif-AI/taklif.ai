@@ -1,0 +1,3 @@
+{
+    "body" : "{\"task\" : \"generation\", \"params\": {\"interest\" : \"Space\", \"is_pdf\": false, \"general_assignment\" : \"Write a Python program that calculates the average of a list of numbers. Prompt the user to enter numbers separated by spaces, convert the input into a list of numerical values, and calculate the average using appropriate functions. Finally, display the result. For example, if the user enters 10 20 30 40, the program should output: The average is: 25.0.\"}}"
+}

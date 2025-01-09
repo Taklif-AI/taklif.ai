@@ -1,4 +1,0 @@
-{
-    "model": "openrouter/meta-llama/llama-3.2-3b-instruct:free",
-    "params": "{\"subject\": \"Information Technology\", \"work_place\": \"College\", \"course\": \"Introduction to Programming With Kotlin\", \"learning_objective\": \"For Loops\", \"student_interest\": \"Space\", \"lang_diff_level\": \"Easy\", \"logic_diff_level\": \"Medium\", \"req_clarity\": \"Crystal Clear\", \"num_of_words\": 200}"
-}
