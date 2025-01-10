@@ -5,8 +5,8 @@ export interface Assignment {
   interest: string;
   type: string;
   createdAt: string;
-  likes: number;
-  dislikes: number;
+  like: boolean;
+  dislike: boolean;
 }
 
 // export interface AssignmentAction {
