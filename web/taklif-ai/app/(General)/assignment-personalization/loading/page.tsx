@@ -3,6 +3,8 @@
 import { Card } from "@/components/ui/card";
 import { Loader2, Sparkles, Brain, Wand2, Stars } from "lucide-react";
 import { motion } from "framer-motion";
+import Image from "next/image";
+import SVGIMG from "../../../../public/Taklif.AI Icon.svg";
 
 const backgroundIcons = [Brain, Wand2, Stars, Sparkles];
 
@@ -48,8 +50,8 @@ export default function AssignmentLoadingPage() {
                     animate={{ scale: [1, 1.2, 1] }}
                     transition={{ duration: 2, repeat: Infinity }}
                   >
-                    <Sparkles className="w-16 h-16  text-violet-200 dark:text-violet-800" />
-                  </motion.div>
+              <Image className="w-48" src={SVGIMG} alt={""} />
+            </motion.div>
                 </div>
                 <Loader2 className="w-16 h-16 invisible animate-spin text-violet-600 dark:text-violet-400" />
               </div>
