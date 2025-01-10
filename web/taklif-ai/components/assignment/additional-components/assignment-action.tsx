@@ -6,13 +6,14 @@ import { Assignment } from "@/lib/types/assigment-type";
 import { motion } from "framer-motion";
 
 interface AssignmentActionsProps {
+  isPending: boolean,
   assignment: Assignment;
   onAction: (action: 'like' | 'dislike' | 'repersonalized' | 'simplify') => void;
 }
 
-export function AssignmentActions({ assignment, onAction }: AssignmentActionsProps) {
+export function AssignmentActions({ assignment, onAction, isPending }: AssignmentActionsProps) {
   return (
-    <motion.div 
+    <motion.div
       className="flex flex-wrap items-center gap-4 pt-4 border-t"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -21,6 +22,7 @@ export function AssignmentActions({ assignment, onAction }: AssignmentActionsPro
       <div className="flex items-center gap-2">
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
           <Button
+
             variant="ghost"
             size="sm"
             onClick={() => onAction('like')}
@@ -46,6 +48,7 @@ export function AssignmentActions({ assignment, onAction }: AssignmentActionsPro
       <div className="flex items-center gap-2 ml-auto">
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
           <Button
+            disabled={isPending}
             variant="outline"
             size="sm"
             onClick={() => onAction('simplify')}
@@ -57,6 +60,7 @@ export function AssignmentActions({ assignment, onAction }: AssignmentActionsPro
         </motion.div>
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
           <Button
+            disabled={isPending}
             variant="outline"
             size="sm"
             onClick={() => onAction('repersonalized')}
