@@ -22,25 +22,26 @@ export function AssignmentActions({ assignment, onAction, isPending }: Assignmen
       <div className="flex items-center gap-2">
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
           <Button
-
+            disabled={assignment.like}
             variant="ghost"
             size="sm"
             onClick={() => onAction('like')}
             className="text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-900/20"
           >
             <ThumbsUp className="h-4 w-4 mr-1" />
-            {assignment.likes}
+
           </Button>
         </motion.div>
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
           <Button
+            disabled={assignment.dislike}
             variant="ghost"
             size="sm"
             onClick={() => onAction('dislike')}
             className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
           >
             <ThumbsDown className="h-4 w-4 mr-1" />
-            {assignment.dislikes}
+
           </Button>
         </motion.div>
       </div>
