@@ -47,6 +47,12 @@ export function InterestsSelect({ onNext, onBack, initialInterests }: InterestsS
     }
   }, [initialInterests]);
 
+  useEffect(() => {
+    if (suggestedInterests.length > 0) {
+      setSelectedInterest(suggestedInterests[0]); // Set the first interest as default
+    }
+  }, [suggestedInterests]);
+
   const handleSuggestedInterestClick = (interest: string) => {
     setSelectedInterest(interest);
     setCustomInterest("");
