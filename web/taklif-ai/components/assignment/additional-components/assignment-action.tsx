@@ -59,7 +59,7 @@ export function AssignmentActions({ assignment, onAction }: AssignmentActionsPro
           <Button
             variant="outline"
             size="sm"
-            onClick={() => onAction('regenerate')}
+            onClick={() => onAction('repersonalized')}
             className="text-violet-600 hover:text-violet-700 hover:bg-violet-50 dark:hover:bg-violet-900/20"
           >
             <RefreshCw className="h-4 w-4 mr-1" />
