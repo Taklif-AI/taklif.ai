@@ -30,7 +30,7 @@ const teamMembers: TeamMember[] = [
   },
   {
     name: "Salem Amassi",
-    role: "LLM-for-production Dev",
+    role: "LLM-For-Production Developer",
     image: "salem.jpg",
     bio: "15 years experience in curriculum development and educational technology",
     social: {
@@ -51,7 +51,7 @@ const teamMembers: TeamMember[] = [
   {
     name: "Shady Telbany",
     role: "Full-Stack Web Developer",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&auto=format&fit=crop&q=80",
+    image: "shady.jpg",
     bio: "Passionate about creating intuitive and accessible learning experiences",
     social: {
       github: "#",
