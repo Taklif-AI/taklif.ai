@@ -9,14 +9,16 @@ import { JWT } from "next-auth/jwt"
 
 declare module "next-auth/jwt" {
     interface JWT {
-        createdAt?: string
+        createdAt?: string,
+        isTwoFactorEnabled: boolean,
     }
 }
 
 declare module "next-auth" {
     interface Session {
         user: {
-            createdAt: string; // add a new field to the session object
+            createdAt: string;
+            isTwoFactorEnabled: boolean;
         } & DefaultSession["user"]
     }
 }
@@ -27,7 +29,7 @@ export const {
     signIn,
     signOut,
 } = NextAuth({
-    secret:process.env.AUTH_SECRET,
+    secret: process.env.AUTH_SECRET,
     pages: {
         signIn: 'auth/sign-in',
         error: 'auth/error',
@@ -66,6 +68,7 @@ export const {
             if (token.createdAt && session.user) {
                 session.user.createdAt = token.createdAt;
             }
+            session.user.isTwoFactorEnabled = token.isTwoFactorEnabled;
             return session;
         },
         async jwt({ token, user }) {
@@ -83,6 +86,7 @@ export const {
 
             if (!existingUser) return token;
             token.createdAt = existingUser.createdAt;
+            token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
             return token;
         },
     },
