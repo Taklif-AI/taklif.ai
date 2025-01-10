@@ -15,6 +15,7 @@ const steps = ["Upload PDF", "Choose Interests", "Review Inputs"];
 export default function AssignmentPage() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
+  const [isPending, setIsPending] = useState(false);
   const [assignmentData, setAssignmentData] = useState({
     file: null as File | "" | null,
     interest: "",
@@ -72,6 +73,7 @@ export default function AssignmentPage() {
   };
 
   const handleSubmit = async () => {
+    setIsPending(true);
     const apiUrl =
       process.env.NODE_ENV === "production"
         ? "https://feature-landing-assignment-wizard.d12qitwd23x8o0.amplifyapp.com/api/assignment-generation"
@@ -121,7 +123,7 @@ export default function AssignmentPage() {
         return;
       }
       const data = JSON.parse(result.customized_assignment)
-      
+
       const newAssignment = {
         id: Date.now().toString(),
         title: data.assignment_title,
@@ -141,6 +143,7 @@ export default function AssignmentPage() {
 
       Toast.success("Assignment created successfully!");
       router.push('/assignment-personalization/result');
+      setIsPending(false);
       /* eslint-disable */
     } catch (error) {
       Toast.error("Failed to create assignment. Please try again.2");
@@ -170,7 +173,7 @@ export default function AssignmentPage() {
         return (
 
           <ReviewStep
-
+            isPending = {isPending}
             data={assignmentData}
             onBack={handleBack}
             onSubmit={handleSubmit}
@@ -184,7 +187,7 @@ export default function AssignmentPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-3xl mx-auto">
         <div className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-6 rounded-lg shadow-sm">
-        
+
           <ProgressSteps currentStep={currentStep} steps={steps} />
         </div>
         <div className="mt-8">

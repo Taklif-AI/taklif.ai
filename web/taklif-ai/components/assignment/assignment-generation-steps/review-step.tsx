@@ -12,9 +12,10 @@ interface ReviewStepProps {
   };
   onBack: () => void;
   onSubmit: () => void;
+  isPending: boolean;
 }
 
-export function ReviewStep({ data, onBack, onSubmit }: ReviewStepProps) {
+export function ReviewStep({ data, onBack, onSubmit, isPending }: ReviewStepProps) {
 
   console.log(data)
 
@@ -77,8 +78,8 @@ export function ReviewStep({ data, onBack, onSubmit }: ReviewStepProps) {
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Edit
         </Button>
-        <Button className="rounded-full" onClick={onSubmit}>
-          PERSONALIZE
+        <Button disabled={isPending} className="rounded-full" onClick={onSubmit}>
+          Personalize
           <Send className=" h-4 w-4 ml-2" />
         </Button>
       </div>
