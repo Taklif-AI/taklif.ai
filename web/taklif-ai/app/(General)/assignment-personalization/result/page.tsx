@@ -89,7 +89,7 @@ export default function AssignmentResultPage() {
         } catch (error) {
           console.log(error);
           Toast.error("Failed to create assignment. Please try again.2");
-          router.push('/assignment-generation/result/');
+          router.push('/assignment-personalization/result/');
         }
         break;
       case 'simplify':
@@ -147,7 +147,7 @@ export default function AssignmentResultPage() {
           /* eslint-disable */
         } catch (error) {
           Toast.error("Failed to simplified assignment. Please try again");
-          router.push('/assignment-generation/result/');
+          router.push('/assignment-personalization/result/');
         }
         /* eslint-enable */
 
