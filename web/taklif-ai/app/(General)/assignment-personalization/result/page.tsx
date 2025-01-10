@@ -10,6 +10,8 @@ import { Toast } from "@/lib/utils/toast";
 import { motion } from "framer-motion";
 import { Brain, Sparkles, Stars, Wand2 } from "lucide-react";
 import { storage } from "@/lib/utils/local-storage";
+import Image from "next/image";
+import SVGIMG from "../../../../public/Taklif.AI Icon.svg";
 const backgroundIcons = [Brain, Wand2, Stars, Sparkles];
 
 export default function AssignmentResultPage() {
@@ -206,8 +208,8 @@ export default function AssignmentResultPage() {
                     animate={{ rotate: 360 }}
                     transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
                   >
-                    <Sparkles className="w-6 h-6 text-violet-400 dark:text-violet-600" />
-                  </motion.div>
+               <Image className="w-7" src={SVGIMG} alt={""} />
+              </motion.div>
                 </div>
 
                 <AssignmentResult assignment={assignment} />
