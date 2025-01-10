@@ -67,7 +67,7 @@ export async function Navigation() {
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/assignments" className="flex items-center">
+                <Link href="/assignment-personalization/all-assignments" className="flex items-center">
                   <Book className="mr-2 h-4 w-4" />
                   <span>All Assignments</span>
                 </Link>
