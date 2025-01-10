@@ -9,7 +9,13 @@ interface AssignmentResultProps {
   assignment: Assignment;
 }
 
+
+
 export function AssignmentResult({ assignment }: AssignmentResultProps) {
+  
+  const title = assignment.title;
+  const mainText = title.slice(0, -4); 
+  const emojis = title.slice(-4); 
   return (
     <motion.div
       className="space-y-4"
@@ -18,14 +24,17 @@ export function AssignmentResult({ assignment }: AssignmentResultProps) {
       transition={{ duration: 0.5 }}
     >
       <div>
-        <motion.h1
-          className="text-3xl font-bold mb-2 bg-gradient-to-r from-violet-600 to-violet-400 bg-clip-text text-transparent"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          {assignment.title}
-        </motion.h1>
+      <h1 className="text-3xl font-bold mb-2">
+      <motion.span
+        className="bg-gradient-to-r from-violet-600 to-violet-400 bg-clip-text text-transparent"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
+        {mainText}
+      </motion.span>
+      <span>{emojis}</span> {/* Render emojis without animation */}
+    </h1>
         <motion.p
           className="text-sm text-muted-foreground"
           initial={{ opacity: 0 }}
