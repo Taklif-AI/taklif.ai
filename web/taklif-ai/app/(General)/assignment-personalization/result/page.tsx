@@ -35,6 +35,9 @@ export default function AssignmentResultPage() {
         break;
       case 'dislike':
         setAssignment(prev => prev ? { ...prev, dislike: true, like: false } : null);
+        Toast.success("Assignment liked!");
+        break;
+      case 'dislike':
         Toast.success("Feedback recorded");
         break;
       case 'repersonalized':
