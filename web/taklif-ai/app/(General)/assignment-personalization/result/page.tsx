@@ -15,6 +15,7 @@ const backgroundIcons = [Brain, Wand2, Stars, Sparkles];
 export default function AssignmentResultPage() {
   const router = useRouter();
   const [assignment, setAssignment] = useState<Assignment | null>(null);
+  const [isPending, setIsPending] = useState<boolean>(false);
 
   useEffect(() => {
     const lastCreatedId = localStorage.getItem('lastCreatedAssignmentId');
@@ -37,6 +38,7 @@ export default function AssignmentResultPage() {
         Toast.success("Feedback recorded");
         break;
       case 'repersonalized':
+        setIsPending(true)
         Toast.success("repersonaling assignment...");
         // redirect user to loadings page
         router.push('/assignment-personalization/loading/');
@@ -86,6 +88,7 @@ export default function AssignmentResultPage() {
 
           Toast.success("Assignment re-personalized successfully!");
           router.push('/assignment-personalization/result/');
+          setIsPending(false);
         } catch (error) {
           console.log(error);
           Toast.error("Failed to create assignment. Please try again.2");
@@ -93,6 +96,7 @@ export default function AssignmentResultPage() {
         }
         break;
       case 'simplify':
+        setIsPending(true);
         Toast.success("Simplifying assignment...");
 
 
@@ -123,7 +127,7 @@ export default function AssignmentResultPage() {
             return;
           }
           console.log(result);
-          
+
           const data = JSON.parse(result.simplified_assignment)
 
           const newAssignment = {
@@ -144,6 +148,7 @@ export default function AssignmentResultPage() {
 
           Toast.success("Assignment simplified successfully!");
           router.push('/assignment-personalization/result/');
+          setIsPending(false);
           /* eslint-disable */
         } catch (error) {
           Toast.error("Failed to simplified assignment. Please try again");
@@ -204,6 +209,7 @@ export default function AssignmentResultPage() {
 
                 <AssignmentResult assignment={assignment} />
                 <AssignmentActions
+                  isPending={isPending}
                   assignment={assignment}
                   onAction={handleAction}
                 />
