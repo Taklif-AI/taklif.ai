@@ -30,6 +30,7 @@ export function AssignmentActions({ assignment, onAction, isPending }: Assignmen
           >
             <ThumbsUp className="h-4 w-4 mr-1" />
 
+            {/* {assignment.likes} */}
           </Button>
         </motion.div>
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
@@ -42,6 +43,7 @@ export function AssignmentActions({ assignment, onAction, isPending }: Assignmen
           >
             <ThumbsDown className="h-4 w-4 mr-1" />
 
+            {/* {assignment.dislikes} */}
           </Button>
         </motion.div>
       </div>
