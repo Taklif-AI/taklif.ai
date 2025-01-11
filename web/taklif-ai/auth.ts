@@ -29,7 +29,6 @@ export const {
     signIn,
     signOut,
 } = NextAuth({
-    secret: process.env.AUTH_SECRET,
     pages: {
         signIn: 'auth/sign-in',
         error: 'auth/error',
