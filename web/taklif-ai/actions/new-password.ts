@@ -3,7 +3,7 @@
 import { getPasswordResetTokenByToken } from "@/data/password-reset-token";
 import { getUserByEmail, updateOneUserField } from "@/data/user";
 import { NewPasswordSchema } from "@/lib/schemas/new-password-schema";
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { client } from '@/lib/database/dynamo-client';
 import { DeleteCommand } from "@aws-sdk/lib-dynamodb";
 
