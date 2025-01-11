@@ -1,7 +1,7 @@
 'use server';
 
 import { RegisterSchema } from "@/lib/schemas/register-schema";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { client } from '@/lib/database/dynamo-client';
 import { PutCommand } from "@aws-sdk/lib-dynamodb";
 import { v4 as uuidv4 } from "uuid";
