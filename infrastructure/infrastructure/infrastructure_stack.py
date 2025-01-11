@@ -273,7 +273,7 @@ class InfrastructureStack(Stack):
         user_images_bucket = s3.Bucket(
             self,
             id=f"{env_name}UserImagesBucket",
-            bucket_name=f"{env_name}-user-images-bucket-taklif",
+            bucket_name=f"{env_name.lower()}-user-images-bucket-taklif",
             versioned=True,  # Optional: Enable versioning
             public_read_access=False,  # Ensure bucket is private
             block_public_access=s3.BlockPublicAccess.BLOCK_ALL,  # Block public access
