@@ -1,6 +1,11 @@
 import { client } from '@/lib/database/dynamo-client';
 import { QueryCommand, GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 
+type UpdateRequest = {
+    user_id: string;
+    updates: Record<string, any>;
+};
+
 export const getUserByEmail = async (email: string) => {
     try {
         const params = {
@@ -85,6 +90,35 @@ export const updateOneUserField = async (id: string, field: string, value) => {
         };
 
         await client.send(new UpdateCommand(params));
+    } catch (error) {
+        return null;
+    }
+}
+
+export const updateUserDynamicData = async (user_id: string, updates: object) => {
+    try {
+        const updateExpression: string[] = [];
+        const expressionAttributeValues: Record<string, any> = {};
+        const expressionAttributeNames: Record<string, string> = {};
+
+        Object.keys(updates).forEach((key) => {
+            updateExpression.push(`#${key} = :${key}`);
+            expressionAttributeValues[`:${key}`] = updates[key];
+            expressionAttributeNames[`#${key}`] = key;
+        });
+
+        const params = {
+            TableName: 'next-auth',
+            Key: {
+                pk: user_id,
+                sk: user_id,
+            },
+            UpdateExpression: `SET ${updateExpression.join(', ')}`,
+            ExpressionAttributeNames: expressionAttributeNames,
+            ExpressionAttributeValues: expressionAttributeValues,
+        }
+        await client.send(new UpdateCommand(params));
+
     } catch (error) {
         return null;
     }
