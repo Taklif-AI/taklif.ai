@@ -63,14 +63,14 @@ export const SignIn = () => {
 
                     <div className="relative">
                         <div className="flex items-center justify-center mb-8">
-<Image
-                src="/taklif-logo.svg"
-                alt="Taklif.ai Logo"
-                width={350}
-                height={350}
-                priority
-                className="object-contain"
-              />                        </div>
+                            <Image
+                                src="/taklif-logo.svg"
+                                alt="Taklif.ai Logo"
+                                width={350}
+                                height={350}
+                                priority
+                                className="object-contain"
+                            />                        </div>
 
                         <h2 className="text-3xl font-bold text-center text-white mb-2">{showTwoFactor ? "2FA" : "Welcome Back"}</h2>
                         {showTwoFactor && (

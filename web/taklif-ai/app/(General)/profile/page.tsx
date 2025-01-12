@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,13 +9,36 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Book, Download, User } from "lucide-react";
+import { profile } from "@/actions/profile";
+import { useCurrentUser } from "@/hooks/use-current-user";
+import { useSession } from "next-auth/react";
+import { FormError } from "@/components/auth/form-error";
+import { FormSuccess } from "@/components/auth/form-success";
+import { settings } from "@/actions/settings";
 
 export default function ProfilePage() {
+  const { update } = useSession();
+  const user = useCurrentUser();
   const [image, setImage] = useState<string>("/placeholder.jpg");
   const [credits] = useState(100);
   const [assignments] = useState(24);
+  const [isPending, startTransition] = useTransition();
+  const [profileFormData, setProfileFormData] = useState({
+    name: user?.name || undefined,
+    email: user?.email || undefined,
+    institution: user?.institution || ''
+  });
+  const [settingsFormData, setSettingsFormData] = useState({
+    password: undefined,
+    newPassword: undefined,
+    isTwoFactorEnabled: user?.isTwoFactorEnabled,
+  });
+
+  const [error, setError] = useState<string | undefined>("");
+  const [success, setSuccess] = useState<string | undefined>("");
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
@@ -25,6 +48,60 @@ export default function ProfilePage() {
       reader.readAsDataURL(file);
     }
   };
+
+  const handleProfileChange = (e) => {
+    const { name, value } = e.target;
+    setProfileFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSettingsChange = (e) => {
+    const { name, value } = e.target;
+    setSettingsFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const submitProfile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+
+    setError("");
+    setSuccess("");
+
+    startTransition(() => {
+      profile(profileFormData)
+        .then((data) => {
+          if (data.error) {
+            setError(data.error)
+          }
+
+          if (data.success) {
+            update();
+            setSuccess(data.success)
+          }
+        })
+        .catch(() => setError("Something went wrong!"))
+    })
+  }
+
+  const submitSettings = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+
+    setError("");
+    setSuccess("");
+
+    startTransition(() => {
+      settings(settingsFormData)
+        .then((data) => {
+          if (data.error) {
+            setError(data.error)
+          }
+
+          if (data.success) {
+            update();
+            setSuccess(data.success)
+          }
+        })
+        .catch(() => setError("Something went wrong!"))
+    })
+  }
 
   return (
     <div className="p-6">
@@ -79,60 +156,78 @@ export default function ProfilePage() {
               <User className="w-4 h-4 mr-2" />
               Profile
             </TabsTrigger>
-            <TabsTrigger value="preferences" className="flex-1">
-              <User className="w-4 h-4 mr-2" />
-              Preferences
-            </TabsTrigger>
+            {user?.isOAuth === false && (
+              <TabsTrigger value="settings" className="flex-1">
+                <User className="w-4 h-4 mr-2" />
+                Settings
+              </TabsTrigger>
+            )}
           </TabsList>
-
+          {/* ************************************************************* */}
           <TabsContent value="profile" className="mt-6 space-y-6">
-            <div className="grid gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="fullName">Full Name</Label>
-                <Input id="fullName" defaultValue="John Doe" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" defaultValue="john@example.com" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="institution">Institution</Label>
-                <Input id="institution" defaultValue="University of Technology" />
-              </div>
-              <Button className="w-fit bg-purple-600 hover:bg-purple-700 text-white">
-                Save Changes
-              </Button>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="preferences" className="mt-6 space-y-6">
-            <div className="grid gap-6">
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <Label>Two Factor Authentication</Label>
-                  <p className="text-sm text-muted-foreground">
-                    Add an extra layer of security to your account
-                  </p>
+            <form method="POST" onSubmit={submitProfile}>
+              <div className="grid gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name">Name</Label>
+                  <Input disabled={isPending} onChange={handleProfileChange} id="name" name="name" value={profileFormData.name} />
                 </div>
-                <Switch />
+                {user?.isOAuth == false && (
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input disabled={isPending} onChange={handleProfileChange} id="email" name="email" type="email" value={profileFormData.email} />
+                  </div>
+                )}
+                <div className="space-y-2">
+                  <Label htmlFor="institution">Institution</Label>
+                  <Input disabled={isPending} onChange={handleProfileChange} id="institution" name="institution" value={profileFormData.institution} />
+                </div>
+                <FormError message={error} />
+                <FormSuccess message={success} />
+                <Button disabled={isPending} type="submit" className="w-fit bg-purple-600 hover:bg-purple-700 text-white">
+                  Save Changes
+                </Button>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="currentPassword">Current Password</Label>
-                <Input id="currentPassword" type="password" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="newPassword">New Password</Label>
-                <Input id="newPassword" type="password" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
-                <Input id="confirmPassword" type="password" />
-              </div>
-              <Button className="w-fit bg-purple-600 hover:bg-purple-700 text-white">
-                Update Password
-              </Button>
-            </div>
+            </form>
           </TabsContent>
+          {/* ************************************************** */}
+          {user?.isOAuth === false && (
+            <TabsContent value="settings" className="mt-6 space-y-6">
+              <form onSubmit={submitSettings}>
+                <div className="grid gap-6">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <Label>Two Factor Authentication</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Add an extra layer of security to your account
+                      </p>
+                    </div>
+                    <Switch
+                      checked={settingsFormData.isTwoFactorEnabled}
+                      disabled={isPending}
+                      name="isTwoFactorEnabled"
+                      onCheckedChange={() => setSettingsFormData((prev) => ({ ...prev, 'isTwoFactorEnabled': !settingsFormData.isTwoFactorEnabled }))
+                      }
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="password">Current Password</Label>
+                    <Input disabled={isPending} id="password" onChange={handleSettingsChange} name="password" type="password" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="newPassword">New Password</Label>
+                    <Input disabled={isPending} id="newPassword" onChange={handleSettingsChange} name="newPassword" type="password" />
+                  </div>
+                  <FormError message={error} />
+                  <FormSuccess message={success} />
+                  <Button disabled={isPending} className="w-fit bg-purple-600 hover:bg-purple-700 text-white">
+                    Save Changes
+                  </Button>
+                </div>
+              </form>
+            </TabsContent>
+          )}
+
+          {/* *************************************************** */}
         </Tabs>
       </div>
     </div>

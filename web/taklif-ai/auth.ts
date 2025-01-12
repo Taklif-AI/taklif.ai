@@ -5,12 +5,15 @@ import authConfig from "@/auth.config";
 import { getUserById, updateUserFields } from "./data/user";
 import { deleteTwoFactorConfirmation, getTwoFactorConfirmationByUserId } from "@/data/two-factor-confirmation";
 import { JWT } from "next-auth/jwt"
+import { getAccountByUserId } from "./data/account";
 
 
 declare module "next-auth/jwt" {
     interface JWT {
         createdAt?: string,
         isTwoFactorEnabled: boolean,
+        isOAuth: boolean,
+        institution: string | undefined,
     }
 }
 
@@ -19,6 +22,8 @@ declare module "next-auth" {
         user: {
             createdAt: string;
             isTwoFactorEnabled: boolean;
+            isOAuth: boolean;
+            institution: string | undefined;
         } & DefaultSession["user"]
     }
 }
@@ -67,7 +72,14 @@ export const {
             if (token.createdAt && session.user) {
                 session.user.createdAt = token.createdAt;
             }
-            session.user.isTwoFactorEnabled = token.isTwoFactorEnabled;
+            if (session.user) {
+                session.user.isTwoFactorEnabled = token.isTwoFactorEnabled;
+                session.user.name = token.name;
+                session.user.email = token.email as string;
+                session.user.isOAuth = token.isOAuth;
+                session.user.institution = token.institution || undefined;
+            }
+
             return session;
         },
         async jwt({ token, user }) {
@@ -84,8 +96,17 @@ export const {
             const existingUser = await getUserById(token.sub);
 
             if (!existingUser) return token;
+
+            const existingAccount = await getAccountByUserId(existingUser.pk);
+
+            token.isOAuth = !!existingAccount;
+
+            token.name = existingUser.name;
+            token.email = existingUser.email;
+            token.institution = existingUser.institution || undefined;
             token.createdAt = existingUser.createdAt;
             token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
+
             return token;
         },
     },
