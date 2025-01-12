@@ -40,6 +40,7 @@ export async function login(formData: object) {
     // check the email verification
     if (!existingUser.emailVerified) {
         const verificationToken = await generateVerificationToken(
+            existingUser.email,
             existingUser.email
         );
 

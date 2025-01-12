@@ -56,7 +56,7 @@ export async function register(formData: object) {
     try {
         await client.send(new PutCommand(insertParams));
 
-        const verificationToken = await generateVerificationToken(email);
+        const verificationToken = await generateVerificationToken(email, email);
 
         await sendVerificationEmail(
             verificationToken.email,

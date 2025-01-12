@@ -62,7 +62,7 @@ export const generatePasswordResetToken = async (email: string) => {
 }
 
 
-export const generateVerificationToken = async (email: string) => {
+export const generateVerificationToken = async (email: string, old_email: string) => {
     const token = uuidv4();
     const now = Math.floor(Date.now() / 1000); // Current time in seconds
     const expires = now + 3600; // expire the token in 1hour
@@ -80,6 +80,7 @@ export const generateVerificationToken = async (email: string) => {
         GSI1PK: `VR#${email}`,
         GSI1SK: `VR#${email}`,
         email: email,
+        old_email: old_email,
         token: token,
         expires: expires
     };
