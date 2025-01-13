@@ -166,6 +166,9 @@ class InfrastructureStack(Stack):
 
         # Attach the policy to the user
         dynamodb_policy.attach_to_user(dynamodb_authjs_user)
+
+        # Create IAM user for accessing S3 user images bucket
+        s3_user_images_iam_user = iam.User(self, "S3UserImagesIamUser")
         # </IAM RESOURCES> ---------------------------------------------------------------------
 
         # <LAMBDA RESOURCES> ---------------------------------------------------------------------
@@ -263,6 +266,32 @@ class InfrastructureStack(Stack):
                 name="GSI1SK", type=dynamodb.AttributeType.STRING
             ),
         )
+
+        # Create an inline policy with specified DynamoDB actions
+        dynamodb_policy = iam.Policy(
+            self,
+            "DynamoDBAccessPolicy",
+            statements=[
+                iam.PolicyStatement(
+                    actions=[
+                        "dynamodb:BatchGetItem",
+                        "dynamodb:BatchWriteItem",
+                        "dynamodb:Describe*",
+                        "dynamodb:List*",
+                        "dynamodb:PutItem",
+                        "dynamodb:DeleteItem",
+                        "dynamodb:GetItem",
+                        "dynamodb:Scan",
+                        "dynamodb:Query",
+                        "dynamodb:UpdateItem",
+                    ],
+                    resources=[
+                        NextAuthTable.table_arn,
+                        NextAuthTable.table_arn + "/index/GSI1",
+                    ],
+                )
+            ],
+        )
         # </DYNAMODB RESOURCES> ---------------------------------------------------------------------
 
         # <S3 RESOURCES> ---------------------------------------------------------------------
@@ -270,8 +299,35 @@ class InfrastructureStack(Stack):
             self,
             id=f"{env_name}UserImagesBucket",
             bucket_name=f"{env_name.lower()}-user-images-bucket-taklif",
-            versioned=True,  # Optional: Enable versioning
+            versioned=True,  # Enable versioning
             public_read_access=False,  # Ensure bucket is private
             block_public_access=s3.BlockPublicAccess.BLOCK_ALL,  # Block public access
+        )
+
+        # Configure CORS policy
+        user_images_bucket.add_cors_rule(
+            allowed_methods=[
+                s3.HttpMethods.GET,
+                s3.HttpMethods.PUT,
+                s3.HttpMethods.POST,
+                s3.HttpMethods.DELETE,
+            ],
+            allowed_origins=["*"],
+            allowed_headers=["*"],
+            expose_headers=[],
+        )
+
+        # Attach inline policy to S3 user images IAM user
+        s3_user_images_iam_user.add_to_policy(
+            iam.PolicyStatement(
+                actions=[
+                    "s3:DeleteObject",
+                    "s3:GetObject",
+                    "s3:ListBucket",
+                    "s3:PutObject",
+                    "s3:PutObjectAcl",
+                ],
+                resources=[user_images_bucket.bucket_arn],
+            )
         )
         # </S3 RESOURCES> ---------------------------------------------------------------------
