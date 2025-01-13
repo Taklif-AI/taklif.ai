@@ -314,7 +314,6 @@ class InfrastructureStack(Stack):
             ],
             allowed_origins=["*"],
             allowed_headers=["*"],
-            expose_headers=[],
         )
 
         # Attach inline policy to S3 user images IAM user
