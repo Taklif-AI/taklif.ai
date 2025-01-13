@@ -19,7 +19,7 @@ def handler(event, context):
     available_memory = int(os.getenv("AWS_LAMBDA_FUNCTION_MEMORY_SIZE", "128"))
     # Estimate max threads based on available memory, use 1 thread per 128 MB of memory
     max_threads = max(1, available_memory // 128)
-    
+
     try:
         body = json.loads(event.get("body", "{}"))
 
@@ -48,13 +48,13 @@ def handler(event, context):
 
         # Register langsmith client
         langsmith_client = LangSmith()
-        
+
         # Register guardrails object
         guard = Guardrails()
 
         # Interest guardrail
         interest_validation = guard.validate(
-            validator_type = "interest",
+            validator_type="interest",
             content=params["interest"],
             metadata={
                 "langsmith_client": langsmith_client,
@@ -63,9 +63,11 @@ def handler(event, context):
         if interest_validation["content"]["decision"] == "rejected":
             return {
                 "statusCode": 400,
-                  "body": json.dumps({
-                    "rejected": interest_validation["content"]["explanation"],
-                }),
+                "body": json.dumps(
+                    {
+                        "rejected": interest_validation["content"]["explanation"],
+                    }
+                ),
             }
 
         # PDF assignment processing
@@ -103,11 +105,13 @@ def handler(event, context):
         if assignment_validation["content"]["decision"] == "rejected":
             return {
                 "statusCode": 400,
-                  "body": json.dumps({
-                    "rejected": assignment_validation["content"]["explanation"],
-                }),
+                "body": json.dumps(
+                    {
+                        "rejected": assignment_validation["content"]["explanation"],
+                    }
+                ),
             }
-        
+
         # LLM calling
         response = ""
         try:
@@ -142,9 +146,13 @@ def handler(event, context):
         if assignment_output_validation["content"]["decision"] == "rejected":
             return {
                 "statusCode": 400,
-                  "body": json.dumps({
-                    "rejected": assignment_output_validation["content"]["explanation"],
-                }),
+                "body": json.dumps(
+                    {
+                        "rejected": assignment_output_validation["content"][
+                            "explanation"
+                        ],
+                    }
+                ),
             }
 
         # Return the content from the LLM response

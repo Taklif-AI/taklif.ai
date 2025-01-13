@@ -15,7 +15,6 @@ from aws_cdk import (
 
 
 class InfrastructureStack(Stack):
-
     def __init__(
         self,
         scope: Construct,
@@ -28,7 +27,6 @@ class InfrastructureStack(Stack):
         **kwargs,
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
-
 
         # <IAM RESOURCES> ---------------------------------------------------------------------
         # Backend Developers Group
@@ -111,7 +109,10 @@ class InfrastructureStack(Stack):
             self, "AdminUser-Salem", user_name="admin-user-salem", groups=[admin_group]
         )
         iam.User(
-            self, "AdminUser-Dr-Motaz", user_name="admin-user-motaz", groups=[admin_group]
+            self,
+            "AdminUser-Dr-Motaz",
+            user_name="admin-user-motaz",
+            groups=[admin_group],
         )
         iam.User(
             self, "GitHub-Actions", user_name="github-action", groups=[admin_group]
@@ -133,10 +134,10 @@ class InfrastructureStack(Stack):
         lambda_role.add_managed_policy(
             iam.ManagedPolicy.from_aws_managed_policy_name("AmazonDynamoDBFullAccess")
         )
-        
+
         # Create User for NextAuthJS to access DynamoDB
         dynamodb_authjs_user = iam.User(self, "NextAuthJSUser")
-        
+
         # Create an inline policy with specified DynamoDB actions
         dynamodb_policy = iam.Policy(
             self,
@@ -157,16 +158,15 @@ class InfrastructureStack(Stack):
                     ],
                     resources=[
                         "arn:aws:dynamodb:eu-north-1:***REMOVED-AWS-ACCOUNT-ID***:table/next-auth",
-                        "arn:aws:dynamodb:eu-north-1:***REMOVED-AWS-ACCOUNT-ID***:table/next-auth/index/GSI1"
+                        "arn:aws:dynamodb:eu-north-1:***REMOVED-AWS-ACCOUNT-ID***:table/next-auth/index/GSI1",
                     ],
                 )
             ],
         )
-        
+
         # Attach the policy to the user
         dynamodb_policy.attach_to_user(dynamodb_authjs_user)
         # </IAM RESOURCES> ---------------------------------------------------------------------
-
 
         # <LAMBDA RESOURCES> ---------------------------------------------------------------------
         # LLM Generation Lambda Function
@@ -186,12 +186,11 @@ class InfrastructureStack(Stack):
                 "LANGCHAIN_ENDPOINT": "https://api.smith.langchain.com",
                 "LANGCHAIN_PROJECT": "Taklif.AI",
                 "LANGCHAIN_API_KEY": LANGCHAIN_API_KEY,
-                "LLAMA_CLOUD_API_KEY": LLAMA_CLOUD_API_KEY
+                "LLAMA_CLOUD_API_KEY": LLAMA_CLOUD_API_KEY,
             },
-            role=lambda_role
+            role=lambda_role,
         )
         # </LAMBDA RESOURCES> ---------------------------------------------------------------------
-
 
         # <API GATEWAY RESOURCES> ---------------------------------------------------------------------
         orchestration_api = apigateway.RestApi(
@@ -200,7 +199,7 @@ class InfrastructureStack(Stack):
             rest_api_name=f"{env_name}-OrchestrationAPI",
             description="API Gateway for services orchestration",
             endpoint_types=[apigateway.EndpointType.EDGE],
-            deploy_options=apigateway.StageOptions( # we can make the throttling limits dynamic by the user subscription
+            deploy_options=apigateway.StageOptions(  # we can make the throttling limits dynamic by the user subscription
                 stage_name=env_name,
                 # throttling_rate_limit=1, # maximum number of requests per second (RPS) allowed for the stage
                 # throttling_burst_limit=5, # maximum number of requests that can be served in a short burst before the rate limit is applied
@@ -212,25 +211,22 @@ class InfrastructureStack(Stack):
             "POST", apigateway.LambdaIntegration(llm_generation_function)
         )
         llm_generation_resource.add_cors_preflight(
-            allow_origins=apigateway.Cors.ALL_ORIGINS, # Allow all origins, or specify a list of allowed origins (it can be replaced with our frontend domain)
+            allow_origins=apigateway.Cors.ALL_ORIGINS,  # Allow all origins, or specify a list of allowed origins (it can be replaced with our frontend domain)
         )
         # </API GATEWAY RESOURCES> ---------------------------------------------------------------------
-        
-        
+
         # <EventBridge RESOURCES> ---------------------------------------------------------------------
         rule = events.Rule(
             self,
             "LambdaWarmPing",
             description="Event rule to keep lambda function warm",
-            schedule=events.Schedule.rate(duration=Duration.minutes(5))
+            schedule=events.Schedule.rate(duration=Duration.minutes(5)),
         )
 
         rule.add_target(targets.LambdaFunction(llm_generation_function))
         # </EventBridge RESOURCES> ---------------------------------------------------------------------
 
-
         # <Amplify RESOURCES/> created through GUI
-
 
         # <DYNAMODB RESOURCES> ---------------------------------------------------------------------
         ServingLLMsTable = dynamodb.Table(
@@ -238,13 +234,15 @@ class InfrastructureStack(Stack):
             id=f"{env_name}ServingLLMs",
             table_name=f"{env_name}-ServingLLMs",
             partition_key=dynamodb.Attribute(
-                name="llm_id", type=dynamodb.AttributeType.STRING # llm_id: litellm_call/the last 5 characters of the API key, example: github/llama-3.2/VWXYZ
+                name="llm_id",
+                type=dynamodb.AttributeType.STRING,  # llm_id: litellm_call/the last 5 characters of the API key, example: github/llama-3.2/VWXYZ
             ),
             sort_key=dynamodb.Attribute(
-                name='task', type=dynamodb.AttributeType.STRING # llm task: personalization, simplification, guardrails, or other
-            )
+                name="task",
+                type=dynamodb.AttributeType.STRING,  # llm task: personalization, simplification, guardrails, or other
+            ),
         )
-        
+
         NextAuthTable = dynamodb.Table(
             self,
             id=f"{env_name}NextAuthTable",
@@ -252,10 +250,8 @@ class InfrastructureStack(Stack):
             partition_key=dynamodb.Attribute(
                 name="pk", type=dynamodb.AttributeType.STRING
             ),
-            sort_key=dynamodb.Attribute(
-                name="sk", type=dynamodb.AttributeType.STRING
-            ),
-            time_to_live_attribute="expires"
+            sort_key=dynamodb.Attribute(name="sk", type=dynamodb.AttributeType.STRING),
+            time_to_live_attribute="expires",
         )
 
         NextAuthTable.add_global_secondary_index(
@@ -265,7 +261,7 @@ class InfrastructureStack(Stack):
             ),
             sort_key=dynamodb.Attribute(
                 name="GSI1SK", type=dynamodb.AttributeType.STRING
-            )
+            ),
         )
         # </DYNAMODB RESOURCES> ---------------------------------------------------------------------
 
