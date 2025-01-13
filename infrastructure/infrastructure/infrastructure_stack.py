@@ -141,7 +141,7 @@ class InfrastructureStack(Stack):
         # Create an inline policy with specified DynamoDB actions
         dynamodb_policy = iam.Policy(
             self,
-            "DynamoDBAccessPolicy",
+            f"{env_name}DynamoDBAccessPolicy",
             statements=[
                 iam.PolicyStatement(
                     actions=[
