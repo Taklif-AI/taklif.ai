@@ -46,9 +46,9 @@ class Guardrails:
         result = {
             "content": ast.literal_eval(response.content),
             "request_info": {
-                "model_group": response.response_metadata["model_group"],
                 "model": response.response_metadata["deployment"],
-                "token_usage": response.response_metadata["token_usage"],
+                "total_tokens": response.response_metadata["total_tokens"],
+                "total_time": response.response_metadata["total_time"],
             },
         }
 
