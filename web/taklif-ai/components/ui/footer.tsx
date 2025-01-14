@@ -3,6 +3,7 @@
 import { Github, Twitter, Mail } from "lucide-react";
 import Image from "next/image";
 import SVGIMG from "../../public/taklif-logo.svg";
+import  {Logo} from "@/components/ui/logo";
 
 export function Footer() {
   return (
@@ -10,8 +11,10 @@ export function Footer() {
       <div className="container mx-auto px-4 py-6">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="text-sm text-muted-foreground">
-        <Image className="w-40" src={SVGIMG} alt={""}/>
-            © {new Date().getFullYear()} Taklif.AI. All rights reserved.
+          <div className="w-48">
+            <Logo  /> 
+            </div> 
+                      © {new Date().getFullYear()} Taklif.AI. All rights reserved.
           </div>
           <div className="flex items-center space-x-6">
             <a
