@@ -314,13 +314,20 @@ class InfrastructureStack(Stack):
         # </DYNAMODB RESOURCES> ---------------------------------------------------------------------
 
         # <S3 RESOURCES> ---------------------------------------------------------------------
+        # Create the user images S3 bucket
         user_images_bucket = s3.Bucket(
             self,
             id=f"{env_name}UserImagesBucket",
-            bucket_name=f"{env_name.lower()}-user-images-bucket-taklif",
+            bucket_name=f"{env_name.lower()}-user-images-bucket",
             versioned=True,  # Enable versioning
             public_read_access=False,  # Ensure bucket is private
-            block_public_access=s3.BlockPublicAccess.BLOCK_ALL,  # Block public access
+            block_public_access=s3.BlockPublicAccess(
+                block_public_acls=False,  # Allow public ACLs
+                block_public_policy=False,  # Allow public policies
+                ignore_public_acls=False,  # Allow ignoring public ACLs
+                restrict_public_buckets=False  # Allow unrestricted public buckets
+            ),
+            object_ownership=s3.ObjectOwnership.BUCKET_OWNER_PREFERRED  # Set object ownership
         )
 
         # Configure CORS policy
@@ -337,7 +344,7 @@ class InfrastructureStack(Stack):
 
         # Attach inline policy to S3 user images IAM user
         s3_user_images_iam_user.add_to_policy(
-            iam.PolicyStatement(
+            s3.PolicyStatement(
                 actions=[
                     "s3:DeleteObject",
                     "s3:GetObject",
@@ -345,7 +352,10 @@ class InfrastructureStack(Stack):
                     "s3:PutObject",
                     "s3:PutObjectAcl",
                 ],
-                resources=[user_images_bucket.bucket_arn],
+                resources=[
+                    user_images_bucket.bucket_arn,
+                    f"{user_images_bucket.bucket_arn}/*"  # Allow actions on all objects in the bucket
+                ],
             )
         )
         # </S3 RESOURCES> ---------------------------------------------------------------------
