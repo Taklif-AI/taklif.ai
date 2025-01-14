@@ -292,6 +292,25 @@ class InfrastructureStack(Stack):
                 )
             ],
         )
+
+        # Define the DynamoDB assignments table
+        assignments_table = dynamodb.Table(
+            self,
+            id=f"{env_name}AssignmentsTable",
+            table_name=f"{env_name}-AssignmentsTable",
+            partition_key=dynamodb.Attribute(
+                name="PK", type=dynamodb.AttributeType.STRING
+            ),
+            sort_key=dynamodb.Attribute(name="SK", type=dynamodb.AttributeType.STRING),
+        )
+
+        # Add Global Secondary Index (GSI) for created_at
+        assignments_table.add_global_secondary_index(
+            index_name=f"{env_name}-GSI-CreatedAtAssignments",
+            partition_key=dynamodb.Attribute(
+                name="created_at", type=dynamodb.AttributeType.STRING
+            ),
+        )
         # </DYNAMODB RESOURCES> ---------------------------------------------------------------------
 
         # <S3 RESOURCES> ---------------------------------------------------------------------
