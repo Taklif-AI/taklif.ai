@@ -39,23 +39,16 @@ export default function AssignmentLoadingPage() {
           </div>
 
           <Card className="p-12 text-center space-y-8 bg-gradient-to-br from-violet-50 to-white dark:from-violet-950/20 dark:to-background backdrop-blur-sm border-violet-100 dark:border-violet-800">
-            <motion.div 
-              className="flex justify-center"
-              animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            >
-              <div className="relative">
-                <div className="absolute inset-0">
-                  <motion.div
-                    animate={{ scale: [1, 1.2, 1] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                  >
-              <Image className="w-48" src={SVGIMG} alt={""} />
-            </motion.div>
-                </div>
-                <Loader2 className="w-16 h-16 invisible animate-spin text-violet-600 dark:text-violet-400" />
-              </div>
-            </motion.div>
+                    <div className=" ml-auto	mr-auto	 w-[10rem]"> 
+                    <object
+                    data="/logo-animation.gif"
+                    type="image/gif"
+                    width="150"                    
+                    height="150"                    >
+                    Your browser does not support SVGs.
+                  </object>
+                    </div>
+      
             
             <div className="space-y-4">
               <motion.h1 

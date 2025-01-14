@@ -53,7 +53,7 @@ export const SignIn = () => {
 
     }
     return (
-        <div className="min-h-screen w-full bg-gradient-to-br from-indigo-950 via-purple-900 to-indigo-900 flex items-center justify-center p-4">
+        <div className="min-h-screen w-full bg-gray-800 flex items-center justify-center p-4">
             <div className="w-full max-w-md relative">
                 <div className="absolute inset-0 h-full w-full bg-gradient-to-r from-blue-500 to-purple-500 transform scale-[0.80] bg-opacity-50 blur-3xl" />
                 <div className="relative shadow-xl bg-gray-900 border border-gray-800 px-8 py-12 h-full rounded-2xl overflow-hidden">

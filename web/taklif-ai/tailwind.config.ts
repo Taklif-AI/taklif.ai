@@ -9,6 +9,7 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic':
@@ -61,6 +62,7 @@ const config: Config = {
           '5': 'hsl(var(--chart-5))',
         },
       },
+     
       keyframes: {
         'accordion-down': {
           from: {
@@ -84,7 +86,8 @@ const config: Config = {
         'accordion-up': 'accordion-up 0.2s ease-out',
       },
     },
+    
   },
-  plugins: [animate],
+  plugins: [animate, require('tailwindcss-animate')],
 };
 export default config;
