@@ -171,7 +171,7 @@ def handler(event, context):
 
         # Populate the db_record
         db_record = {
-            "PK": f"USER#{params['user_id']}",
+            "PK": params['user_id'],
             "SK": f"RUN#{params['run_id']}#PERSONALIZATION#{params['personalization_id']}"
             if task == "personalization"
             else f"RUN#{params['run_id']}#PERSONALIZATION#{params['personalization_id']}#SIMPLIFICATION#{params['simplification_id']}",
