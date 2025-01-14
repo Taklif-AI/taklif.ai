@@ -344,7 +344,7 @@ class InfrastructureStack(Stack):
 
         # Attach inline policy to S3 user images IAM user
         s3_user_images_iam_user.add_to_policy(
-            s3.PolicyStatement(
+            iam.PolicyStatement(
                 actions=[
                     "s3:DeleteObject",
                     "s3:GetObject",
