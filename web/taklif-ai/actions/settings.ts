@@ -3,6 +3,7 @@
 import { getUserById, updateUserDynamicData } from '@/data/user';
 import { currentUser } from '@/lib/auth/auth';
 import { SettingsSchema } from '@/lib/schemas/settings-schema';
+import { unstable_update } from '@/auth';
 import bcrypt from 'bcryptjs';
 
 export const settings = async (formData) => {
@@ -68,5 +69,15 @@ export const settings = async (formData) => {
 
 
     await updateUserDynamicData(dbUser.pk, data);
+
+    if (isTwoFactorEnabled === true || isTwoFactorEnabled === false) {
+        await unstable_update({
+            user: {
+                isTwoFactorEnabled: isTwoFactorEnabled
+            }
+        })
+    }
+
+
     return { success: 'Settings updated!' }
 }
