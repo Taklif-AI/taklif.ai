@@ -5,6 +5,7 @@ import { getUserByEmail, getUserById, updateUserDynamicData } from '@/data/user'
 import { currentUser } from '@/lib/auth/auth';
 import { generateVerificationToken } from '@/lib/utils/tokens';
 import { sendVerificationEmail } from '@/lib/utils/mail';
+import { unstable_update } from '@/auth';
 
 export const profile = async (formData: object) => {
     const data = {};
@@ -57,6 +58,27 @@ export const profile = async (formData: object) => {
 
     await updateUserDynamicData(dbUser.pk, data);
 
+    if (name) {
+        await unstable_update({
+            user: {
+                name: name,
+            }
+        })
+    }
+    if (institution) {
+        await unstable_update({
+            user: {
+                institution: institution
+            }
+        })
+    }
+    if (email) {
+        await unstable_update({
+            user: {
+                email: email
+            }
+        })
+    }
     return { success: "Profile updated" }
 
 }
