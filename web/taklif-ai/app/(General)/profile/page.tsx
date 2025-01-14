@@ -8,18 +8,19 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-import { Book, Download, User } from "lucide-react";
+import { Book, Upload, User } from "lucide-react";
 import { profile } from "@/actions/profile";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { useSession } from "next-auth/react";
 import { FormError } from "@/components/auth/form-error";
 import { FormSuccess } from "@/components/auth/form-success";
 import { settings } from "@/actions/settings";
+import { Toast } from "@/lib/utils/toast";
+import { uploadImage } from "@/actions/upload-image";
 
 export default function ProfilePage() {
   const { update } = useSession();
   const user = useCurrentUser();
-  const [image, setImage] = useState<string>("/placeholder.jpg");
   const [credits] = useState(100);
   const [assignments] = useState(24);
   const [isPending, startTransition] = useTransition();
@@ -34,22 +35,112 @@ export default function ProfilePage() {
     isTwoFactorEnabled: user?.isTwoFactorEnabled,
   });
 
+  const [image, setImage] = useState(user?.image || '/zaki.jpg');
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
 
-    const file = e.target.files?.[0];
-    if (file) {
+  const cropImage = async (file: File): Promise<Blob> => {
+    return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setImage(reader.result as string);
+      reader.onload = () => {
+        const img = new Image();
+        img.src = reader.result as string;
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+
+          // Set canvas size to the crop size
+          canvas.width = 250;
+          canvas.height = 250;
+
+          // Calculate cropping dimensions
+          const cropSize = Math.min(img.width, img.height);
+          const cropX = (img.width - cropSize) / 2;
+          const cropY = (img.height - cropSize) / 2;
+
+          // Draw cropped image to canvas
+          if (ctx) {
+            ctx.drawImage(
+              img,
+              cropX,
+              cropY,
+              cropSize,
+              cropSize,
+              0,
+              0,
+              250,
+              250
+            );
+          }
+
+          // Convert canvas to Blob
+          canvas.toBlob((blob) => {
+            if (blob) resolve(blob);
+            else reject(new Error("Canvas is empty"));
+          }, file.type);
+        };
+        img.onerror = () => reject(new Error("Failed to load image"));
       };
+      reader.onerror = () => reject(new Error("Failed to read file"));
       reader.readAsDataURL(file);
-    }
+    });
   };
 
-  const handleProfileChange = (e) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+
+    const file = e.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    // Validate the selected file
+    const validImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg'];
+    if (!validImageTypes.includes(file.type)) {
+      Toast.error('Only images are allowed!')
+      return;
+    }
+
+    const croppedImageBlob = await cropImage(file);
+    startTransition(() => {
+      uploadImage(file.name, croppedImageBlob.type)
+        .then(async (data) => {
+          if (data.error) {
+            Toast.error('Failed to upload image!1');
+            return;
+          }
+
+          if (data.fields && data.url && data.s3Key && data.imageUrl) {
+            update();
+
+            // Upload the image to S3
+            const formData = new FormData();
+            Object.entries(data.fields).forEach(([key, value]) => {
+              formData.append(key, value as string);
+            });
+            formData.append('file', croppedImageBlob);
+
+            const uploadResponse = await fetch(data.url, {
+              method: 'POST',
+              body: formData
+            });
+
+            if (!uploadResponse.ok) {
+              Toast.error('Failed to upload image!2');
+              return;
+            }
+            setImage(data.imageUrl);
+            update();
+            Toast.success('Image uploaded successfully');
+          }
+
+        })
+        .catch(() => Toast.error('Failed to upload image!2'))
+    })
+
+  };
+
+  const handleProfileChange = async (e) => {
     const { name, value } = e.target;
     setProfileFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -110,13 +201,13 @@ export default function ProfilePage() {
         <div className="relative h-48 bg-gradient-to-r from-purple-900 to-purple-700 rounded-lg">
           <div className="absolute bottom-[50px]	 left-8 flex items-end space-x-4">
             <div className="relative">
-              <Avatar className="w-24 h-24 border-4 border-background">
-                <AvatarImage src={image} alt="Profile" />
+              <Avatar className="w-24 h-24">
+                <AvatarImage src={image} alt="Profile Image" width={50} height={50} />
                 <AvatarFallback>JD</AvatarFallback>
               </Avatar>
               <label htmlFor="avatar-upload" className="absolute -right-2 -bottom-2">
                 <div className="rounded-full bg-primary p-2 cursor-pointer hover:bg-primary/90">
-                  <Download className="w-4 h-4 text-primary-foreground" />
+                  <Upload className="w-4 h-4 text-primary-foreground" />
                 </div>
               </label>
               <input
@@ -125,15 +216,15 @@ export default function ProfilePage() {
                 className="hidden"
                 accept="image/*"
                 onChange={handleImageUpload}
+                disabled={isPending}
               />
             </div>
             <div className="mb-2">
-              <h1 className="text-2xl font-bold text-white">John Doe</h1>
+              <h1 className="text-2xl font-bold text-white">{user?.name}</h1>
               <p className="text-purple-200">Credits left: {credits}</p>
             </div>
           </div>
         </div>
-
         {/* Stats Card */}
         <Card className="mt-16">
           <CardContent className="p-6">
