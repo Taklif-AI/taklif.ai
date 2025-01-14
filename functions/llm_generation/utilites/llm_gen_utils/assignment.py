@@ -26,7 +26,7 @@ def personalize(prompt_params: dict, metadata: dict):
             task="personalization", prompt=langsmith_prompt, metadata={}
         )
 
-        return response.content
+        return response
     except Exception as e:
         raise GenerationError(f"Internal Server Error: {str(e)}")
 

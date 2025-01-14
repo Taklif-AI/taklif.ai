@@ -26,7 +26,7 @@ def simplify(prompt_params: dict, metadata: dict):
             task="simplification", prompt=langsmith_prompt, metadata={}
         )
         # Return the content from the LLM response
-        return response.content
+        return response
 
     except Exception as e:
         raise GenerationError(f"Internal Server Error: {str(e)}")
