@@ -325,9 +325,9 @@ class InfrastructureStack(Stack):
                 block_public_acls=False,  # Allow public ACLs
                 block_public_policy=False,  # Allow public policies
                 ignore_public_acls=False,  # Allow ignoring public ACLs
-                restrict_public_buckets=False  # Allow unrestricted public buckets
+                restrict_public_buckets=False,  # Allow unrestricted public buckets
             ),
-            object_ownership=s3.ObjectOwnership.BUCKET_OWNER_PREFERRED  # Set object ownership
+            object_ownership=s3.ObjectOwnership.BUCKET_OWNER_PREFERRED,  # Set object ownership
         )
 
         # Configure CORS policy
@@ -354,7 +354,7 @@ class InfrastructureStack(Stack):
                 ],
                 resources=[
                     user_images_bucket.bucket_arn,
-                    f"{user_images_bucket.bucket_arn}/*"  # Allow actions on all objects in the bucket
+                    f"{user_images_bucket.bucket_arn}/*",  # Allow actions on all objects in the bucket
                 ],
             )
         )
