@@ -2,17 +2,17 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { LogOut, Moon, Sun, User, Book } from "lucide-react";
+import { LogOut, User, Book } from "lucide-react";
 
 import Image from "next/image";
 import SVGIMG from "../../public/taklif-logo.svg";
-import { auth, signOut } from "@/auth";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { auth, signOut } from "@/auth";
 
 export async function Navigation() {
   const session = await auth();
@@ -48,69 +48,39 @@ export async function Navigation() {
           )}
 
           {session && (
-          
+
 
             <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-9 w-9 rounded-full">
-                <Avatar className="h-9 w-9">
-                  <AvatarImage src="/placeholder.jpg" alt="Profile" />
-                  <AvatarFallback>JD</AvatarFallback>
-                </Avatar>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuItem asChild>
-                <Link href="/profile" className="flex items-center">
-                  <User className="mr-2 h-4 w-4" />
-                  <span>Profile</span>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/assignment-personalization/all-assignments" className="flex items-center">
-                  <Book className="mr-2 h-4 w-4" />
-                  <span>All Assignments</span>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={async () => {"use server"; await signOut();}} className="text-red-600 dark:text-red-400">
-                <LogOut   className="mr-2 h-4 w-4" />
-                <span>Log out</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-
-            // <Menu as="div" className="relative ml-3">
-            //   <div>
-            //     <MenuButton className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-            //       <span className="absolute -inset-1.5" />
-            //       <span className="sr-only">Open user menu</span>
-            //       <img
-            //         alt=""
-            //         src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-            //         className="size-8 rounded-full"
-            //       />
-            //     </MenuButton>
-            //   </div>
-            //   <MenuItems
-            //     transition
-            //     className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
-            //   >
-            //     <MenuItem>
-            //       <a
-            //         href="/profile"
-            //         className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none"
-            //       >
-            //         Profile
-            //       </a>
-            //     </MenuItem>
-            //     <MenuItem>
-            //       <button onClick={async () => {"use server"; await signOut();}} className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none">
-            //         Sign out
-            //       </button>
-            //     </MenuItem>
-            //   </MenuItems>
-            // </Menu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+                  <Avatar className="h-9 w-9">
+                    <AvatarImage src={session.user.image} alt="Profile" />
+                    <AvatarFallback>JD</AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuItem asChild>
+                  <Link href="/profile" className="flex items-center">
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Profile</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/assignment-personalization/all-assignments" className="flex items-center">
+                    <Book className="mr-2 h-4 w-4" />
+                    <span>All Assignments</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={async()=>{
+                  "use server";
+                  await signOut();
+                }} className="text-red-600 dark:text-red-400">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Log out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
           <ThemeToggle />
         </div>

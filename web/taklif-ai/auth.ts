@@ -14,6 +14,8 @@ declare module "next-auth/jwt" {
         isTwoFactorEnabled: boolean,
         isOAuth: boolean,
         institution: string | undefined,
+        image?: string,
+        s3Key?: string,
     }
 }
 
@@ -24,6 +26,8 @@ declare module "next-auth" {
             isTwoFactorEnabled: boolean;
             isOAuth: boolean;
             institution: string | undefined;
+            image: string;
+            s3Key: string;
         } & DefaultSession["user"]
     }
 }
@@ -33,6 +37,7 @@ export const {
     auth,
     signIn,
     signOut,
+    unstable_update
 } = NextAuth({
     pages: {
         signIn: 'auth/sign-in',
@@ -76,6 +81,8 @@ export const {
                 session.user.isTwoFactorEnabled = token.isTwoFactorEnabled;
                 session.user.name = token.name;
                 session.user.email = token.email as string;
+                session.user.image = token.image as string;
+                session.user.s3Key = token.s3Key as string;
                 session.user.isOAuth = token.isOAuth;
                 session.user.institution = token.institution || undefined;
             }
@@ -103,6 +110,8 @@ export const {
 
             token.name = existingUser.name;
             token.email = existingUser.email;
+            token.image = existingUser.image;
+            token.s3Key = existingUser.s3Key;
             token.institution = existingUser.institution || undefined;
             token.createdAt = existingUser.createdAt;
             token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
