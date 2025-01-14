@@ -6,12 +6,21 @@ from utilites.custom_exceptions import (
     PDFDecodingError,
     PDFProcessingError,
 )
-from utilites.input_parser import generation_parser, simplify_parser
+from utilites.input_parser import personalization_parser, simplify_parser
 from utilites.guardrails import Guardrails
 from utilites.llm_ocr import convert_pdf_to_markdown
 from utilites.llm_gen_utils import assignment, simplify
+from datetime import datetime, timezone
+import boto3
 import json
 import os
+
+client = boto3.client("dynamodb")
+dynamodb = boto3.resource("dynamodb")
+
+env_name = os.environ.get("ENV_NAME", "Development")
+table_name = f"{env_name}-AssignmentsTable"
+assignments_table = dynamodb.Table(table_name)
 
 
 def handler(event, context):
@@ -36,8 +45,8 @@ def handler(event, context):
         # Parse body parameters
         params = {}
         try:
-            if task == "generation":
-                params = generation_parser(body)
+            if task == "personalization":
+                params = personalization_parser(body)
             elif task == "simplify":
                 params = simplify_parser(body)
         except BadRequestError as e:
@@ -65,13 +74,14 @@ def handler(event, context):
                 "statusCode": 400,
                 "body": json.dumps(
                     {
+                        "guardrail": "interest",
                         "rejected": interest_validation["content"]["explanation"],
                     }
                 ),
             }
 
         # PDF assignment processing
-        if task == "generation" and params.get("is_pdf") is True:
+        if task == "personalization" and params.get("is_pdf") is True:
             try:
                 params["general_assignment"] = convert_pdf_to_markdown(
                     base64_pdf=params.get("general_assignment"),
@@ -96,7 +106,7 @@ def handler(event, context):
         assignment_validation = guard.validate(
             validator_type="assignment",
             content=params["general_assignment"]
-            if task == "generation"
+            if task == "personalization"
             else params["personalized_assignment"],
             metadata={
                 "langsmith_client": langsmith_client,
@@ -107,6 +117,7 @@ def handler(event, context):
                 "statusCode": 400,
                 "body": json.dumps(
                     {
+                        "guardrail": "assignment",
                         "rejected": assignment_validation["content"]["explanation"],
                     }
                 ),
@@ -115,7 +126,7 @@ def handler(event, context):
         # LLM calling
         response = ""
         try:
-            if task == "generation":
+            if task == "personalization":
                 response = assignment.personalize(
                     params,
                     metadata={
@@ -138,7 +149,7 @@ def handler(event, context):
         # Output guardrail
         assignment_output_validation = guard.validate(
             validator_type="assignment",
-            content=response,
+            content=response.content,
             metadata={
                 "langsmith_client": langsmith_client,
             },
@@ -148,6 +159,7 @@ def handler(event, context):
                 "statusCode": 400,
                 "body": json.dumps(
                     {
+                        "guardrail": "model_output",
                         "rejected": assignment_output_validation["content"][
                             "explanation"
                         ],
@@ -155,8 +167,66 @@ def handler(event, context):
                 ),
             }
 
+        temp_response_dict = json.loads(response.content)
+
+        # Populate the db_record
+        db_record = {
+            "PK": f"USER#{params['user_id']}",
+            "SK": f"RUN#{params['run_id']}#PERSONALIZATION#{params['personalization_id']}"
+            if task == "personalization"
+            else f"RUN#{params['run_id']}#PERSONALIZATION#{params['personalization_id']}#SIMPLIFICATION#{params['simplification_id']}",
+            "request_origin": params.get("request_origin", "web"),
+            "item_type": task.capitalize(),
+            "run_id": params["run_id"],
+            "personalization_id": params["personalization_id"],
+            "simplification_id": params["simplification_id"]
+            if task == "simplify"
+            else "",
+            "user_input": {
+                "interest": params["interest"],
+                "assignment": params["general_assignment"]
+                if task == "personalization"
+                else params["personalized_assignment"],
+                "is_PDF": params["is_pdf"],
+            },
+            "model_output": {
+                "title": temp_response_dict["title"],
+                "content": temp_response_dict["content"],
+            },
+            "interest_guardrail_decision": {
+                "decision": interest_validation["content"]["decision"],
+                "explanation": interest_validation["content"]["explanation"],
+                "request_info": interest_validation["request_info"],
+            },
+            "assignment_guardrail_decision": {
+                "decision": assignment_validation["content"]["decision"],
+                "explanation": assignment_validation["content"]["explanation"],
+                "request_info": assignment_validation["request_info"],
+            },
+            "output_guardrail_decision": {
+                "decision": assignment_output_validation["content"]["decision"],
+                "explanation": assignment_output_validation["content"]["explanation"],
+                "request_info": assignment_output_validation["request_info"],
+            },
+            "metadata": {
+                "request_id": context.aws_request_id,
+                "model_name": response.response_metadata["deployment"],
+                "model_id": response.response_metadata["model_info"]["id"],
+                "model_group": response.response_metadata["model_group"],
+                "model_group_size": response.response_metadata["model_group_size"],
+                "input_tokens": response.response_metadata["prompt_tokens"],
+                "output_tokens": response.response_metadata["completion_tokens"],
+                "queue_time": response.response_metadata["queue_time"],
+                "prompt_processing_time": response.response_metadata["prompt_time"],
+                "completion_output_time": response.response_metadata["completion_time"],
+            },
+            "created_at": datetime.now(timezone.utc).isoformat(),
+        }
+
+        assignments_table.put_item(Item=db_record)
+
         # Return the content from the LLM response
-        return {"statusCode": 200, "body": json.dumps({"response": response})}
+        return {"statusCode": 200, "body": json.dumps({"response": response.content})}
     except Exception as e:
         return {
             "statusCode": 500,
