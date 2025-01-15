@@ -190,8 +190,8 @@ def handler(event, context):
                 "is_PDF": params["is_pdf"],
             },
             "model_output": {
-                "title": temp_response_dict["title"],
-                "content": temp_response_dict["content"],
+                "title": temp_response_dict["assignment_title"],
+                "content": temp_response_dict["assignment_content"],
             },
             "interest_guardrail_decision": {
                 "decision": interest_validation["content"]["decision"],
