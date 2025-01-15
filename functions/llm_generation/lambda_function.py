@@ -11,6 +11,7 @@ from utilites.guardrails import Guardrails
 from utilites.llm_ocr import convert_pdf_to_markdown
 from utilites.llm_gen_utils import assignment, simplify
 from datetime import datetime, timezone
+from decimal import Decimal
 import boto3
 import json
 import os
@@ -171,7 +172,7 @@ def handler(event, context):
 
         # Populate the db_record
         db_record = {
-            "PK": params['user_id'],
+            "PK": params["user_id"],
             "SK": f"RUN#{params['run_id']}#PERSONALIZATION#{params['personalization_id']}"
             if task == "personalization"
             else f"RUN#{params['run_id']}#PERSONALIZATION#{params['personalization_id']}#SIMPLIFICATION#{params['simplification_id']}",
@@ -214,11 +215,21 @@ def handler(event, context):
                 "model_id": response.response_metadata["model_info"]["id"],
                 "model_group": response.response_metadata["model_group"],
                 "model_group_size": response.response_metadata["model_group_size"],
-                "input_tokens": response.response_metadata['token_usage']["prompt_tokens"],
-                "output_tokens": response.response_metadata['token_usage']["completion_tokens"],
-                "queue_time": response.response_metadata['token_usage']["queue_time"],
-                "prompt_processing_time": response.response_metadata['token_usage']["prompt_time"],
-                "completion_output_time": response.response_metadata['token_usage']["completion_time"],
+                "input_tokens": response.response_metadata["token_usage"][
+                    "prompt_tokens"
+                ],
+                "output_tokens": response.response_metadata["token_usage"][
+                    "completion_tokens"
+                ],
+                "queue_time": Decimal(
+                    str(response.response_metadata["token_usage"]["queue_time"])
+                ),
+                "prompt_processing_time": Decimal(
+                    str(response.response_metadata["token_usage"]["prompt_time"])
+                ),
+                "completion_output_time": Decimal(
+                    str(response.response_metadata["token_usage"]["completion_time"])
+                ),
             },
             "created_at": datetime.now(timezone.utc).isoformat(),
         }

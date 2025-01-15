@@ -2,7 +2,7 @@ from langchain_core.tracers.langchain import wait_for_all_tracers
 from utilites.llm_load_balancer import send_request
 from langsmith import traceable
 from utilites.custom_exceptions import GenerationError
-from litellm import completion
+from decimal import Decimal
 import ast
 
 
@@ -47,8 +47,12 @@ class Guardrails:
             "content": ast.literal_eval(response.content),
             "request_info": {
                 "model": response.response_metadata["deployment"],
-                "total_tokens": response.response_metadata['token_usage']['total_tokens'],
-                "total_time": response.response_metadata['token_usage']['total_time'],
+                "total_tokens": response.response_metadata["token_usage"][
+                    "total_tokens"
+                ],
+                "total_time": Decimal(
+                    str(response.response_metadata["token_usage"]["total_time"])
+                ),
             },
         }
 
