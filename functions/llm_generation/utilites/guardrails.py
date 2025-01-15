@@ -35,7 +35,7 @@ class Guardrails:
 
                 return self.litellm_request(prompt=prompt, metadata=metadata)
         except Exception as e:
-            raise GenerationError(f"Internal Server Error: {str(e)}")
+            raise GenerationError(f"Guardrails Error: {str(e)}")
         # Wait for langsmith tracer to finish
         finally:
             wait_for_all_tracers()
@@ -47,8 +47,8 @@ class Guardrails:
             "content": ast.literal_eval(response.content),
             "request_info": {
                 "model": response.response_metadata["deployment"],
-                "total_tokens": response.response_metadata["total_tokens"],
-                "total_time": response.response_metadata["total_time"],
+                "total_tokens": response.response_metadata['token_usage']['total_tokens'],
+                "total_time": response.response_metadata['token_usage']['total_time'],
             },
         }
 
