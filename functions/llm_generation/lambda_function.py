@@ -14,6 +14,7 @@ from datetime import datetime, timezone
 from decimal import Decimal
 import boto3
 import json
+import ast
 import os
 
 client = boto3.client("dynamodb")
@@ -168,8 +169,8 @@ def handler(event, context):
                 ),
             }
 
-        temp_response_dict = json.loads(response.content)
-
+        temp_response_dict = ast.literal_eval(response.content)
+    
         # Populate the db_record
         db_record = {
             "PK": params["user_id"],
