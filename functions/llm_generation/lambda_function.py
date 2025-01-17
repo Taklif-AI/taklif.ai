@@ -16,6 +16,7 @@ import boto3
 import json
 import ast
 import os
+import re
 
 client = boto3.client("dynamodb")
 dynamodb = boto3.resource("dynamodb")
@@ -169,8 +170,10 @@ def handler(event, context):
                 ),
             }
 
-        temp_response_dict = ast.literal_eval(response.content)
-    
+        matches = re.search(
+            r'"assignment_title":\s*"(.*?)",\s*"assignment_content":\s*"(.*?)"', response.content, re.DOTALL
+        )
+
         # Populate the db_record
         db_record = {
             "PK": params["user_id"],
@@ -192,8 +195,8 @@ def handler(event, context):
                 "is_PDF": params["is_pdf"],
             },
             "model_output": {
-                "title": temp_response_dict["assignment_title"],
-                "content": temp_response_dict["assignment_content"],
+                "title": matches.group(1).strip() if matches else None,
+                "content": matches.group(2).strip() if matches else None,
             },
             "interest_guardrail_decision": {
                 "decision": interest_validation["content"]["decision"],
@@ -216,20 +219,16 @@ def handler(event, context):
                 "model_id": response.response_metadata["model_info"]["id"],
                 "model_group": response.response_metadata["model_group"],
                 "model_group_size": response.response_metadata["model_group_size"],
-                "input_tokens": response.response_metadata["token_usage"][
-                    "prompt_tokens"
-                ],
-                "output_tokens": response.response_metadata["token_usage"][
-                    "completion_tokens"
-                ],
+                "input_tokens": response.response_metadata["token_usage"].get("prompt_tokens", 0),
+                "output_tokens": response.response_metadata["token_usage"].get("completion_tokens", 0),
                 "queue_time": Decimal(
-                    str(response.response_metadata["token_usage"]["queue_time"])
+                    str(response.response_metadata["token_usage"].get("queue_time", "0.0"))
                 ),
                 "prompt_processing_time": Decimal(
-                    str(response.response_metadata["token_usage"]["prompt_time"])
+                    str(response.response_metadata["token_usage"].get("prompt_time", "0.0"))
                 ),
                 "completion_output_time": Decimal(
-                    str(response.response_metadata["token_usage"]["completion_time"])
+                    str(response.response_metadata["token_usage"].get("completion_time", "0.0"))
                 ),
             },
             "created_at": datetime.now(timezone.utc).isoformat(),
