@@ -171,7 +171,9 @@ def handler(event, context):
             }
 
         matches = re.search(
-            r'"assignment_title":\s*"(.*?)",\s*"assignment_content":\s*"(.*?)"', response.content, re.DOTALL
+            r'"assignment_title":\s*"(.*?)",\s*"assignment_content":\s*"(.*?)"',
+            response.content,
+            re.DOTALL,
         )
 
         # Populate the db_record
@@ -219,16 +221,32 @@ def handler(event, context):
                 "model_id": response.response_metadata["model_info"]["id"],
                 "model_group": response.response_metadata["model_group"],
                 "model_group_size": response.response_metadata["model_group_size"],
-                "input_tokens": response.response_metadata["token_usage"].get("prompt_tokens", 0),
-                "output_tokens": response.response_metadata["token_usage"].get("completion_tokens", 0),
+                "input_tokens": response.response_metadata["token_usage"].get(
+                    "prompt_tokens", 0
+                ),
+                "output_tokens": response.response_metadata["token_usage"].get(
+                    "completion_tokens", 0
+                ),
                 "queue_time": Decimal(
-                    str(response.response_metadata["token_usage"].get("queue_time", "0.0"))
+                    str(
+                        response.response_metadata["token_usage"].get(
+                            "queue_time", "0.0"
+                        )
+                    )
                 ),
                 "prompt_processing_time": Decimal(
-                    str(response.response_metadata["token_usage"].get("prompt_time", "0.0"))
+                    str(
+                        response.response_metadata["token_usage"].get(
+                            "prompt_time", "0.0"
+                        )
+                    )
                 ),
                 "completion_output_time": Decimal(
-                    str(response.response_metadata["token_usage"].get("completion_time", "0.0"))
+                    str(
+                        response.response_metadata["token_usage"].get(
+                            "completion_time", "0.0"
+                        )
+                    )
                 ),
             },
             "created_at": datetime.now(timezone.utc).isoformat(),
