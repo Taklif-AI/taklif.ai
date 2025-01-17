@@ -47,11 +47,9 @@ class Guardrails:
             "content": ast.literal_eval(response.content),
             "request_info": {
                 "model": response.response_metadata["deployment"],
-                "total_tokens": response.response_metadata["token_usage"][
-                    "total_tokens"
-                ],
+                "total_tokens": response.response_metadata["token_usage"].get("total_tokens", 0),
                 "total_time": Decimal(
-                    str(response.response_metadata["token_usage"]["total_time"])
+                    str(response.response_metadata["token_usage"].get("total_time", "0.0"))
                 ),
             },
         }
