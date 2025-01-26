@@ -18,6 +18,7 @@ export const SignIn = () => {
     const [success, setSuccess] = useState<string | undefined>("");
     const [isPending, startTransition] = useTransition();
     const searchParams = useSearchParams();
+    const callbackUrl = searchParams.get("callbackUrl");
     const urlError = searchParams.get("error") === "OAuthAccountNotLinked"
         ? "Email already in use with different provider!"
         : "";
@@ -34,7 +35,7 @@ export const SignIn = () => {
         setSuccess("");
 
         startTransition(() => {
-            login(formData)
+            login(formData, callbackUrl)
                 .then((data) => {
                     if (data?.error) {
                         setError(data.error);
