@@ -1,17 +1,20 @@
 import { Button } from "@/components/ui/button";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
-
-
+import { useSearchParams } from "next/navigation";
+import {DEFAULT_LOGIN_REDIRECT} from "@/routes";
 export function SocialAuthButtons() {
-
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl");
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 gap-4">
         <Button
           variant="outline"
           className="bg-gray-800/50 border-gray-700 text-white hover:bg-gray-800 hover:text-white"
-          onClick={() => signIn("google")}
+          onClick={() => signIn(
+            "google",
+            { callbackUrl: callbackUrl || DEFAULT_LOGIN_REDIRECT })}
         >
           <Image
             src="https://www.google.com/favicon.ico"
@@ -32,6 +35,6 @@ export function SocialAuthButtons() {
           <span className="bg-gray-900 px-2 text-gray-400">Or continue with</span>
         </div>
       </div>
-    </div>
+    </div >
   );
 }

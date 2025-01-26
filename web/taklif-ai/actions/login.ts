@@ -18,7 +18,7 @@ import { createTwoFactorConfirmation, deleteTwoFactorConfirmation, getTwoFactorC
 import { v4 as uuidv4 } from "uuid";
 
 
-export async function login(formData: object) {
+export async function login(formData: object, callbackUrl?: string | null) {
 
     const validateData = LoginSchema.safeParse(formData);
 
@@ -114,7 +114,7 @@ export async function login(formData: object) {
         await signIn("credentials", {
             email,
             password,
-            redirectTo: DEFAULT_LOGIN_REDIRECT,
+            redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT,
         });
     } catch (error) {
         if (error instanceof AuthError) {
