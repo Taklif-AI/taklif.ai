@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import  {Logo} from "@/components/ui/logo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LogOut, User, Book } from "lucide-react";
 
-import Image from "next/image";
-import SVGIMG from "../../public/taklif-logo.svg";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,17 +16,17 @@ import { auth, signOut } from "@/auth";
 
 export async function Navigation() {
   const session = await auth();
-
+  const logoLight = "../../public/Taklif.AI-Light.svg"; // Path to light mode logo
+  const logoDark = "../../public/taklif-logo.svg"; // Path to dark mode logo
   return (
     <header className="fixed top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <nav className="max-w-full container flex h-16 items-center justify-between px-4 ">
         <div className="flex items-center gap-6">
           <Link
             href="/"
-            className="flex items-center space-x-2 text-lg font-bold text-foreground"
+            className="flex w-48 items-center space-x-2 text-lg font-bold text-foreground"
           >
-            <Image className="w-48" src={SVGIMG} alt={""} />
-
+            <Logo />
           </Link>
 
 
@@ -40,10 +40,13 @@ export async function Navigation() {
 
           {!session && (
             <Link href="/auth/sign-in">
-              <Button variant="outline" className="rounded-full bg-transparent	"
-              >
-                Sign In
-              </Button>
+                  <Button 
+              variant="ghost" 
+              className="rounded-full w-[130px] outline outline-1 hover:bg-purple-600 hover:text-white transition-colors"
+            >
+              Sign in
+            </Button>
+
             </Link>
           )}
 

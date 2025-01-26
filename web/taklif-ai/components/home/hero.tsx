@@ -5,70 +5,119 @@ import { Badge } from "@/components/ui/badge";
 import { Sparkles, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { motion } from "framer-motion";
+import  {Logo} from "@/components/ui/logo";
 
 export function HomeHero() {
   return (
-    <section className="relative py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-violet-50 to-white dark:from-violet-950/20 dark:to-background" />
-      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
-      <div className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
-        aria-hidden="true">
-        <div className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-violet-200 to-violet-100 opacity-20 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"
-          style={{
-            clipPath:
-              'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
-          }}
-        />
-      </div>
+    <section>
+    {/* Hero Section */}
+    <div className="relative min-h-screen bg-white dark:bg-[#13111C] overflow-hidden">      {/* Gradient Overlay */}
+    <div className="absolute inset-0 bg-gradient-to-b from-purple-900/20 to-transparent dark:from-purple-900/20" />
       
-      <div className="relative max-w-7xl mx-auto justify-items: flex-start;">
-        <div className="text-center justify-start	 ">
-          <Badge className="mb-4" variant="secondary">
-            <Sparkles className="mr-1 h-3 w-3" />
-            AI-Powered Learning
-          </Badge>
-          
-          <div className="flex justify-center mb-8">
-            <div className="relative w-90 h-40">
-              <Image
+      {/* Floating Elements */}
+      <div className="absolute inset-0">
+        <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-purple-600/10 dark:bg-purple-600/20 rounded-full blur-xl animate-pulse" />
+        <div className="absolute top-1/3 right-1/4 w-24 h-24 bg-blue-600/10 dark:bg-blue-600/20 rounded-full blur-xl animate-pulse delay-700" />
+        <div className="absolute bottom-1/4 left-1/3 w-40 h-40 bg-purple-600/10 dark:bg-purple-600/20 rounded-full blur-xl animate-pulse delay-500" />
+      </div>
+
+      {/* Content */}
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          {/* Left Content */}
+          <div className="text-left space-y-8">
+            {/* AI-Powered Learning Badge */}
+            <div className="inline-flex items-center px-4 py-2 rounded-full bg-purple-100 dark:bg-purple-900/20 backdrop-blur-sm border border-purple-200 dark:border-purple-500/20">
+              <span className="text-sm text-purple-700 dark:text-purple-300">✨ AI-Powered Learning</span>
+            </div>
+
+            {/* Main Logo */}
+            <div className="flex mb-8 w-[350px]  ">
+               {/* <Image
                 src="/taklif-logo.svg"
                 alt="Taklif.ai Logo"
                 width={500}
                 height={500}
                 priority
                 className="object-contain"
-              />
+              /> */}
+
+              <Logo  />
+            </div>
+
+            {/* Hero Title */}
+            <h1 className="text-5xl md:text-6xl font-bold tracking-tight">
+              <span className="text-purple-500">Transform Learning</span> <span className="text-gray-900 dark:text-white">with Personalized</span>
+              <br />
+              <span className="text-gray-900 dark:text-white"> Assignments</span>
+            </h1>
+
+            {/* Hero Description */}
+            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-xl">
+              Upload any educational content and let our AI generate tailored
+              assignments that match your interests, difficulty level, and learning style.
+            </p>
+
+            {/* CTA Buttons */}
+            <div className="flex gap-4 mt-8">
+            <Link href="/assignment-personalization">
+               <Button size="lg" className="rounded-full w-full sm:w-auto text-white bg-violet-600 hover:bg-violet-700">
+                 Create Your First Assignment
+                 <ArrowRight className="ml-2 h-4 w-4" />
+               </Button>
+             </Link>
+             <Link href="#magic">
+               <Button size="lg" variant="outline" className="rounded-full w-full sm:w-auto text-gray-900 dark:text-white">
+                 See How It Works
+               </Button>
+             </Link>
             </div>
           </div>
 
-          <h1 className="text-4xl sm:text-6xl font-bold tracking-tight mb-6">
-            <span className="bg-gradient-to-r from-violet-600 to-violet-400 bg-clip-text text-transparent">
-              Transform Learning with
-            </span>
-            <br />
-            <span className="text-foreground">Personalized Assignments</span>
-          </h1>
-          
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-            Upload any educational content and let our AI generate tailored assignments 
-            that match your interests, difficulty level, and learning style.
-          </p>
-
-          <div className="flex flex-col sm:flex-row justify-center gap-4 items-center">
-            <Link href="/assignment-personalization">
-              <Button size="lg" className="rounded-full w-full sm:w-auto text-white-500 bg-violet-600 hover:bg-violet-700">
-                Create Your First Assignment
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-            <Link href="#magic">
-              <Button size="lg" variant="outline" className="rounded-full w-full sm:w-auto">
-                See How It Works
-              </Button>
-            </Link>
+          {/* Right Content - Floating Character */}
+          <div className="relative hidden lg:block">
+              <div className="absolute inset-0 bg-gradient-to-b from-purple-600/10 to-transparent rounded-full blur-3xl" />
+              <motion.div
+                initial={{ y: 0 }}
+                animate={{ 
+                  y: [0, -20, 0],
+                  rotate: [0, 2, -2, 0]
+                }}
+                transition={{
+                  duration: 6,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+                className="relative"
+              >
+                <div className="w-[500px] h-[500px] relative">
+                  <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-blue-600/20 rounded-full blur-2xl" />
+                  <motion.div 
+                    initial={{ rotate: -10, x: -20 }}
+                    animate={{ rotate: 10, x: 20 }}
+                    transition={{
+                      duration: 4,
+                      repeat: Infinity,
+                      repeatType: "reverse",
+                      ease: "easeInOut"
+                    }}
+                  >
+                 <Image
+                src="/Character.svg"
+                alt="Taklif.ai Logo"
+                width={500}
+                height={500}
+                priority
+                className="object-contain"
+              />
+                  </motion.div>
+                </div>
+              </motion.div>
+            </div>
           </div>
-        </div>
       </div>
-    </section>
+    </div>
+  </section>
   );
 }
