@@ -7,7 +7,14 @@ import { currentUser } from '@/lib/auth/auth';
 import { updateUserDynamicData } from '@/data/user';
 import { unstable_update } from '@/auth';
 
-const s3 = new S3Client({ region: process.env.S3_REGION });
+
+const s3 = new S3Client({
+    credentials: {
+        accessKeyId: process.env.S3_ACCESS_KEY_ID as string,
+        secretAccessKey: process.env.S3_SECRET_ACCESS_KEY as string,
+    },
+    region: process.env.S3_REGION
+});
 
 export const uploadImage = async (filename: string, contentType: string) => {
     const user = await currentUser();
