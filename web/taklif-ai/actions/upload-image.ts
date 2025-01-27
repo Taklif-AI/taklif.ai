@@ -75,7 +75,7 @@ export const uploadImage = async (filename: string, contentType: string) => {
 async function deleteOldProfileImage(s3Key: string) {
     try {
         const deleteParams = {
-            Bucket: process.env.S3_BUCKET_NAME,
+            Bucket: "development-user-images-bucket",
             Key: s3Key,
         };
         await s3.send(new DeleteObjectCommand(deleteParams));
