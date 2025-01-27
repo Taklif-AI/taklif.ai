@@ -4,10 +4,10 @@ import { S3Client, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { v4 as uuidv4 } from 'uuid';
 import { createPresignedPost } from '@aws-sdk/s3-presigned-post';
 import { currentUser } from '@/lib/auth/auth';
-import { updateOneUserField, updateUserDynamicData } from '@/data/user';
+import { updateUserDynamicData } from '@/data/user';
 import { unstable_update } from '@/auth';
 
-const s3 = new S3Client({ region: process.env.AWS_REGION });
+const s3 = new S3Client({ region: process.env.S3_REGION });
 
 export const uploadImage = async (filename: string, contentType: string) => {
     const user = await currentUser();
@@ -27,7 +27,7 @@ export const uploadImage = async (filename: string, contentType: string) => {
 
         // Generate presigned URL to allow client to upload to S3
         const { url, fields } = await createPresignedPost(s3, {
-            Bucket: process.env.AWS_BUCKET_NAME as string,
+            Bucket: process.env.S3_BUCKET_NAME as string,
             Key: s3Key,
             Conditions: [
                 ['content-length-range', 0, 10485760], // up to 5 MB
@@ -48,7 +48,7 @@ export const uploadImage = async (filename: string, contentType: string) => {
                 return { error: 'Failed to upload image!' }
             }
         }
-        const imageUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${s3Key}`
+        const imageUrl = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.S3_REGION}.amazonaws.com/${s3Key}`
         await updateUserDynamicData(user.id as string, {
             image: imageUrl,
             s3Key: s3Key,
@@ -68,7 +68,7 @@ export const uploadImage = async (filename: string, contentType: string) => {
 async function deleteOldProfileImage(s3Key: string) {
     try {
         const deleteParams = {
-            Bucket: process.env.AWS_BUCKET_NAME,
+            Bucket: process.env.S3_BUCKET_NAME,
             Key: s3Key,
         };
         await s3.send(new DeleteObjectCommand(deleteParams));
