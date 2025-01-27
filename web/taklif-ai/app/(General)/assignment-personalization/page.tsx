@@ -9,6 +9,8 @@ import { ProgressSteps } from "@/components/ui/progress-steps";
 import { storage } from "@/lib/utils/local-storage";
 import { Toast } from "@/lib/utils/toast";
 import { fileToBase64 } from "@/lib/utils/files/file-to-base64";
+import { v4 as uuidv4 } from 'uuid';
+
 
 const steps = ["Upload PDF", "Choose Interests", "Review Inputs"];
 
@@ -20,6 +22,14 @@ export default function AssignmentPage() {
     file: null as File | "" | null,
     interest: "",
   });
+  const [runId, setRunId] = useState('');
+
+  useEffect(() => {
+    if (currentStep === 2) {
+      const new_run_id = uuidv4();
+      setRunId(new_run_id);
+    }
+  }, [currentStep]);
 
   useEffect(() => {
     const savedFile = storage.getProgress('PDF_FILE');
@@ -74,19 +84,17 @@ export default function AssignmentPage() {
 
   const handleSubmit = async () => {
     setIsPending(true);
-    const apiUrl =
-      process.env.NODE_ENV === "production"
-        ? "https://feature-landing-assignment-wizard.d12qitwd23x8o0.amplifyapp.com/api/assignment-generation"
-        : "/api/assignment-personalization";
+
     // prepare the assignment-data to the backend
     const dataToBackend = {
       student_interest: assignmentData.interest,
       general_assignment: "",
       is_pdf: false,
+      run_id: runId,
+      personalization_id: uuidv4(),
     }
-
     // redirect user to loadings page
-    router.push('assignment-personalization/loading/');
+    router.push('assignment-personalization/loading');
 
 
     try {
@@ -94,9 +102,8 @@ export default function AssignmentPage() {
         try {
           const base64 = await fileToBase64(assignmentData.file);
           dataToBackend.general_assignment = base64;
-          console.log(base64);
-
           dataToBackend.is_pdf = true;
+
         } catch (error) {
           console.log(error);
           Toast.error("Failed to process your file. Please try again.");
@@ -107,7 +114,7 @@ export default function AssignmentPage() {
       }
 
       // send the assignment to the backend
-      const res = await fetch(apiUrl, {
+      const res = await fetch('/api/assignment-personalization', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -118,12 +125,16 @@ export default function AssignmentPage() {
       const result = await res.json();
       // check the incoming response
       if (!res.ok || !result || result.error) {
+        setIsPending(false);
         Toast.error(result.error);
         router.push('/assignment-personalization');
         return;
       }
-      const data = JSON.parse(result.customized_assignment)
-
+      console.log(result);
+      
+      const data = JSON.parse(result.customized_assignment);
+      console.log(data);
+      
       const newAssignment = {
         id: Date.now().toString(),
         title: data.assignment_title,
@@ -142,10 +153,12 @@ export default function AssignmentPage() {
       storage.clearProgress();
 
       Toast.success("Assignment created successfully!");
-      router.push('/assignment-personalization/result');
       setIsPending(false);
+      router.push('/assignment-personalization/result');
+      
       /* eslint-disable */
     } catch (error) {
+      setIsPending(false);
       Toast.error("Failed to create assignment. Please try again.2");
       router.push('/assignment-personalization');
     }
@@ -171,9 +184,8 @@ export default function AssignmentPage() {
         );
       case 2:
         return (
-
           <ReviewStep
-            isPending = {isPending}
+            isPending={isPending}
             data={assignmentData}
             onBack={handleBack}
             onSubmit={handleSubmit}
