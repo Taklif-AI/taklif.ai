@@ -106,7 +106,7 @@ export default function ProfilePage() {
       uploadImage(file.name, croppedImageBlob.type)
         .then(async (data) => {
           if (data.error) {
-            Toast.error('Failed to upload image!1');
+            Toast.error(data.error);
             return;
           }
 
