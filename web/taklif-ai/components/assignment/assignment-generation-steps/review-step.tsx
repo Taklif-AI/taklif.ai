@@ -17,8 +17,6 @@ interface ReviewStepProps {
 
 export function ReviewStep({ data, onBack, onSubmit, isPending }: ReviewStepProps) {
 
-  console.log(data)
-
 
   const getContentPreview = () => {
     if (!data.file) return null;

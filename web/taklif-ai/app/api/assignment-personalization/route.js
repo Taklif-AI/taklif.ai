@@ -1,6 +1,12 @@
+import { currentUser } from '@/lib/auth/auth';
 import { assignmentSchema } from '@/lib/schemas/assignment-schema'
 
 export async function POST(req) {
+    const user = await currentUser();
+    if (!user) {
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
+    }
+
     try {
         const body = await req.json();
         let pdf_base64_data = '';
@@ -33,14 +39,17 @@ export async function POST(req) {
         }
 
         const dataToApi = {
-            task: "generation",
+            task: "personalization",
             params: {
                 interest: body.student_interest,
                 is_pdf: body.is_pdf,
                 general_assignment: body.is_pdf ? pdf_base64_data : body.general_assignment,
+                run_id: body.run_id,
+                personalization_id: body.personalization_id,
+                user_id: user.id
             }
         };
-        
+
         // Send data to llm api
         const res = await fetch('https://ne4754rnb8.execute-api.eu-north-1.amazonaws.com/Development/llm_generation', {
             method: 'POST',
@@ -50,6 +59,8 @@ export async function POST(req) {
 
 
         const data = await res.json();
+        console.log(data);
+        
         if (res.status == 400 && data?.rejected) {
             return new Response(JSON.stringify({ error: data.rejected }), { status: 400 });
         }

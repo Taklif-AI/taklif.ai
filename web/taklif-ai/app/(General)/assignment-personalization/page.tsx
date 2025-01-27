@@ -130,8 +130,6 @@ export default function AssignmentPage() {
         router.push('/assignment-personalization');
         return;
       }
-      console.log(result);
-      
       const data = JSON.parse(result.customized_assignment);
       console.log(data);
       
