@@ -52,7 +52,7 @@ export const uploadImage = async (filename: string, contentType: string) => {
         if (old_image_key && old_image_key.startsWith('user-profile-images')) {
             const isDeleted = await deleteOldProfileImage(old_image_key);
             if (!isDeleted) {
-                return { error: 'Failed to upload image!' }
+                return { error: 'Failed to upload image!11' }
             }
         }
         const imageUrl = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.S3_REGION}.amazonaws.com/${s3Key}`
@@ -68,7 +68,7 @@ export const uploadImage = async (filename: string, contentType: string) => {
         return { url, fields, s3Key, imageUrl };
     } catch (error) {
         console.log(error);
-        return { error: 'Failed to upload image!' }
+        return { error: 'Failed to upload image!22' }
     }
 }
 
