@@ -111,7 +111,11 @@ export default function ProfilePage() {
           }
 
           if (data.fields && data.url && data.s3Key && data.imageUrl) {
-            
+            update({
+              user: {
+                image: data.imageUrl
+              }
+            });
 
             // Upload the image to S3
             const formData = new FormData();
@@ -130,7 +134,9 @@ export default function ProfilePage() {
               return;
             }
             setImage(data.imageUrl);
-            
+            update({
+              image: data.imageUrl
+            });
             Toast.success('Image uploaded successfully');
           }
 
