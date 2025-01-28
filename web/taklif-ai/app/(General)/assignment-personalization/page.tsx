@@ -130,15 +130,13 @@ export default function AssignmentPage() {
         router.push('/assignment-personalization');
         return;
       }
-      const data = JSON.parse(result.customized_assignment);
-      console.log(data);
       
       const newAssignment = {
         id: Date.now().toString(),
-        title: data.assignment_title,
+        title: result.customized_assignment.assignment_title,
         createdAt: new Date().toISOString(),
         interest: assignmentData.interest,
-        text: data.assignment_content,
+        text: result.customized_assignment.assignment_content,
         type: 'personalized',
         likes: 0,
         dislikes: 0

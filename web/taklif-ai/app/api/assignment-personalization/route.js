@@ -58,9 +58,7 @@ export async function POST(req) {
         })
 
 
-        const data = await res.json();
-        console.log(data);
-        
+        const data = await res.json();        
         if (res.status == 400 && data?.rejected) {
             return new Response(JSON.stringify({ error: data.rejected }), { status: 400 });
         }
@@ -68,7 +66,7 @@ export async function POST(req) {
             return new Response(JSON.stringify({ error: 'Failed to generate assignment' }), { status: 500 });
         }
 
-        return new Response(JSON.stringify({ success: true, customized_assignment: data.response }), { status: 200 });
+        return new Response(JSON.stringify({ success: true, customized_assignment: data }), { status: 200 });
     } catch (error) {
         console.log(error);
         return new Response(JSON.stringify({ error: 'Failed to generate assignment' }), { status: 500 });
