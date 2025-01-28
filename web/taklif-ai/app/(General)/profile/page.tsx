@@ -111,7 +111,7 @@ export default function ProfilePage() {
           }
 
           if (data.fields && data.url && data.s3Key && data.imageUrl) {
-            await update({ image: data.imageUrl });
+            
 
             // Upload the image to S3
             const formData = new FormData();
@@ -130,7 +130,7 @@ export default function ProfilePage() {
               return;
             }
             setImage(data.imageUrl);
-            update();
+            
             Toast.success('Image uploaded successfully');
           }
 
