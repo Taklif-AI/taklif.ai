@@ -255,7 +255,12 @@ def handler(event, context):
         assignments_table.put_item(Item=db_record)
 
         # Return the content from the LLM response
-        return {"statusCode": 200, "body": json.dumps({"response": response.content})}
+        return {"statusCode": 200, "body": json.dumps(
+            { 
+            "assignment_title": matches.group(1).strip() if matches else None,
+            "assignment_content": matches.group(2).strip() if matches else None
+            }
+        )}
     except Exception as e:
         return {
             "statusCode": 500,
