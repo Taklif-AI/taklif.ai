@@ -89,7 +89,7 @@ export const {
 
             return session;
         },
-        async jwt({ token, user, trigger, session }) {
+        async jwt({ token, user }) {
             if (user) {
                 if (!user.id?.startsWith('USER')) {
                     user.id = `USER#${user.id}`;
@@ -99,9 +99,9 @@ export const {
                     token.id = user.id; // extend the token with user id
                 }
             }
-            if (trigger === "update" && session?.image) {
-                token.image = session.image
-            }
+            // if (trigger === "update" && session?.image) {
+            //     token.image = session.image
+            // }
             if (!token.sub) return token;
             const existingUser = await getUserById(token.sub);
 
