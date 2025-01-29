@@ -120,6 +120,9 @@ export const {
         },
     },
     adapter: DynamoDBAdapter(client),
-    session: { strategy: "jwt" },
+    session: {
+        strategy: "jwt",
+        maxAge: 60 * 60 * 24 * 30 // 30 days
+    },
     ...authConfig,
 })
