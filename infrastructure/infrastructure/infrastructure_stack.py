@@ -43,6 +43,8 @@ class InfrastructureStack(Stack):
                         "cognito-identity:*",
                         "cognito-sync:*",
                         "rds:*",
+                        "logs:*",
+                        "cloudwatch:*",
                         "s3:*",
                         "ec2:*",
                         "amplify:*",
