@@ -1,7 +1,8 @@
+'use client';
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import  {Logo} from "@/components/ui/logo";
+import { Logo } from "@/components/ui/logo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LogOut, User, Book } from "lucide-react";
 
@@ -12,10 +13,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { auth, signOut } from "@/auth";
+// import { auth, signOut } from "@/auth";
+import { signOut, useSession } from "next-auth/react";
 
-export async function Navigation() {
-  const session = await auth();
+export function Navigation() {
+  const { data: session } = useSession();
   const logoLight = "../../public/Taklif.AI-Light.svg"; // Path to light mode logo
   const logoDark = "../../public/taklif-logo.svg"; // Path to dark mode logo
   return (
@@ -29,8 +31,6 @@ export async function Navigation() {
             <Logo />
           </Link>
 
-
-
           <div className="hidden md:flex md:items-center md:gap-5">
 
           </div>
@@ -40,18 +40,17 @@ export async function Navigation() {
 
           {!session && (
             <Link href="/auth/sign-in">
-                  <Button 
-              variant="ghost" 
-              className="rounded-full w-[130px] outline outline-1 hover:bg-purple-600 hover:text-white transition-colors"
-            >
-              Sign in
-            </Button>
+              <Button
+                variant="ghost"
+                className="rounded-full w-[130px] outline outline-1 hover:bg-purple-600 hover:text-white transition-colors"
+              >
+                Sign in
+              </Button>
 
             </Link>
           )}
 
           {session && (
-
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -75,10 +74,7 @@ export async function Navigation() {
                     <span>All Assignments</span>
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={async()=>{
-                  "use server";
-                  await signOut();
-                }} className="text-red-600 dark:text-red-400">
+                <DropdownMenuItem onClick={() => signOut()} className="text-red-600 dark:text-red-400">
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Log out</span>
                 </DropdownMenuItem>

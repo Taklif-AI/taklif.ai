@@ -99,9 +99,6 @@ export const {
                     token.id = user.id; // extend the token with user id
                 }
             }
-            // if (trigger === "update" && session?.image) {
-            //     token.image = session.image
-            // }
             if (!token.sub) return token;
             const existingUser = await getUserById(token.sub);
 
