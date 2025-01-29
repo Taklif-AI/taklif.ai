@@ -22,7 +22,6 @@ export const profile = async (formData: object) => {
 
     if (user.isOAuth) {
         formData.email = undefined;
-        return { error: 'Unallowd to modify email!' }
     }
 
     const validateData = ProfileSchema.safeParse(formData);
