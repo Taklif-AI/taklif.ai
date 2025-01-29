@@ -40,8 +40,8 @@ export const {
     unstable_update
 } = NextAuth({
     pages: {
-        signIn: 'auth/sign-in',
-        error: 'auth/sign-in',
+        signIn: '/auth/sign-in',
+        error: '/auth/sign-in',
     },
     events: {
         async linkAccount({ user }) {
