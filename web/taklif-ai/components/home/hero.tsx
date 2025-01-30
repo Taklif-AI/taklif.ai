@@ -12,7 +12,7 @@ export function HomeHero() {
   return (
     <section>
     {/* Hero Section */}
-    <div className="relative min-h-screen bg-white dark:bg-[#13111C] overflow-hidden">      {/* Gradient Overlay */}
+    <div className="relative min-h-[135vh] pt-16 bg-white dark:bg-[#13111C] overflow-hidden">      {/* Gradient Overlay */}
     <div className="absolute inset-0 bg-gradient-to-b from-purple-900/20 to-transparent dark:from-purple-900/20" />
       
       {/* Floating Elements */}
@@ -29,7 +29,8 @@ export function HomeHero() {
           <div className="text-left space-y-8">
             {/* AI-Powered Learning Badge */}
             <div className="inline-flex items-center px-4 py-2 rounded-full bg-purple-100 dark:bg-purple-900/20 backdrop-blur-sm border border-purple-200 dark:border-purple-500/20">
-              <span className="text-sm text-purple-700 dark:text-purple-300">✨ AI-Powered Learning</span>
+            <Sparkles className="h-4 w-4 text-sm text-purple-700 dark:text-purple-300"/>
+              <span className="text-sm text-purple-700 dark:text-purple-300">&nbsp; AI-Powered Learning</span>
             </div>
 
             {/* Main Logo */}
