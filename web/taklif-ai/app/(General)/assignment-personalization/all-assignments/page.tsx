@@ -21,7 +21,6 @@ export default function AssignmentsPage() {
         title: "Introduction to Physics",
         text: "Create a comprehensive explanation of Newton's laws of motion with practical examples from everyday life. Include mathematical formulas and their applications.",
         createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), // 2 hours ago
-        likes: 5,
         dislikes: 1
       },
       {
@@ -29,7 +28,6 @@ export default function AssignmentsPage() {
         title: "Advanced Mathematics",
         text: "Develop a step-by-step guide to solving quadratic equations, including the quadratic formula, completing the square, and factoring methods.",
         createdAt: new Date(Date.now() - 1000 * 60 * 30).toISOString(), // 30 minutes ago
-        likes: 3,
         dislikes: 0
       }
     ];
@@ -123,7 +121,6 @@ export default function AssignmentsPage() {
                     className="text-green-600 hover:text-green-700"
                   >
                     <ThumbsUp className="h-4 w-4 mr-1" />
-                    {assignment.likes}
                   </Button>
                   <Button
                     variant="ghost"
@@ -132,7 +129,6 @@ export default function AssignmentsPage() {
                     className="text-red-600 hover:text-red-700"
                   >
                     <ThumbsDown className="h-4 w-4 mr-1" />
-                    {assignment.dislikes}
                   </Button>
                 </div>
               </div>
