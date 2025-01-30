@@ -2,6 +2,7 @@
 
 import { Card } from "@/components/ui/card";
 import { Github, Linkedin, Twitter } from "lucide-react";
+import XIcon from '@mui/icons-material/X';
 import Image from "next/image";
 
 interface TeamMember {
@@ -23,9 +24,9 @@ const teamMembers: TeamMember[] = [
     image: "/zaki.jpg",
     bio: "PhD in Machine Learning with focus on educational AI systems",
     social: {
-      github: "#",
-      linkedin: "#",
-      twitter: "#"
+      github: "https://www.linkedin.com/in/zakikurdya/",
+      linkedin: "https://www.linkedin.com/in/zakikurdya/",
+      twitter: "https://x.com/ZakiKurdya"
     }
   },
   {
@@ -34,8 +35,8 @@ const teamMembers: TeamMember[] = [
     image: "salem.jpg",
     bio: "15 years experience in curriculum development and educational technology",
     social: {
-      linkedin: "#",
-      twitter: "#"
+      linkedin: "https://linkedin.com/in/salem-amassi-b961aa229",
+      github: "https://github.com/salemAmassi"
     }
   },
   {
@@ -44,7 +45,7 @@ const teamMembers: TeamMember[] = [
     image: "mohammed.jpg",
     bio: "Expert in building scalable educational platforms and AI integration",
     social: {
-      github: "#",
+      github: "https://github.com/Mohammedbasi",
       linkedin: "#"
     }
   },
@@ -54,9 +55,9 @@ const teamMembers: TeamMember[] = [
     image: "shady.jpg",
     bio: "Passionate about creating intuitive and accessible learning experiences",
     social: {
-      github: "#",
-      linkedin: "#",
-      twitter: "#"
+      github: "https://github.com/ShDXMT",
+      linkedin: "https://www.linkedin.com/in/shadytelbany/",
+      twitter: ""
     }
   }
 ];
@@ -90,7 +91,7 @@ function TeamMemberCard({ member }: { member: TeamMember }) {
           )}
           {member.social.twitter && (
             <a href={member.social.twitter} className="text-muted-foreground hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
-              <Twitter className="h-5 w-5" />
+              <XIcon fontSize="small"/>
             </a>
           )}
         </div>
