@@ -55,38 +55,40 @@ export function Navigation() {
             </Link>
           )}
 
+          <ThemeToggle />
+          <div className="hidden md:flex md:items-center md:gap-5"></div>
           {session && (
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-9 w-9 rounded-full">
-                  <Avatar className="h-9 w-9">
-                    <AvatarImage src={session.user.image} alt="Profile" />
-                    <AvatarFallback>JD</AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuItem asChild>
-                  <Link href="/profile" className="flex items-center">
-                    <User className="mr-2 h-4 w-4" />
-                    <span>Profile</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/assignment-personalization/all-assignments" className="flex items-center">
-                    <Book className="mr-2 h-4 w-4" />
-                    <span>All Assignments</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => signOut()} className="text-red-600 dark:text-red-400">
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Log out</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+<DropdownMenu modal={false}>
+<DropdownMenuTrigger asChild>
+  <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+    <Avatar className="h-9 w-9">
+      <AvatarImage src={session.user.image} alt="Profile" />
+      <AvatarFallback>JD</AvatarFallback>
+    </Avatar>
+  </Button>
+</DropdownMenuTrigger>
+<DropdownMenuContent align="end" sideOffset={5} className="w-56">
+  <DropdownMenuItem asChild>
+    <Link href="/profile" className="flex items-center">
+      <User className="mr-2 h-4 w-4" />
+      <span>Profile</span>
+    </Link>
+  </DropdownMenuItem>
+  <DropdownMenuItem asChild>
+    <Link href="/assignment-personalization/all-assignments" className="flex items-center">
+      <Book className="mr-2 h-4 w-4" />
+      <span>All Assignments</span>
+    </Link>
+  </DropdownMenuItem>
+  <DropdownMenuItem onClick={() => signOut()} className="text-red-600 dark:text-red-400">
+    <LogOut className="mr-2 h-4 w-4" />
+    <span>Log out</span>
+  </DropdownMenuItem>
+</DropdownMenuContent>
+</DropdownMenu>
+
           )}
-          <ThemeToggle />
         </div>
       </nav>
     </header>
