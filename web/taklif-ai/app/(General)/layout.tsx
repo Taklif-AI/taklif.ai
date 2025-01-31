@@ -38,7 +38,7 @@ export default async function RootLayout({
           >
             <div className="flex min-h-screen flex-col">
               <Navigation />
-              <div className="flex-1">
+              <div className="flex-1 pt-16">
                 {children}
               </div>
               <Footer />
