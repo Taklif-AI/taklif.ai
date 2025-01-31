@@ -43,11 +43,15 @@ export function Navigation() {
 
         <div className="flex items-center gap-4">
 
+        <ThemeToggle />
+          <div className="hidden md:flex md:items-center md:gap-5"></div>
+
+
           {!session && (
             <Link href="/auth/sign-in">
               <Button
                 variant="ghost"
-                className="rounded-full w-[130px] outline outline-1 hover:bg-purple-600 hover:text-white transition-colors"
+                className="rounded-full w-[130px] outline outline-1 hover:bg-purple-600 hover:text-white transition-colors hover:outline-none"
               >
                 Sign in
               </Button>
@@ -55,8 +59,6 @@ export function Navigation() {
             </Link>
           )}
 
-          <ThemeToggle />
-          <div className="hidden md:flex md:items-center md:gap-5"></div>
           {session && (
 
 <DropdownMenu modal={false}>
