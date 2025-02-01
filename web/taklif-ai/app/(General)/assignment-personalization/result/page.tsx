@@ -13,6 +13,8 @@ import { storage } from "@/lib/utils/local-storage";
 import Image from "next/image";
 import SVGIMG from "../../../../public/Taklif.AI Icon.svg";
 const backgroundIcons = [Brain, Wand2, Stars, Sparkles];
+import {  ArrowRight ,ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function AssignmentResultPage() {
   const router = useRouter();
@@ -26,7 +28,13 @@ export default function AssignmentResultPage() {
     const foundAssignment = assignments.find((a) => a.id === lastCreatedId);
     setAssignment(foundAssignment);
   }, []);
-
+  const handleNavigateLeft = () => {
+    // Logic to navigate to the previous version
+  };
+  
+  const handleNavigateRight = () => {
+    // Logic to navigate to the next version
+  };
   const handleAction = async (action: 'like' | 'dislike' | 'repersonalized' | 'simplify') => {
     if (!assignment) return;
 
@@ -210,6 +218,44 @@ export default function AssignmentResultPage() {
                 </div>
 
                 <AssignmentResult assignment={assignment} />
+                <motion.div
+        className="flex justify-between mt-4"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.5 }}
+      >
+    <motion.div
+      className=" bottom-4 left-4 flex space-x-4" // Positioning for left arrow
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5, delay: 0.5 }}
+    >
+       <Button
+            variant="outline"
+            size="sm"
+            className="text-violet-600 hover:text-violet-700 hover:bg-violet-50 dark:hover:bg-violet-900/20"
+          >
+
+      <ArrowLeft className="cursor-pointer" onClick={handleNavigateLeft} />
+      </Button>
+    </motion.div>
+
+    <motion.div
+      className=" bottom-4 right-4 flex " // Positioning for right arrow
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5, delay: 0.5 }}
+    >
+        <Button
+            variant="outline"
+            size="sm"
+            className="text-violet-600 hover:text-violet-700 hover:bg-violet-50 dark:hover:bg-violet-900/20"
+          >
+
+      <ArrowRight className="cursor-pointer" onClick={handleNavigateRight} />
+          </Button>
+    </motion.div>
+                </motion.div>
                 <AssignmentActions
                   isPending={isPending}
                   assignment={assignment}
