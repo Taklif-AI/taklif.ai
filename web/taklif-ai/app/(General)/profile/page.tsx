@@ -17,7 +17,7 @@ import { FormSuccess } from "@/components/auth/form-success";
 import { settings } from "@/actions/settings";
 import { Toast } from "@/lib/utils/toast";
 import { uploadImage } from "@/actions/upload-image";
-
+import imageD from "@/public/hi.png";
 export default function ProfilePage() {
   const { update } = useSession();
   const user = useCurrentUser();
@@ -35,7 +35,7 @@ export default function ProfilePage() {
     isTwoFactorEnabled: user?.isTwoFactorEnabled,
   });
 
-  const [image, setImage] = useState(user?.image || '/zaki.jpg');
+  const [image, setImage] = useState(user?.image || '/hi.jpg');
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
 
@@ -209,7 +209,7 @@ export default function ProfilePage() {
             <div className="relative">
               <Avatar className="w-24 h-24">
                 <AvatarImage src={image} alt="Profile Image" width={50} height={50} />
-                <AvatarFallback>JD</AvatarFallback>
+                <AvatarFallback></AvatarFallback>
               </Avatar>
               <label htmlFor="avatar-upload" className="absolute -right-2 -bottom-2">
                 <div className="rounded-full bg-primary p-2 cursor-pointer hover:bg-primary/90">
