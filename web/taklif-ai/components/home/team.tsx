@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Github, Linkedin, Twitter } from "lucide-react";
 import XIcon from '@mui/icons-material/X';
 import Image from "next/image";
+import { motion } from "framer-motion";
 
 interface TeamMember {
   name: string;
@@ -57,7 +58,7 @@ const teamMembers: TeamMember[] = [
     social: {
       github: "https://github.com/ShDXMT",
       linkedin: "https://www.linkedin.com/in/shadytelbany/",
-      twitter: ""
+      twitter: "https://x.com/shady_telbani"
     }
   }
 ];
@@ -96,6 +97,8 @@ function TeamMemberCard({ member }: { member: TeamMember }) {
         </div>
       </div>
     </Card>
+    </motion.div>
+    
   );
 }
 
