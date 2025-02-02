@@ -96,9 +96,7 @@ function TeamMemberCard({ member }: { member: TeamMember }) {
           )}
         </div>
       </div>
-    </Card>
-    </motion.div>
-    
+    </Card>    
   );
 }
 
