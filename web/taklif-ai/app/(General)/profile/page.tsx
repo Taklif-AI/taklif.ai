@@ -204,9 +204,13 @@ export default function ProfilePage() {
     <div className="p-6">
       <div className="max-w-4xl mx-auto space-y-8">
         {/* Profile Header */}
-        <div className="relative h-48 bg-gradient-to-r from-purple-900 to-purple-700 rounded-lg">
+        <Card className="mt-16">
+
+        <div className="relative h-48  bg-gradient-to-br from-violet-50 to-white dark:from-violet-950/20 dark:to-background">
           <div className="absolute bottom-[50px]	 left-8 flex items-end space-x-4">
-            <div className="relative">
+            <div className="relative  ">
+              <div className=" inset-0 rounded-full transition-opacity duration-300 before:absolute before:inset-0 before:rounded-full before:blur-lg before:bg-purple-500/80">
+
               <Avatar className="w-24 h-24">
                 <AvatarImage src={image} alt="Profile Image" width={50} height={50} />
                 <AvatarFallback></AvatarFallback>
@@ -224,13 +228,17 @@ export default function ProfilePage() {
                 onChange={handleImageUpload}
                 disabled={isPending}
               />
+              </div>
+
             </div>
+
             <div className="mb-2">
               <h1 className="text-2xl font-bold text-white">{user?.name}</h1>
               <p className="text-purple-200">Credits left: {credits}</p>
             </div>
           </div>
         </div>
+        </Card>
         {/* Stats Card */}
         <Card className="mt-16">
           <CardContent className="p-6">
