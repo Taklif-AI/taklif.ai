@@ -35,7 +35,7 @@ export default function ProfilePage() {
     isTwoFactorEnabled: user?.isTwoFactorEnabled,
   });
 
-  const [image, setImage] = useState(user?.image || '/zaki.jpg');
+  const [image, setImage] = useState(user?.image || '/default-avatar.jpg');
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
 
@@ -204,12 +204,12 @@ export default function ProfilePage() {
     <div className="p-6">
       <div className="max-w-4xl mx-auto space-y-8">
         {/* Profile Header */}
-        <div className="relative h-48 bg-gradient-to-r from-purple-900 to-purple-700 rounded-lg">
+        <div className="relative h-48 bg-gradient-to-b from-purple-900/50 to-transparent dark:from-purple-900/50 rounded-lg">
           <div className="absolute bottom-[50px]	 left-8 flex items-end space-x-4">
             <div className="relative">
               <Avatar className="w-24 h-24">
                 <AvatarImage src={image} alt="Profile Image" width={50} height={50} />
-                <AvatarFallback>JD</AvatarFallback>
+                <AvatarFallback>🤖</AvatarFallback>
               </Avatar>
               <label htmlFor="avatar-upload" className="absolute -right-2 -bottom-2">
                 <div className="rounded-full bg-primary p-2 cursor-pointer hover:bg-primary/90">

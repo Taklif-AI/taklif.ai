@@ -27,7 +27,7 @@ export function Navigation() {
   href="https://cdn.jsdelivr.net/npm/theme-toggles@4.10.1/css/around.min.css"
 />
 
-      <nav className="max-w-full container flex h-16 items-center justify-between px-4 ">
+      <nav className="max-w-full container flex h-16 items-center justify-between pl-6 pr-9">
         <div className="flex items-center gap-6">
           <Link
             href="/"
@@ -65,8 +65,8 @@ export function Navigation() {
 <DropdownMenuTrigger asChild>
   <Button variant="ghost" className="relative h-9 w-9 rounded-full">
     <Avatar className="h-9 w-9">
-      <AvatarImage src={session.user.image} alt="Profile" />
-      <AvatarFallback>JD</AvatarFallback>
+      <AvatarImage src={session?.user?.image || "/default-avatar.jpg"} alt="Profile"/>
+      <AvatarFallback>🤖</AvatarFallback>
     </Avatar>
   </Button>
 </DropdownMenuTrigger>
