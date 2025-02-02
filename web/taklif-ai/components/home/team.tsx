@@ -64,7 +64,7 @@ const teamMembers: TeamMember[] = [
 
 function TeamMemberCard({ member }: { member: TeamMember }) {
   return (
-    <Card className="p-6 hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-white to-violet-50/30 dark:from-gray-900 dark:to-violet-950/20">
+    <Card className="p-6 transition-all duration-300 bg-gradient-to-br from-white to-violet-50/30 dark:from-gray-900 dark:to-violet-950/20 hover:bg-violet-50 dark:hover:bg-violet-900/20 hover:shadow-lg dark:hover:shadow-violet-900/50">
       <div className="text-center">
         <div className="relative w-32 h-32 mx-auto mb-4">
           <div className="absolute inset-0 bg-violet-200 dark:bg-violet-800 rounded-full blur-lg opacity-20"></div>
@@ -77,7 +77,6 @@ function TeamMemberCard({ member }: { member: TeamMember }) {
         </div>
         <h3 className="text-xl font-semibold mb-1">{member.name}</h3>
         <p className="text-violet-600 dark:text-violet-400 font-medium mb-2">{member.role}</p>
-        {/* <p className="text-muted-foreground mb-4">{member.bio}</p> */}
         <div className="flex justify-center space-x-3">
           {member.social.github && (
             <a href={member.social.github} className="text-muted-foreground hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
@@ -91,7 +90,7 @@ function TeamMemberCard({ member }: { member: TeamMember }) {
           )}
           {member.social.twitter && (
             <a href={member.social.twitter} className="text-muted-foreground hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
-              <XIcon fontSize="small"/>
+              <XIcon fontSize="small" />
             </a>
           )}
         </div>
