@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Github, Linkedin, Twitter } from "lucide-react";
 import XIcon from '@mui/icons-material/X';
 import Image from "next/image";
+import { motion } from "framer-motion";
 
 interface TeamMember {
   name: string;
@@ -57,13 +58,14 @@ const teamMembers: TeamMember[] = [
     social: {
       github: "https://github.com/ShDXMT",
       linkedin: "https://www.linkedin.com/in/shadytelbany/",
-      twitter: ""
+      twitter: "https://x.com/shady_telbani"
     }
   }
 ];
 
 function TeamMemberCard({ member }: { member: TeamMember }) {
   return (
+    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
     <Card className="p-6 hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-white to-violet-50/30 dark:from-gray-900 dark:to-violet-950/20">
       <div className="text-center">
         <div className="relative w-32 h-32 mx-auto mb-4">
@@ -97,6 +99,8 @@ function TeamMemberCard({ member }: { member: TeamMember }) {
         </div>
       </div>
     </Card>
+    </motion.div>
+    
   );
 }
 

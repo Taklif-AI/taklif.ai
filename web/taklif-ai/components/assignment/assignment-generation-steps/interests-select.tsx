@@ -90,8 +90,7 @@ export function InterestsSelect({ onNext, onBack, initialInterests }: InterestsS
 
       <Card className="p-8 max-w-xl mx-auto backdrop-blur-sm bg-white/80 dark:bg-gray-950/80">
          
-        <div className="overflow-auto h-20 ;
-  ">
+        <div className="overflow-auto h-20 ;">
 
         <Image className=" absolute   translate-y-[-1.9rem] translate-x-[-2rem] opacity-[0.04]	 -z-10  " src={SVGIMG} alt={""}/>
         </div>
