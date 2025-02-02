@@ -100,3 +100,14 @@
 .input-error {
   @apply border-red-500 focus:ring-red-500;
 }
+
+::selection {
+  background-color: #9381ff; /* Background color */
+  color: white; /* Text color */
+}
+
+/* For Firefox */
+::-moz-selection {
+  background-color: #9381ff;
+  color: white;
+}
