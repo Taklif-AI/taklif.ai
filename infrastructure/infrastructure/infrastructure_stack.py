@@ -168,6 +168,37 @@ class InfrastructureStack(Stack):
 
         # Attach the policy to the user
         dynamodb_policy.attach_to_user(dynamodb_authjs_user)
+        
+        # Create User for DynamoDB Assignment table access
+        dynamodb_assignment_table = iam.User(self, "DynamoDBAssignmentUser")
+
+        # Create an inline policy with specified DynamoDB actions
+        dynamodb_assignment_policy = iam.Policy(
+            self,
+            f"{env_name}DynamoDBAccessPolicy-AssignmentTable",
+            statements=[
+                iam.PolicyStatement(
+                    actions=[
+                        "dynamodb:BatchGetItem",
+                        "dynamodb:BatchWriteItem",
+                        "dynamodb:Describe*",
+                        "dynamodb:List*",
+                        "dynamodb:PutItem",
+                        "dynamodb:DeleteItem",
+                        "dynamodb:GetItem",
+                        "dynamodb:Scan",
+                        "dynamodb:Query",
+                        "dynamodb:UpdateItem",
+                    ],
+                    resources=[
+                        "arn:aws:dynamodb:eu-north-1:***REMOVED-AWS-ACCOUNT-ID***:table/Development-AssignmentsTable",
+                    ],
+                )
+            ],
+        )
+
+        # Attach the policy to the user
+        dynamodb_assignment_policy.attach_to_user(dynamodb_assignment_table)
 
         # Create IAM user for accessing S3 user images bucket
         s3_user_images_iam_user = iam.User(self, "S3UserImagesIamUser")
