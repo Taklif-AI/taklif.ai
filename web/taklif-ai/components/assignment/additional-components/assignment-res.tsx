@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import { MdContentCopy } from 'react-icons/md';
 import { Toast } from "@/lib/utils/toast";
-import { Sparkles, ArrowRight ,ArrowLeft } from "lucide-react";
+import { Sparkles, Copy, ArrowRight ,ArrowLeft } from "lucide-react";
 
 import rehypeSanitize from "rehype-sanitize";
 
@@ -58,7 +58,7 @@ export function AssignmentResult({ assignment }: AssignmentResultProps) {
     </h1>
       <div>
 
-      <MdContentCopy size={25} onClick={handleCopy} className="cursor-pointer text-violet-600 hover:text-violet-700" />
+      <Copy size={20} onClick={handleCopy} className="cursor-pointer text-violet-600 hover:text-violet-700" />
       </div>
       
       </div>
