@@ -90,41 +90,24 @@ export default function AssignmentsPage() {
                 <div className="flex justify-between items-start">
                   <div>
                     <h2 className="text-xl font-semibold mb-1">{assignment.title}</h2>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-muted-foreground mb-4">
                       Personalized {formatDistanceToNow(new Date(assignment.createdAt))} ago
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleSimplify(assignment.id)}
-                      className="text-violet-600 hover:text-violet-700"
-                    >
-                      <Wand2 className="h-4 w-4 mr-1" />
-                      Simplify
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleRegenerate(assignment.id)}
-                      className="text-violet-600 hover:text-violet-700"
-                    >
-                      <RefreshCw className="h-4 w-4 mr-1" />
-                      Re-personaliz
-                    </Button>
-                  </div>
-                </div>
-
-                <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                  {assignment.text}
-                </p>
-                <Link
+                    
+                    <Link
                   href={`/assignments/${assignment.id}`}
-                  className="absolute bottom-3 right-3 text-violet-600 hover:text-violet-700 hover:bg-violet-50 dark:hover:bg-violet-900/20 transition"
+                  className="text-violet-600 hover:text-violet-700 hover:bg-violet-50 dark:hover:bg-violet-900/20 p-2 rounded-full transition"
                 >
                   <Eye className="h-5 w-5" />
                 </Link>
+                  </div>
+                </div>
+
+                <p className="text-gray-700 dark:text-gray-300 leading-relaxed line-clamp-3 overflow-hidden text-ellipsis">
+                  {assignment.text}
+                </p>
                
               </div>
             </Card>
