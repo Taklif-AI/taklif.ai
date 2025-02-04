@@ -62,22 +62,32 @@ export default function AssignmentLoadingPage() {
                 Our AI is crafting the perfect assignment just for you...
               </p>
             </div>
-            
+
+           
+
             <div className="space-y-3">
-              {[...Array(3)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="h-2 bg-gradient-to-r from-violet-200 to-violet-100 dark:from-violet-800 dark:to-violet-900 rounded-full"
-                  initial={{ width: "20%" }}
-                  animate={{ width: ["20%", "100%", "20%"] }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    delay: i * 0.2,
-                  }}
-                />
-              ))}
-            </div>
+  {[...Array(3)].map((_, i) => (
+    <motion.div
+      key={i}
+      className="h-4 bg-gradient-to-r from-violet-400 to-violet-600 dark:from-violet-700 dark:to-violet-900 rounded-full"
+      initial={{ width: "10%", opacity: 1 }}
+      animate={{
+        width: ["10%", "100%", "100%", "10%"], // Smooth reset to starting point
+        opacity: [1, 1, 0, 0], // Stays invisible before restarting
+      }}
+      transition={{
+        duration: 3, // Smooth transition time
+        ease: "easeInOut", // Natural movement
+        repeat: Infinity,
+        repeatType: "loop",
+        delay: i * 0.5, // Staggered start times
+        repeatDelay: 0.5, // Ensures no flash when restarting
+      }}
+    />
+  ))}
+</div>
+
+
 
             <div className="pt-4 space-y-2 text-sm text-muted-foreground">
               <p>Analyzing content structure...</p>
