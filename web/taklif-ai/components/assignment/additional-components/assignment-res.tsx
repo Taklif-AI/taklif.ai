@@ -19,7 +19,7 @@ export function AssignmentResult({ assignment }: AssignmentResultProps) {
   const title = assignment.title;
  
   // Regular expression to match emojis
-  const emojiRegex = /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu;
+  const emojiRegex = /(?:\p{Extended_Pictographic}|\p{Emoji_Presentation}|\p{Emoji_Modifier_Base}|\p{Emoji})+/gu;
   
   // Extract emojis from the title
   const emojis = title.match(emojiRegex) || [];  
