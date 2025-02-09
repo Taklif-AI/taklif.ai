@@ -23,9 +23,7 @@ export default function TermsOfUse() {
               <p className="text-gray-300">
                 By accessing and using Taklif.AI, you accept and agree to be bound by these Terms of Use. If you do not agree to these terms, please do not use our service.
               </p>
-            </section>
-
-            <section className="bg-purple-900/10 p-6 rounded-lg border border-purple-500/20">
+              <br></br>
               <h2 className="text-2xl font-semibold text-white mb-4">2. User Accounts</h2>
               <p className="text-gray-300">
                 When creating an account, you must:
@@ -36,9 +34,8 @@ export default function TermsOfUse() {
                 <li>Accept responsibility for all activities under your account</li>
                 <li>Notify us immediately of any unauthorized use</li>
               </ul>
-            </section>
+              <br></br>
 
-            <section className="bg-purple-900/10 p-6 rounded-lg border border-purple-500/20">
               <h2 className="text-2xl font-semibold text-white mb-4">3. Intellectual Property</h2>
               <p className="text-gray-300">
                 All content generated through our platform is subject to the following terms:
@@ -49,9 +46,8 @@ export default function TermsOfUse() {
                 <li>Sharing or reselling generated content is prohibited</li>
                 <li>Our platform and its features are protected by copyright</li>
               </ul>
-            </section>
+              <br></br>
 
-            <section className="bg-purple-900/10 p-6 rounded-lg border border-purple-500/20">
               <h2 className="text-2xl font-semibold text-white mb-4">4. Prohibited Activities</h2>
               <p className="text-gray-300">
                 Users must not:
@@ -62,16 +58,14 @@ export default function TermsOfUse() {
                 <li>Use the service for unauthorized purposes</li>
                 <li>Interfere with other users' access</li>
               </ul>
-            </section>
+              <br></br>
 
-            <section className="bg-purple-900/10 p-6 rounded-lg border border-purple-500/20">
               <h2 className="text-2xl font-semibold text-white mb-4">5. Termination</h2>
               <p className="text-gray-300">
                 We reserve the right to terminate or suspend access to our service immediately, without prior notice, for any violation of these Terms of Use.
               </p>
-            </section>
+              <br></br>
 
-            <section className="bg-purple-900/10 p-6 rounded-lg border border-purple-500/20">
               <h2 className="text-2xl font-semibold text-white mb-4">6. Contact</h2>
               <p className="text-gray-300">
                 For questions about these Terms of Use, please contact:
@@ -81,6 +75,9 @@ export default function TermsOfUse() {
                 </a>
               </p>
             </section>
+
+        
+
           </div>
         </motion.div>
       </div>
