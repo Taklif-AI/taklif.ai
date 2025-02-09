@@ -15,6 +15,7 @@ import SVGIMG from "../../../../public/Taklif.AI Icon.svg";
 const backgroundIcons = [Brain, Wand2, Stars, Sparkles];
 import {  ChevronRight , ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function AssignmentResultPage() {
   const router = useRouter();
@@ -255,6 +256,29 @@ export default function AssignmentResultPage() {
               </div>
             </Card>
           </motion.div>
+        </div>
+        <div>
+
+          <div className="m-5 flex justify-between">
+            
+        <Link href="/" >
+        <Button
+                variant="ghost"
+                className="rounded-full w-full outline outline-1 hover:bg-purple-600 hover:text-white transition-colors hover:outline-none"
+              >
+                Home Page
+              </Button>
+        </Link>
+        <Link href="/assignment-personalization/all-assignments"  >
+        <Button
+                variant="ghost"
+                className="rounded-full w-full outline outline-1 hover:bg-purple-600 hover:text-white transition-colors hover:outline-none"
+              >
+                All Assignments
+              </Button>
+        </Link>
+        </div>
+
         </div>
       </div>
     </div>
