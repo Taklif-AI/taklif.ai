@@ -54,7 +54,8 @@ export function AssignmentResult({ assignment }: AssignmentResultProps) {
         {titleWithoutEmojis}
 
       </motion.span>
-      <span>{emojis}</span> 
+      <span className="text-noto-color">{emojis}</span> 
+
     </h1>
       <div>
 
