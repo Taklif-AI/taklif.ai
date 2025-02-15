@@ -5,7 +5,6 @@ import { AssignmentResult } from "@/components/assignment/additional-components/
 import { AssignmentActions } from "@/components/assignment/additional-components/assignment-action";
 import { Card } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
-import { Assignment } from "@/lib/types/assigment-type";
 import { Toast } from "@/lib/utils/toast";
 import { motion } from "framer-motion";
 import { Brain, Sparkles, Stars, Wand2 } from "lucide-react";
@@ -13,25 +12,56 @@ import { storage } from "@/lib/utils/local-storage";
 import Image from "next/image";
 import SVGIMG from "../../../../public/Taklif.AI Icon.svg";
 const backgroundIcons = [Brain, Wand2, Stars, Sparkles];
-import {  ArrowRight ,ArrowLeft } from "lucide-react";
+import { ArrowRight, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
+import { fetchAssignment } from "@/actions/get-assignment";
+import { v4 as uuidv } from 'uuid';
 export default function AssignmentResultPage() {
   const router = useRouter();
-  const [assignment, setAssignment] = useState<Assignment | null>(null);
+
+  const [assignment, setAssignment] = useState<object | null>(null);
+  const [DbAssignment, setDbAssignment] = useState<object | null>(null);
   const [isPending, setIsPending] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const lastCreatedId = localStorage.getItem('lastCreatedAssignmentId');
-    if (!lastCreatedId) return;
-    const assignments = JSON.parse(localStorage.getItem('assignments') || '[]');
-    const foundAssignment = assignments.find((a) => a.id === lastCreatedId);
-    setAssignment(foundAssignment);
-  }, []);
+    async function getAssignment() {
+      try {
+        const storedAssignmnet = sessionStorage.getItem("assignment");
+        const run_id = sessionStorage.getItem("run_id");
+        const personalization_id = sessionStorage.getItem("personalization_id");
+
+        if (!storedAssignmnet || !run_id || !personalization_id) {
+          Toast.error("Missing required data. Redirecting...");
+          router.push('/assignment-personalization');
+          return;
+        }
+
+        setAssignment(JSON.parse(storedAssignmnet));
+
+        const result = await fetchAssignment(run_id as string, personalization_id as string);
+        if (result?.error) {
+          Toast.error(result.error);
+          return;
+        }
+        if (result?.data) {
+          console.log(result.data);
+          setDbAssignment(result.data);
+        }
+      } catch (error) {
+        console.log("Error fetching assignment:", error);
+        Toast.error("Failed to fetch assignment data.");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    getAssignment();
+  }, [router]);
+
   const handleNavigateLeft = () => {
     // Logic to navigate to the previous version
   };
-  
+
   const handleNavigateRight = () => {
     // Logic to navigate to the next version
   };
@@ -51,7 +81,7 @@ export default function AssignmentResultPage() {
         setIsPending(true)
         Toast.success("repersonaling assignment...");
         // redirect user to loadings page
-        router.push('/assignment-personalization/loading/');
+        router.push('/assignment-personalization/loading');
         try {
           const lastRequestData = localStorage.getItem('lastRequestData');
           if (!lastRequestData) {
@@ -111,8 +141,21 @@ export default function AssignmentResultPage() {
 
 
         // redirect user to loadings page
-        router.push('/assignment-personalization/loading/');
-
+        router.push('/assignment-personalization/loading');
+        const run_id = sessionStorage.getItem("run_id");
+        const personalization_id = sessionStorage.getItem("personalization_id");
+        if (!run_id || !personalization_id) {
+          Toast.error("Missing required data. Redirecting...");
+          router.push('/assignment-personalization/result');
+          return;
+        }
+        const simplification_id = uuidv();
+        const dataToBackend = {
+          run_id: run_id,
+          personalization_id: personalization_id,
+          simplification_id: simplification_id,
+          interest: DbAssignment?.user_input.interest
+        }
         try {
           const res = await fetch('/api/assignment-simplification', {
             method: 'POST',
@@ -170,8 +213,9 @@ export default function AssignmentResultPage() {
     }
   };
 
+  if (isLoading) return null;
   if (!assignment) return null;
-
+  if (!DbAssignment) return null;
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-3xl mx-auto">
@@ -213,52 +257,52 @@ export default function AssignmentResultPage() {
                     animate={{ rotate: 360 }}
                     transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
                   >
-               <Image className="w-7" src={SVGIMG} alt={""} />
-              </motion.div>
+                    <Image className="w-7" src={SVGIMG} alt={""} />
+                  </motion.div>
                 </div>
 
-                <AssignmentResult assignment={assignment} />
+                <AssignmentResult assignment={{ ...assignment, ...(DbAssignment || {}) }} />
                 <motion.div
-        className="flex justify-between mt-4"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.5 }}
-      >
-    <motion.div
-      className=" bottom-4 left-4 flex space-x-4" // Positioning for left arrow
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5, delay: 0.5 }}
-    >
-       <Button
-            variant="outline"
-            size="sm"
-            className="text-violet-600 hover:text-violet-700 hover:bg-violet-50 dark:hover:bg-violet-900/20"
-          >
+                  className="flex justify-between mt-4"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.5 }}
+                >
+                  <motion.div
+                    className=" bottom-4 left-4 flex space-x-4" // Positioning for left arrow
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 0.5 }}
+                  >
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-violet-600 hover:text-violet-700 hover:bg-violet-50 dark:hover:bg-violet-900/20"
+                    >
 
-      <ArrowLeft className="cursor-pointer" onClick={handleNavigateLeft} />
-      </Button>
-    </motion.div>
+                      <ArrowLeft className="cursor-pointer" onClick={handleNavigateLeft} />
+                    </Button>
+                  </motion.div>
 
-    <motion.div
-      className=" bottom-4 right-4 flex " // Positioning for right arrow
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5, delay: 0.5 }}
-    >
-        <Button
-            variant="outline"
-            size="sm"
-            className="text-violet-600 hover:text-violet-700 hover:bg-violet-50 dark:hover:bg-violet-900/20"
-          >
+                  <motion.div
+                    className=" bottom-4 right-4 flex " // Positioning for right arrow
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 0.5 }}
+                  >
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-violet-600 hover:text-violet-700 hover:bg-violet-50 dark:hover:bg-violet-900/20"
+                    >
 
-      <ArrowRight className="cursor-pointer" onClick={handleNavigateRight} />
-          </Button>
-    </motion.div>
+                      <ArrowRight className="cursor-pointer" onClick={handleNavigateRight} />
+                    </Button>
+                  </motion.div>
                 </motion.div>
                 <AssignmentActions
                   isPending={isPending}
-                  assignment={assignment}
+                  assignment={{ ...assignment, ...(DbAssignment || {}) }}
                   onAction={handleAction}
                 />
               </div>
