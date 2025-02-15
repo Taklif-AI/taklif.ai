@@ -130,11 +130,9 @@ export default function AssignmentPage() {
         router.push('/assignment-personalization');
         return;
       }
-
+      sessionStorage.removeItem("simplification_id");
       sessionStorage.setItem("run_id", dataToBackend.run_id);
       sessionStorage.setItem("personalization_id", dataToBackend.personalization_id);
-      sessionStorage.setItem("assignment", JSON.stringify(result.customized_assignment));
-
 
       Toast.success("Assignment created successfully!");
       setIsPending(false);
