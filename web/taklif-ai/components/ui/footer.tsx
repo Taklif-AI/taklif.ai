@@ -1,9 +1,9 @@
 "use client";
 
 import { Github, Twitter, Mail } from "lucide-react";
-import Image from "next/image";
-import SVGIMG from "../../public/taklif-logo.svg";
+
 import  {Logo} from "@/components/ui/logo";
+import Link from "next/link";
 
 export function Footer() {
   return (
@@ -15,6 +15,22 @@ export function Footer() {
             <Logo  /> 
             </div> 
                       © {new Date().getFullYear()} Taklif.AI. All rights reserved.
+          </div>
+          <div className="flex items-center gap-4">
+          <a
+              href="/privacy"
+              className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
+            >
+              <span className="text-sm">Privecy Policy</span>
+
+            </a>
+            <a
+              href="/terms"
+              className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
+            >
+              <span className="text-sm">Terms of Use</span>
+
+            </a>
           </div>
           <div className="flex items-center space-x-6">
             <a

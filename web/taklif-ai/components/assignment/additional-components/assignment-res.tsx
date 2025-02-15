@@ -6,6 +6,7 @@ import ReactMarkdown from "react-markdown";
 import { MdContentCopy } from 'react-icons/md';
 import { Toast } from "@/lib/utils/toast";
 import { Sparkles } from "lucide-react";
+import { Sparkles, Copy, ArrowRight ,ArrowLeft } from "lucide-react";
 
 import rehypeSanitize from "rehype-sanitize";
 
@@ -20,6 +21,8 @@ export function AssignmentResult(assignment) {
   // Regular expression to match emojis
   const emojiRegex = /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu;
 
+  const emojiRegex = /(?:\p{Extended_Pictographic}|\p{Emoji_Presentation}|\p{Emoji_Modifier_Base}|\p{Emoji})+/gu;
+  
   // Extract emojis from the title
   const emojis = title.match(emojiRegex) || [];
   // Remove emojis from the title
@@ -61,6 +64,16 @@ export function AssignmentResult(assignment) {
           </div>
 
         </div>
+      </motion.span>
+      <span style={{ fontFamily: "Noto-Color-Emoji" }} className="font-Noto-Color-Emoji">{emojis}</span> 
+
+    </h1>
+      <div>
+
+      <Copy size={20} onClick={handleCopy} className="cursor-pointer text-violet-600 hover:text-violet-700" />
+      </div>
+      
+      </div>
 
         <motion.p
           className="text-sm text-muted-foreground"
