@@ -28,10 +28,8 @@ export default function PrivacyPolicy() {
                 <li>Upload educational content</li>
                 <li>Generate assignments</li>
                 <li>Contact our support team</li>
+                <br></br>
               </ul>
-            </section>
-
-            <section className="bg-purple-900/10 p-6 rounded-lg border border-purple-500/20">
               <h2 className="text-2xl font-semibold text-white mb-4">2. How We Use Your Information</h2>
               <p className="text-gray-300">
                 We use the information we collect to:
@@ -42,16 +40,12 @@ export default function PrivacyPolicy() {
                 <li>Send you important updates and notifications</li>
                 <li>Analyze and enhance our platform's performance</li>
               </ul>
-            </section>
-
-            <section className="bg-purple-900/10 p-6 rounded-lg border border-purple-500/20">
+              <br></br>
               <h2 className="text-2xl font-semibold text-white mb-4">3. Data Security</h2>
               <p className="text-gray-300">
                 We implement appropriate security measures to protect your personal information. However, no method of transmission over the Internet is 100% secure. We strive to protect your data but cannot guarantee absolute security.
               </p>
-            </section>
-
-            <section className="bg-purple-900/10 p-6 rounded-lg border border-purple-500/20">
+              <br></br>
               <h2 className="text-2xl font-semibold text-white mb-4">4. Your Rights</h2>
               <p className="text-gray-300">
                 You have the right to:
@@ -62,9 +56,7 @@ export default function PrivacyPolicy() {
                 <li>Request deletion of your data</li>
                 <li>Object to data processing</li>
               </ul>
-            </section>
-
-            <section className="bg-purple-900/10 p-6 rounded-lg border border-purple-500/20">
+              <br></br>
               <h2 className="text-2xl font-semibold text-white mb-4">5. Contact Us</h2>
               <p className="text-gray-300">
                 If you have any questions about this Privacy Policy, please contact us at:
