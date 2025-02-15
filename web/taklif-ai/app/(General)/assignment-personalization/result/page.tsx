@@ -14,6 +14,7 @@ import SVGIMG from "../../../../public/Taklif.AI Icon.svg";
 const backgroundIcons = [Brain, Wand2, Stars, Sparkles];
 import {  ArrowRight ,ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { fetchAssignment } from "@/actions/get-assignment";
 
 export default function AssignmentResultPage() {
   const router = useRouter();
