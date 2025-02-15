@@ -31,7 +31,7 @@ export const fetchAssignment = async (run_id: string, personalization_id: string
         }
         console.log(result.Item);
         
-        return { data: result.Item as object };
+        return { data: result.Item };
     } catch (error) {
         return { error: "Server error!" };
     }
