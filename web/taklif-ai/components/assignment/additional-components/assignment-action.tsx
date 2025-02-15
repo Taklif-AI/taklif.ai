@@ -2,12 +2,11 @@
 
 import { Button } from "@/components/ui/button";
 import { ThumbsUp, ThumbsDown, RefreshCw, Wand2 } from "lucide-react";
-import { Assignment } from "@/lib/types/assigment-type";
 import { motion } from "framer-motion";
 
 interface AssignmentActionsProps {
   isPending: boolean,
-  assignment: Assignment;
+  assignment;
   onAction: (action: 'like' | 'dislike' | 'repersonalized' | 'simplify') => void;
 }
 
@@ -22,7 +21,7 @@ export function AssignmentActions({ assignment, onAction, isPending }: Assignmen
       <div className="flex items-center gap-2">
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
           <Button
-            disabled={assignment.like}
+            // disabled={assignment.assignment.like}
             variant="ghost"
             size="sm"
             onClick={() => onAction('like')}
@@ -35,7 +34,7 @@ export function AssignmentActions({ assignment, onAction, isPending }: Assignmen
         </motion.div>
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
           <Button
-            disabled={assignment.dislike}
+            // disabled={assignment.dislike}
             variant="ghost"
             size="sm"
             onClick={() => onAction('dislike')}
