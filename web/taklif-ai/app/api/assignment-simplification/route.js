@@ -1,8 +1,12 @@
+import { currentUser } from '@/lib/auth/auth';
 
 
 
 export async function POST(req) {
-
+    const user = await currentUser();
+    if (!user) {
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
+    }
     try {
         const body = await req.json();
 
@@ -10,7 +14,11 @@ export async function POST(req) {
             task: 'simplify',
             params: {
                 interest: body.interest,
-                personalized_assignment: body.text
+                personalized_assignment: body.personalized_assignment,
+                run_id: body.run_id,
+                personalization_id: body.personalization_id,
+                simplification_id: body.simplification_id,
+                user_id: user.id,
             }
         }
 
@@ -22,6 +30,8 @@ export async function POST(req) {
         })
 
         const data = await res.json();
+        console.log(data);
+
         if (res.status == 400 && data?.rejected) {
             return new Response(JSON.stringify({ error: data.rejected }), { status: 400 });
         }
@@ -29,7 +39,7 @@ export async function POST(req) {
         if (!res.ok || data.error || data.message) {
             return new Response(JSON.stringify({ error: 'Failed to generate assignment' }), { status: 500 });
         }
-        
+
         return new Response(JSON.stringify({ success: true, simplified_assignment: data.response }), { status: 200 });
     } catch (error) {
         console.log(error);
