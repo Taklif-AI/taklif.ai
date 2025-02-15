@@ -8,8 +8,3 @@ export interface Assignment {
   like: boolean;
   dislike: boolean;
 }
-
-// export interface AssignmentAction {
-//   type: 'like' | 'dislike' | 'regenerate' | 'simplify';
-//   assignmentId: string;
-// }
