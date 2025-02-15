@@ -12,15 +12,17 @@ import { storage } from "@/lib/utils/local-storage";
 import Image from "next/image";
 import SVGIMG from "../../../../public/Taklif.AI Icon.svg";
 const backgroundIcons = [Brain, Wand2, Stars, Sparkles];
-import {  ArrowRight ,ArrowLeft } from "lucide-react";
+import { ArrowRight, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { fetchAssignment } from "@/actions/get-assignment";
+import { Assignment } from "@/lib/types/assigment-type";
+import Link from "next/link";
 
 export default function AssignmentResultPage() {
   const router = useRouter();
 
   const [assignment, setAssignment] = useState<object | null>(null);
-  const [DbAssignment, setDbAssignment] = useState<object | null>(null);
+  const [DbAssignment, setDbAssignment] = useState<Assignment | null>(null);
   const [isPending, setIsPending] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -46,7 +48,7 @@ export default function AssignmentResultPage() {
         }
         if (result?.data) {
           console.log(result.data);
-          setDbAssignment(result.data);
+          setDbAssignment(result.data as Assignment);
         }
       } catch (error) {
         console.log("Error fetching assignment:", error);
@@ -257,48 +259,48 @@ export default function AssignmentResultPage() {
                     animate={{ rotate: 360 }}
                     transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
                   >
-               <Image className="w-7" src={SVGIMG} alt={""} />
-              </motion.div>
+                    <Image className="w-7" src={SVGIMG} alt={""} />
+                  </motion.div>
                 </div>
 
-                <AssignmentResult assignment={assignment} />
+                <AssignmentResult assignment={DbAssignment} />
                 <motion.div
-        className="flex justify-between mt-4"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.5 }}
-      >
-    <motion.div
-      className=" bottom-4 left-4 flex space-x-4" // Positioning for left arrow
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5, delay: 0.5 }}
-    >
-       <Button
-            variant="outline"
-            size="sm"
-            className="text-violet-600 hover:text-violet-700 hover:bg-violet-50 dark:hover:bg-violet-900/20"
-          >
+                  className="flex justify-between mt-4"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.5 }}
+                >
+                  <motion.div
+                    className=" bottom-4 left-4 flex space-x-4" // Positioning for left arrow
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 0.5 }}
+                  >
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-violet-600 hover:text-violet-700 hover:bg-violet-50 dark:hover:bg-violet-900/20"
+                    >
 
-      <ArrowLeft className="cursor-pointer" onClick={handleNavigateLeft} />
-      </Button>
-    </motion.div>
+                      <ArrowLeft className="cursor-pointer" onClick={handleNavigateLeft} />
+                    </Button>
+                  </motion.div>
 
-    <motion.div
-      className=" bottom-4 right-4 flex " // Positioning for right arrow
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5, delay: 0.5 }}
-    >
-        <Button
-            variant="outline"
-            size="sm"
-            className="text-violet-600 hover:text-violet-700 hover:bg-violet-50 dark:hover:bg-violet-900/20"
-          >
+                  <motion.div
+                    className=" bottom-4 right-4 flex " // Positioning for right arrow
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 0.5 }}
+                  >
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-violet-600 hover:text-violet-700 hover:bg-violet-50 dark:hover:bg-violet-900/20"
+                    >
 
-      <ArrowRight className="cursor-pointer" onClick={handleNavigateRight} />
-          </Button>
-    </motion.div>
+                      <ArrowRight className="cursor-pointer" onClick={handleNavigateRight} />
+                    </Button>
+                  </motion.div>
                 </motion.div>
                 <AssignmentActions
                   isPending={isPending}
@@ -312,24 +314,24 @@ export default function AssignmentResultPage() {
         <div>
 
           <div className="m-5 flex justify-between">
-            
-        <Link href="/" >
-        <Button
+
+            <Link href="/" >
+              <Button
                 variant="ghost"
                 className="rounded-full w-full outline outline-1 hover:bg-purple-600 hover:text-white transition-colors hover:outline-none"
               >
                 Home Page
               </Button>
-        </Link>
-        <Link href="/assignment-personalization/all-assignments"  >
-        <Button
+            </Link>
+            <Link href="/assignment-personalization/all-assignments"  >
+              <Button
                 variant="ghost"
                 className="rounded-full w-full outline outline-1 hover:bg-purple-600 hover:text-white transition-colors hover:outline-none"
               >
                 All Assignments
               </Button>
-        </Link>
-        </div>
+            </Link>
+          </div>
 
         </div>
       </div>

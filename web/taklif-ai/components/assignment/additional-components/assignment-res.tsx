@@ -14,20 +14,20 @@ interface AssignmentResultProps {
 }
 
 export function AssignmentResult({ assignment }: AssignmentResultProps) {
-  
-  const title = assignment.title;
- 
+
+  const title = assignment.model_output.title;
+
   // Regular expression to match emojis
   const emojiRegex = /(?:\p{Extended_Pictographic}|\p{Emoji_Presentation}|\p{Emoji_Modifier_Base}|\p{Emoji})+/gu;
-  
+
   // Extract emojis from the title
-  const emojis = title.match(emojiRegex) || [];  
+  const emojis = title.match(emojiRegex) || [];
   // Remove emojis from the title
   const titleWithoutEmojis = title.replace(emojiRegex, "").trim();
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(assignment.text);
-    Toast.success("Assignment copied to clipboard!", );
+    navigator.clipboard.writeText(assignment.model_output.content);
+    Toast.success("Assignment copied to clipboard!",);
   };
 
   return (
@@ -39,29 +39,29 @@ export function AssignmentResult({ assignment }: AssignmentResultProps) {
     >
       <div>
 
-      <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center">
 
-      <h1 className="text-3xl font-bold mb-2">
-        
-      <motion.span
-        className="bg-gradient-to-r from-violet-600 to-violet-400 bg-clip-text text-transparent"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-      >
+          <h1 className="text-3xl font-bold mb-2">
 
-        {titleWithoutEmojis}
+            <motion.span
+              className="bg-gradient-to-r from-violet-600 to-violet-400 bg-clip-text text-transparent"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
 
-      </motion.span>
-      <span style={{ fontFamily: "Noto-Color-Emoji" }} className="font-Noto-Color-Emoji">{emojis}</span> 
+              {titleWithoutEmojis}
 
-    </h1>
-      <div>
+            </motion.span>
+            <span style={{ fontFamily: "Noto-Color-Emoji" }} className="font-Noto-Color-Emoji">{emojis}</span>
 
-      <Copy size={20} onClick={handleCopy} className="cursor-pointer text-violet-600 hover:text-violet-700" />
-      </div>
-      
-      </div>
+          </h1>
+          <div>
+
+            <Copy size={20} onClick={handleCopy} className="cursor-pointer text-violet-600 hover:text-violet-700" />
+          </div>
+
+        </div>
 
         <motion.p
           className="text-sm text-muted-foreground"
@@ -69,12 +69,12 @@ export function AssignmentResult({ assignment }: AssignmentResultProps) {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
-          Generated {formatDistanceToNow(new Date(assignment.createdAt))} ago
+          Generated {formatDistanceToNow(new Date(assignment.created_at))} ago
         </motion.p>
         <div className="inline-flex items-center mt-5 px-4 py-2 rounded-full bg-purple-100 dark:bg-purple-900/20 backdrop-blur-sm border border-purple-200 dark:border-purple-500/20">
-            <Sparkles className="h-4 w-4 text-sm text-purple-700 dark:text-purple-300"/>
-              <span className="text-sm text-purple-700 dark:text-purple-300">&nbsp; ASSIGNMENT SIMPLIFIED</span>
-            </div>
+          <Sparkles className="h-4 w-4 text-sm text-purple-700 dark:text-purple-300" />
+          <span className="text-sm text-purple-700 dark:text-purple-300">&nbsp; {assignment.item_type === 'Personalization' ? 'ASSIGNMENT PERSONALIZED' : 'ASSIGNMENT SIMPLIFIED'}</span>
+        </div>
       </div>
 
       <motion.div
@@ -84,10 +84,10 @@ export function AssignmentResult({ assignment }: AssignmentResultProps) {
         transition={{ duration: 0.5, delay: 0.4 }}
       >
         <ReactMarkdown rehypePlugins={[rehypeSanitize]} className="text-gray-700 dark:text-gray-300 leading-relaxed">
-          {assignment.text}
+          {assignment.model_output.content}
         </ReactMarkdown>
       </motion.div>
-      
+
 
     </motion.div>
   );
