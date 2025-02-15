@@ -10,7 +10,7 @@ import { storage } from "@/lib/utils/local-storage";
 import { Toast } from "@/lib/utils/toast";
 import { fileToBase64 } from "@/lib/utils/files/file-to-base64";
 import { v4 as uuidv4 } from 'uuid';
-
+import jwt from 'jsonwebtoken';
 
 const steps = ["Upload PDF", "Choose Interests", "Review Inputs"];
 
@@ -130,28 +130,16 @@ export default function AssignmentPage() {
         router.push('/assignment-personalization');
         return;
       }
-      
-      const newAssignment = {
-        id: Date.now().toString(),
-        title: result.customized_assignment.assignment_title,
-        createdAt: new Date().toISOString(),
-        interest: assignmentData.interest,
-        text: result.customized_assignment.assignment_content,
-        type: 'personalized',
-        likes: 0,
-        dislikes: 0
-      };
 
-      const existingAssignments = JSON.parse(localStorage.getItem('assignments') || '[]');
-      localStorage.setItem('assignments', JSON.stringify([...existingAssignments, newAssignment]));
-      localStorage.setItem('lastCreatedAssignmentId', newAssignment.id);
-      localStorage.setItem('lastRequestData', JSON.stringify(dataToBackend));
-      storage.clearProgress();
+      sessionStorage.setItem("run_id", dataToBackend.run_id);
+      sessionStorage.setItem("personalization_id", dataToBackend.personalization_id);
+      sessionStorage.setItem("assignment", JSON.stringify(result.customized_assignment));
+
 
       Toast.success("Assignment created successfully!");
       setIsPending(false);
       router.push('/assignment-personalization/result');
-      
+
       /* eslint-disable */
     } catch (error) {
       setIsPending(false);
