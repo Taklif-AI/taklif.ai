@@ -194,7 +194,7 @@ def handler(event, context):
                 "assignment": params["general_assignment"]
                 if task == "personalization"
                 else params["personalized_assignment"],
-                "is_PDF": params["is_pdf"],
+                **({"is_PDF": params["is_pdf"]} if task == "personalization" else {}),
             },
             "model_output": {
                 "title": matches.group(1).strip() if matches else None,
