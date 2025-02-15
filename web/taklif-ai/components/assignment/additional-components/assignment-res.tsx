@@ -5,7 +5,7 @@ import { Assignment } from "@/lib/types/assigment-type";
 import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import { Toast } from "@/lib/utils/toast";
-import { Sparkles, Copy } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 import rehypeSanitize from "rehype-sanitize";
 
@@ -25,10 +25,6 @@ export function AssignmentResult({ assignment }: AssignmentResultProps) {
   // Remove emojis from the title
   const titleWithoutEmojis = title.replace(emojiRegex, "").trim();
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(assignment.model_output.content);
-    Toast.success("Assignment copied to clipboard!",);
-  };
 
   return (
     <motion.div
@@ -54,13 +50,7 @@ export function AssignmentResult({ assignment }: AssignmentResultProps) {
 
             </motion.span>
             <span style={{ fontFamily: "Noto-Color-Emoji" }} className="font-Noto-Color-Emoji">{emojis}</span>
-
           </h1>
-          <div>
-
-            <Copy size={20} onClick={handleCopy} className="cursor-pointer text-violet-600 hover:text-violet-700" />
-          </div>
-
         </div>
 
         <motion.p
