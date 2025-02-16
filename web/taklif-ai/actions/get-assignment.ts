@@ -42,6 +42,7 @@ export const fetchAssignment = async (
 
         return { data: result.Item };
     } catch (error) {
+        console.log(error);
         return { error: "Server error!" };
     }
 
