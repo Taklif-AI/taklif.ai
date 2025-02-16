@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Eye } from "lucide-react";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { formatDistanceToNow } from "date-fns";
-import { getAssignments } from "@/lib/database/get-assignments";
+import { getAssignments } from "@/actions/get-assignments";
 
 export default function AssignmentsPage() {
   const [assignments, setAssignments] = useState([]);
