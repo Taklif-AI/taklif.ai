@@ -90,20 +90,21 @@ export default function AssignmentResultPage() {
   }, [router]);
 
   const handleNavigateLeft = () => {
-    if (currentAssignmentIndex > 0) {
-      // Clear localStorage feedback when navigating to a different assignment
-      localStorage.removeItem("assignment_feedback");
-
-      setCurrentAssignmentIndex(currentAssignmentIndex - 1);
-    }
-  };
-
-  const handleNavigateRight = () => {
     if (currentAssignmentIndex < assignmentsStack.length - 1) {
       // Clear localStorage feedback when navigating to a different assignment
       localStorage.removeItem("assignment_feedback");
 
       setCurrentAssignmentIndex(currentAssignmentIndex + 1);
+    }
+  };
+
+  const handleNavigateRight = () => {
+
+    if (currentAssignmentIndex > 0) {
+      // Clear localStorage feedback when navigating to a different assignment
+      localStorage.removeItem("assignment_feedback");
+
+      setCurrentAssignmentIndex(currentAssignmentIndex - 1);
     }
   };
 
@@ -324,7 +325,7 @@ export default function AssignmentResultPage() {
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.5, delay: 0.5 }}
                   >
-                    {currentAssignmentIndex > 0 && (
+                    {currentAssignmentIndex < assignmentsStack.length - 1 && (
                       <Button
                         variant="outline"
                         size="sm"
@@ -342,7 +343,8 @@ export default function AssignmentResultPage() {
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.5, delay: 0.5 }}
                   >
-                    {currentAssignmentIndex < assignmentsStack.length - 1 && (
+                    {currentAssignmentIndex > 0 && (
+
                       <Button
                         variant="outline"
                         size="sm"
