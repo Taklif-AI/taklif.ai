@@ -7,17 +7,23 @@ import { Eye } from "lucide-react";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { formatDistanceToNow } from "date-fns";
 import { getAssignments } from "@/actions/get-assignments";
-
+import { useRouter } from "next/navigation";
 export default function AssignmentsPage() {
   const [assignments, setAssignments] = useState([]);
-  
+  const router = useRouter();
   const user = useCurrentUser();
 
+  const handleViewResult = (run_id: string, personalization_id: string) => {
+    sessionStorage.setItem("run_id", run_id);
+    sessionStorage.setItem("personalization_id", personalization_id);
+    sessionStorage.setItem("fromAllAssignments", "true"); // Set the flag
+    router.push('/assignment-personalization/result');
+  }
   useEffect(() => {
     async function fetchAssignments() {
       if (!user?.id)
         return;
-  
+
       const data = await getAssignments(user.id);
 
       if (!data) {
@@ -26,13 +32,13 @@ export default function AssignmentsPage() {
         return;
       }
 
-      setAssignments(data); 
+      setAssignments(data);
     }
-  
+
     fetchAssignments();
   }, [user]);
-  
-  
+
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto space-y-8">
@@ -58,9 +64,9 @@ export default function AssignmentsPage() {
                         </p>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Link href={'TODO'} className="text-violet-600 hover:text-violet-700 hover:bg-violet-50 dark:hover:bg-violet-900/20 p-2 rounded-full transition">
+                        <button onClick={() => handleViewResult(assignment.runId, assignment.personalizationId)} className="text-violet-600 hover:text-violet-700 hover:bg-violet-50 dark:hover:bg-violet-900/20 p-2 rounded-full transition">
                           <Eye className="h-5 w-5" />
-                        </Link>
+                        </button>
                       </div>
                     </div>
                     <p className="text-gray-700 dark:text-gray-300 leading-relaxed line-clamp-3">
@@ -71,7 +77,7 @@ export default function AssignmentsPage() {
               );
             })
           ) : (
-             (
+            (
               <Card className="p-12 text-center">
                 <h3 className="text-xl font-semibold mb-2">No assignments yet</h3>
                 <p className="text-muted-foreground mb-4">Your personalized assignments will appear here</p>

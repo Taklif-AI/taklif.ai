@@ -11,7 +11,7 @@ import { Brain, Sparkles, Stars, Wand2 } from "lucide-react";
 import { v4 as uuidv4 } from 'uuid';
 import { ArrowRight, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { fetchAssignment } from "@/actions/get-assignment";
+import { fetchAllAssignmentVersions } from "@/actions/fetch-all-assignment-versions";
 import { Assignment } from "@/lib/types/assigment-type";
 import Link from "next/link";
 const backgroundIcons = [Brain, Wand2, Stars, Sparkles];
@@ -19,7 +19,8 @@ const backgroundIcons = [Brain, Wand2, Stars, Sparkles];
 export default function AssignmentResultPage() {
   const router = useRouter();
 
-  const [DbAssignment, setDbAssignment] = useState<Assignment | null>(null);
+  const [assignmentsStack, setAssignmentsStack] = useState<Assignment[]>([]);
+  const [currentAssignmentIndex, setCurrentAssignmentIndex] = useState<number>(0);
   const [isPending, setIsPending] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -28,28 +29,54 @@ export default function AssignmentResultPage() {
       try {
         const run_id = sessionStorage.getItem("run_id");
         const personalization_id = sessionStorage.getItem("personalization_id");
-        const simplification_id = sessionStorage.getItem("simplification_id") || undefined;
+        const fromAllAssignments = sessionStorage.getItem("fromAllAssignments");
+
         if (!run_id || !personalization_id) {
           Toast.error("Missing required data. Redirecting...");
           router.push('/assignment-personalization');
           return;
         }
 
-        const result = await fetchAssignment(
-          run_id as string,
-          personalization_id as string,
-          simplification_id
-        );
+        const result = await fetchAllAssignmentVersions(run_id as string);
         if (result?.error) {
           Toast.error(result.error);
           return;
         }
         if (result?.data) {
-          setDbAssignment(result.data as Assignment);
+          // Clear localStorage feedback when fetching new assignments
+          localStorage.removeItem("assignment_feedback");
+
+          // Sort assignments by `created_at` in descending order (most recent first)
+          const sortedAssignments = result.data.sort((a, b) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+          );
+          setAssignmentsStack(sortedAssignments);
+
+          let assignmentIndex = 0; // Default to the most recent assignment
+          if (fromAllAssignments === "true") {
+            // Find the index of the assignment with the matching personalization_id
+            assignmentIndex = sortedAssignments.findIndex(
+              (assignment) => assignment.personalization_id === personalization_id && assignment.item_type === 'Personalization'
+            );
+            if (assignmentIndex === -1) {
+              // If the assignment is not found, show an error and redirect
+              Toast.error("Assignment not found. Redirecting...");
+              router.push('/assignment-personalization/all-assignments');
+              return;
+            }
+            sessionStorage.removeItem("fromAllAssignments");
+          }
+
+          // Set the current assignment index
+          setCurrentAssignmentIndex(assignmentIndex);
 
           const storedFeedback = localStorage.getItem("assignment_feedback");
           if (storedFeedback) {
-            setDbAssignment((prev) => (prev ? { ...prev, feedback: JSON.parse(storedFeedback) } : null));
+            setAssignmentsStack((prev) =>
+              prev.map((assignment, index) =>
+                index === assignmentIndex ? { ...assignment, feedback: JSON.parse(storedFeedback) } : assignment
+              )
+            );
           }
         }
       } catch (error) {
@@ -63,17 +90,29 @@ export default function AssignmentResultPage() {
   }, [router]);
 
   const handleNavigateLeft = () => {
-    // Logic to navigate to the previous version
+    if (currentAssignmentIndex > 0) {
+      // Clear localStorage feedback when navigating to a different assignment
+      localStorage.removeItem("assignment_feedback");
+
+      setCurrentAssignmentIndex(currentAssignmentIndex - 1);
+    }
   };
 
   const handleNavigateRight = () => {
-    // Logic to navigate to the next version
+    if (currentAssignmentIndex < assignmentsStack.length - 1) {
+      // Clear localStorage feedback when navigating to a different assignment
+      localStorage.removeItem("assignment_feedback");
+
+      setCurrentAssignmentIndex(currentAssignmentIndex + 1);
+    }
   };
+
   const handleAction = async (action: 'like' | 'dislike' | 'copied' | 'repersonalized' | 'simplify') => {
-    if (!DbAssignment) return;
+    const currentAssignment = assignmentsStack[currentAssignmentIndex];
+    if (!currentAssignment) return;
 
     const timestamp = new Date().toISOString();
-    const updatedFeedback = { ...DbAssignment.feedback }
+    const updatedFeedback = { ...currentAssignment.feedback }
 
     switch (action) {
       case 'like':
@@ -88,7 +127,7 @@ export default function AssignmentResultPage() {
         break;
       case "copied":
         updatedFeedback.copied = { value: true, timestamp };
-        navigator.clipboard.writeText(DbAssignment.model_output.content);
+        navigator.clipboard.writeText(currentAssignment.model_output.content);
         Toast.success("Assignment copied to clipboard!",);
         break;
       case 'repersonalized':
@@ -105,9 +144,9 @@ export default function AssignmentResultPage() {
           }
           const personalization_id = uuidv4();
           const dataToBackend = {
-            student_interest: DbAssignment.user_input.interest,
-            general_assignment: DbAssignment.user_input.assignment,
-            is_pdf: DbAssignment.user_input.is_PDF,
+            student_interest: currentAssignment.user_input.interest,
+            general_assignment: currentAssignment.user_input.assignment,
+            is_pdf: currentAssignment.user_input.is_PDF,
             run_id: run_id,
             personalization_id: personalization_id,
           }
@@ -130,7 +169,6 @@ export default function AssignmentResultPage() {
             return;
           }
 
-          sessionStorage.removeItem("simplification_id");
           sessionStorage.setItem("run_id", dataToBackend.run_id);
           sessionStorage.setItem("personalization_id", dataToBackend.personalization_id);
           setIsPending(false);
@@ -165,8 +203,8 @@ export default function AssignmentResultPage() {
           run_id: run_id,
           personalization_id: personalization_id,
           simplification_id: simplification_id,
-          interest: DbAssignment?.user_input.interest,
-          personalized_assignment: DbAssignment?.model_output.content,
+          interest: currentAssignment.user_input.interest,
+          personalized_assignment: currentAssignment?.model_output.content,
         }
         try {
           const res = await fetch('/api/assignment-simplification', {
@@ -188,7 +226,7 @@ export default function AssignmentResultPage() {
 
           sessionStorage.setItem("run_id", dataToBackend.run_id);
           sessionStorage.setItem("personalization_id", dataToBackend.personalization_id);
-          sessionStorage.setItem("simplification_id", dataToBackend.simplification_id);
+          // sessionStorage.setItem("simplification_id", dataToBackend.simplification_id);
 
           Toast.success("Assignment simplified successfully!");
           router.push('/assignment-personalization/result');
@@ -202,8 +240,12 @@ export default function AssignmentResultPage() {
 
         break;
     }
-
-    setDbAssignment((prev) => (prev ? { ...prev, feedback: updatedFeedback } : null))
+    setAssignmentsStack((prev) =>
+      prev.map((assignment, index) =>
+        index === currentAssignmentIndex ? { ...assignment, feedback: updatedFeedback } : assignment
+      )
+    );
+    // setDbAssignment((prev) => (prev ? { ...prev, feedback: updatedFeedback } : null))
     localStorage.setItem("assignment_feedback", JSON.stringify(updatedFeedback));
 
     try {
@@ -211,14 +253,17 @@ export default function AssignmentResultPage() {
         method: 'POST',
         headers: { "Content-Type": 'application/json' },
         body: JSON.stringify({
-          PK: DbAssignment.PK,
-          SK: DbAssignment.SK,
+          PK: currentAssignment.PK,
+          SK: currentAssignment.SK,
           feedback: updatedFeedback,
         }),
       });
       const result = await res.json();
       if (!res.ok || !result || result.error) {
         Toast.error(result.error || "Failed to save feedback.");
+      } else {
+        // Clear localStorage feedback after successfully saving to the database
+        localStorage.removeItem("assignment_feedback");
       }
 
     } catch (error) {
@@ -228,7 +273,8 @@ export default function AssignmentResultPage() {
   };
 
   if (isLoading) return null;
-  if (!DbAssignment) return null;
+  if (assignmentsStack.length === 0) return null;
+  const currentAssignment = assignmentsStack[currentAssignmentIndex];
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-3xl mx-auto">
@@ -265,7 +311,7 @@ export default function AssignmentResultPage() {
           >
             <Card className="overflow-hidden backdrop-blur-sm border-violet-100 dark:border-violet-800">
               <div className="p-8 space-y-6 bg-gradient-to-br from-violet-50 to-white dark:from-violet-950/20 dark:to-background relative">
-                <AssignmentResult assignment={DbAssignment} />
+                <AssignmentResult assignment={currentAssignment} />
                 <motion.div
                   className="flex justify-between mt-4"
                   initial={{ opacity: 0 }}
@@ -278,14 +324,16 @@ export default function AssignmentResultPage() {
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.5, delay: 0.5 }}
                   >
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="text-violet-600 hover:text-violet-700 hover:bg-violet-50 dark:hover:bg-violet-900/20"
-                    >
+                    {currentAssignmentIndex > 0 && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-violet-600 hover:text-violet-700 hover:bg-violet-50 dark:hover:bg-violet-900/20"
+                      >
 
-                      <ArrowLeft className="cursor-pointer" onClick={handleNavigateLeft} />
-                    </Button>
+                        <ArrowLeft className="cursor-pointer" onClick={handleNavigateLeft} />
+                      </Button>
+                    )}
                   </motion.div>
 
                   <motion.div
@@ -294,19 +342,22 @@ export default function AssignmentResultPage() {
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.5, delay: 0.5 }}
                   >
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="text-violet-600 hover:text-violet-700 hover:bg-violet-50 dark:hover:bg-violet-900/20"
-                    >
+                    {currentAssignmentIndex < assignmentsStack.length - 1 && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-violet-600 hover:text-violet-700 hover:bg-violet-50 dark:hover:bg-violet-900/20"
+                      >
 
-                      <ArrowRight className="cursor-pointer" onClick={handleNavigateRight} />
-                    </Button>
+                        <ArrowRight className="cursor-pointer" onClick={handleNavigateRight} />
+                      </Button>
+                    )}
+
                   </motion.div>
                 </motion.div>
                 <AssignmentActions
                   isPending={isPending}
-                  assignment={DbAssignment}
+                  assignment={currentAssignment}
                   onAction={handleAction}
                 />
               </div>

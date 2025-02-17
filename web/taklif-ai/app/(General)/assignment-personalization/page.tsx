@@ -10,7 +10,6 @@ import { storage } from "@/lib/utils/local-storage";
 import { Toast } from "@/lib/utils/toast";
 import { fileToBase64 } from "@/lib/utils/files/file-to-base64";
 import { v4 as uuidv4 } from 'uuid';
-import jwt from 'jsonwebtoken';
 
 const steps = ["Upload PDF", "Choose Interests", "Review Inputs"];
 
