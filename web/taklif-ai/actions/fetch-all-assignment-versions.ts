@@ -30,6 +30,10 @@ export const fetchAllAssignmentVersions = async (
                 ':sk_prefix': SKPrefix,
             },
         }
+        console.log(process.env.ASSIGNMENT_DYNAMODB_REGION);
+        console.log(process.env.ASSIGNMENT_DYNAMODB_ID);
+        console.log(process.env.ASSIGNMENT_DYNAMODB_SECRET);
+        console.log(client);
 
         const result = await client.send(new QueryCommand(params));
 
