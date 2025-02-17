@@ -124,11 +124,24 @@ export default function AssignmentPage() {
       const result = await res.json();
       // check the incoming response
       if (!res.ok || !result || result.error) {
+        if (result.error.guardrail === 'interest') {
+          setCurrentStep(1);
+          storage.saveProgress('CURRENT_STEP', 1);
+          Toast.error(result.error.rejected);
+        } else if (result.error.guardrail === 'assignment') {
+          setCurrentStep(0);
+          storage.saveProgress('CURRENT_STEP', 0);
+          Toast.error(result.error.rejected);
+        } else if (result.error.guardrail === 'model_output') {
+          setCurrentStep(2);
+          storage.saveProgress('CURRENT_STEP', 2);
+          Toast.error(result.error.rejected);
+        }
         setIsPending(false);
-        Toast.error(result.error);
         router.push('/assignment-personalization');
         return;
       }
+
       sessionStorage.removeItem("simplification_id");
       sessionStorage.setItem("run_id", dataToBackend.run_id);
       sessionStorage.setItem("personalization_id", dataToBackend.personalization_id);
