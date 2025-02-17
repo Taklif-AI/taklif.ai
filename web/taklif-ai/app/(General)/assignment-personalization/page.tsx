@@ -35,10 +35,33 @@ export default function AssignmentPage() {
     const savedInterests = storage.getProgress('INTERESTS');
     const savedStep = storage.getProgress('CURRENT_STEP');
 
-    if (savedFile || savedInterests) {
+    if (savedFile) {
+      if (typeof savedFile === 'string' && savedFile.startsWith("data:application/pdf;base64,")) {
+        // Convert Base64 back to File
+        const byteCharacters = atob(savedFile.split(",")[1]); // Remove the `data:...;base64,` prefix
+        const byteNumbers = new Array(byteCharacters.length)
+          .fill(0)
+          .map((_, i) => byteCharacters.charCodeAt(i));
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: "application/pdf" });
+        const restoredFile = new File([blob], "your-content.pdf", { type: "application/pdf" });
+
+        setAssignmentData((prev) => ({
+          ...prev,
+          file: restoredFile,
+        }));
+      } else {
+        // It's plain text
+        setAssignmentData((prev) => ({
+          ...prev,
+          file: savedFile,
+        }));
+      }
+    }
+
+    if (savedInterests) {
       setAssignmentData(prev => ({
         ...prev,
-        file: savedFile,
         interest: savedInterests,
       }));
     }
@@ -50,13 +73,18 @@ export default function AssignmentPage() {
 
 
 
-  const handleNext = (stepData: any) => {
+  const handleNext = async (stepData: any) => {
     try {
       const updatedData = { ...assignmentData, ...stepData };
       setAssignmentData(updatedData);
 
       if (currentStep === 0) {
-        storage.saveProgress('PDF_FILE', stepData.file);
+        if (stepData.file instanceof File) {
+          const base64File = await fileToBase64(stepData.file);
+          storage.saveProgress('PDF_FILE', base64File);
+        } else {
+          storage.saveProgress('PDF_FILE', stepData.file);
+        }
       } else if (currentStep === 1) {
         storage.saveProgress('INTERESTS', stepData.interest);
       }
@@ -141,6 +169,8 @@ export default function AssignmentPage() {
         router.push('/assignment-personalization');
         return;
       }
+
+      storage.clearProgress();
 
       sessionStorage.removeItem("simplification_id");
       sessionStorage.setItem("run_id", dataToBackend.run_id);
