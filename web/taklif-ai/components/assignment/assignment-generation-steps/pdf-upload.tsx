@@ -88,9 +88,9 @@ export function PDFUpload({ onNext, initialFile }: PDFUploadProps) {
     <Card className="p-8 max-w-xl mx-auto inset-0 bg-gradient-to-br from-violet-50/50 to-white dark:from-violet-950/20 dark:to-background">
 
       <div className="text-center mb-6 ">
-        
+
         <h2 className="text-2xl font-bold mb-2">Upload Your Content</h2>
-        
+
         <p className="text-muted-foreground">
           Upload a PDF document or paste your text to generate your assignment
         </p>
@@ -134,7 +134,7 @@ export function PDFUpload({ onNext, initialFile }: PDFUploadProps) {
                 onChange={handleFileChange}
               />
               <Button
-              
+
                 variant="secondary"
                 type="button"
                 onClick={handleBrowseClick}
@@ -177,8 +177,8 @@ export function PDFUpload({ onNext, initialFile }: PDFUploadProps) {
               onChange={(e) => setTextContent(e.target.value)}
               className="min-h-[200px]"
             />
-            <div className="flex justify-end">
-              <Button
+            <div className="mt-6 flex justify-end">
+              <Button className="rounded-full"
                 onClick={handleTextSubmit}
                 disabled={!textContent.trim()}
               >

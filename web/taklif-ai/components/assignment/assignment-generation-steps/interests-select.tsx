@@ -5,8 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Brain, Sparkles, Lightbulb, Book, Atom } from "lucide-react";
-import { motion } from "framer-motion";
 import { validateInterest } from "@/lib/validators/assignment-validator";
 import { Toast } from "@/lib/utils/toast";
 import Image from "next/image";
@@ -30,7 +28,6 @@ const suggestedInterests = [
   "Psychology",
 ];
 
-const backgroundIcons = [Brain, Sparkles, Lightbulb, Book, Atom];
 
 export function InterestsSelect({ onNext, onBack, initialInterests }: InterestsSelectProps) {
   const [selectedInterest, setSelectedInterest] = useState<string>("");
@@ -149,7 +146,7 @@ export function InterestsSelect({ onNext, onBack, initialInterests }: InterestsS
           <Button 
             onClick={handleNext}
             disabled={!selectedInterest.trim()}
-            className="bg-violet-600 hover:bg-violet-700 rounded-full"
+            className="rounded-full"
           >
             Continue
           </Button>
