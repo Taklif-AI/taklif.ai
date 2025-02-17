@@ -105,7 +105,7 @@ export default function AssignmentPage() {
 
         } catch (error) {
           console.log(error);
-          Toast.error("Failed to process your file. Please try again.");
+          Toast.error("Failed to process your file. Please try again");
         }
       } else if (typeof assignmentData.file === 'string') {
         dataToBackend.general_assignment = assignmentData.file;
@@ -153,7 +153,7 @@ export default function AssignmentPage() {
       /* eslint-disable */
     } catch (error) {
       setIsPending(false);
-      Toast.error("Failed to create assignment. Please try again.2");
+      Toast.error("Failed to create assignment. Please try again");
       router.push('/assignment-personalization');
     }
     /* eslint-enable */
