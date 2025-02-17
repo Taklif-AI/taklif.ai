@@ -44,11 +44,6 @@ export function InterestsSelect({ onNext, onBack, initialInterests }: InterestsS
     }
   }, [initialInterests]);
 
-  useEffect(() => {
-    if (suggestedInterests.length > 0) {
-      setSelectedInterest(suggestedInterests[0]); // Set the first interest as default
-    }
-  }, [suggestedInterests]);
 
   const handleSuggestedInterestClick = (interest: string) => {
     setSelectedInterest(interest);
@@ -82,14 +77,14 @@ export function InterestsSelect({ onNext, onBack, initialInterests }: InterestsS
       <div className="absolute inset-0 w-fit -z-10 overflow-hidden">
 
         <div className="absolute inset-0 bg-gradient-to-br from-violet-50/50 to-white dark:from-violet-950/20 dark:to-background" />
-      
+
       </div>
 
       <Card className="p-8 max-w-xl mx-auto backdrop-blur-sm bg-white/80 dark:bg-gray-950/80">
-         
+
         <div className="overflow-auto h-20 ;">
 
-        <Image className=" absolute   translate-y-[-1.9rem] translate-x-[-2rem] opacity-[0.04]	 -z-10  " src={SVGIMG} alt={""}/>
+          <Image className=" absolute   translate-y-[-1.9rem] translate-x-[-2rem] opacity-[0.04]	 -z-10  " src={SVGIMG} alt={""} />
         </div>
         <div className="text-center mb-6">
           <h2 className="text-2xl font-bold mb-2">Select Your Interest</h2>
@@ -143,7 +138,7 @@ export function InterestsSelect({ onNext, onBack, initialInterests }: InterestsS
           <Button className="rounded-full" variant="outline" onClick={onBack}>
             Back
           </Button>
-          <Button 
+          <Button
             onClick={handleNext}
             disabled={!selectedInterest.trim()}
             className="rounded-full"
