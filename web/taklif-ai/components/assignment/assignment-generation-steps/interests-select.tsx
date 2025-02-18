@@ -80,7 +80,7 @@ export function InterestsSelect({ onNext, onBack, initialInterests }: InterestsS
 
       </div>
 
-      <Card className="p-8 max-w-xl mx-auto backdrop-blur-sm bg-white/80 dark:bg-gray-950/80">
+      <Card className="min-h-[574.18px] p-8 max-w-xl mx-auto backdrop-blur-sm bg-white/80 dark:bg-gray-950/80">
 
         <div className="overflow-auto h-20 ;">
 
