@@ -32,7 +32,7 @@ export function Navigation() {
         <div className="flex items-center gap-6">
           <Link
             href="/"
-            className="flex w-48 items-center space-x-2 text-lg font-bold text-foreground"
+            className="flex sm:w-48 w-28 items-center space-x-2 text-lg font-bold text-foreground"
           >
             <Logo />
           </Link>
