@@ -150,10 +150,11 @@ export const SignIn = () => {
 
 
                             <Turnstile
-                                className="w-full"
+                                className="flex w-full justify-center"
                                 theme="dark"
                                 siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
                                 retry="auto"
+                                size="normal"
                                 refreshExpired="auto"
                                 sandbox={process.env.NODE_ENV === 'development'}
                                 onError={() => {
