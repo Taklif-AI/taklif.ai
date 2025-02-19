@@ -61,7 +61,7 @@ export function HomeHero() {
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex gap-4 mt-8">
+            <div className="flex flex-wrap gap-4 mt-8">
             <Link href="/assignment-personalization">
                <Button size="lg" className="rounded-full w-full sm:w-auto text-white bg-violet-600 hover:bg-violet-700">
                  Create Your First Assignment
@@ -92,8 +92,8 @@ export function HomeHero() {
                 }}
                 className="relative"
               >
-                <div className="w-[500px] h-[500px] relative">
-                  <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-blue-600/20 rounded-full blur-2xl" />
+                <div className="w-[500px] h-[500px]  relative">
+                  <div className="absolute  inset-0 bg-gradient-to-r from-purple-600/20 to-blue-600/20 rounded-full blur-2xl" />
                   <motion.div 
                     initial={{ rotate: -10, x: -20 }}
                     animate={{ rotate: 10, x: 20 }}
@@ -110,7 +110,7 @@ export function HomeHero() {
                 width={500}
                 height={500}
                 priority
-                className="object-contain"
+                className="object-contain  "
               />
                   </motion.div>
                 </div>
