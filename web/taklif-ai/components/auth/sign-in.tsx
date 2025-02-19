@@ -1,18 +1,20 @@
 'use client';
-import { Meteors } from "@/components/ui/meteors";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Brain } from "lucide-react";
 import { SocialAuthButtons } from "@/components/auth/social-auth-buttons";
 import { FormError } from "@/components/auth/form-error";
 import { FormSuccess } from "@/components/auth/form-success";
 import { login } from "@/actions/login";
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { useSearchParams } from "next/navigation";
+import { Turnstile } from 'next-turnstile';
 import Link from "next/link";
 import Image from "next/image"
 export const SignIn = () => {
-    const [formData, setFormData] = useState({ email: '', password: '', code: '' });
+    const [turnstileStatus, setTurnstileStatus] = useState<
+        "success" | "error" | "expired" | "required">("required");
+    const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+    const [formData, setFormData] = useState({ email: '', password: '', code: '', 'cf-turnstile-response': '' });
     const [showTwoFactor, setShowTwoFactor] = useState(false);
     const [error, setError] = useState<string | undefined>("");
     const [success, setSuccess] = useState<string | undefined>("");
@@ -34,8 +36,12 @@ export const SignIn = () => {
         setError("");
         setSuccess("");
 
+        if (turnstileStatus !== 'success' || !turnstileToken) {
+            setError("Please verify you are not a robot!");
+            return;
+        }
         startTransition(() => {
-            login(formData, callbackUrl)
+            login({ ...formData, token: turnstileToken }, callbackUrl)
                 .then((data) => {
                     if (data?.error) {
                         setError(data.error);
@@ -141,6 +147,35 @@ export const SignIn = () => {
                                     </div>
                                 </>
                             )}
+
+
+                            <Turnstile
+                                className="w-full"
+                                theme="dark"
+                                siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+                                retry="auto"
+                                refreshExpired="auto"
+                                sandbox={process.env.NODE_ENV === 'development'}
+                                onError={() => {
+                                    setTurnstileStatus("error");
+                                    setError("Security check failed. Please try again.");
+                                }}
+                                onExpire={() => {
+                                    setTurnstileStatus("expired");
+                                    setError("Security check expired. Please verify again.");
+                                }}
+                                onLoad={() => {
+                                    setTurnstileStatus("required");
+                                    setError("");
+                                }}
+                                onVerify={(token) => {
+                                    setTurnstileStatus("success");
+                                    setTurnstileToken(token);
+                                    setError("");
+                                }}
+                            />
+
+
                             <FormError message={error || urlError} />
                             <FormSuccess message={success} />
                             <Button type="submit" disabled={isPending} className="w-full bg-gradient-to-r from-purple-500 to-purple-700 hover:from-purple-700 hover:to-purple-500 text-white">

@@ -4,6 +4,7 @@ import { signIn } from "@/auth";
 import { deleteTwoFactorToken, getTwoFactorTokenByEmail } from "@/data/two-factor-token";
 import { getUserByEmail } from "@/data/user";
 import { LoginSchema } from "@/lib/schemas/login-schema";
+import { validateTurnstileToken } from "next-turnstile";
 import {
     sendVerificationEmail,
     sendTwoFactorTokenEmail
@@ -19,6 +20,20 @@ import { v4 as uuidv4 } from "uuid";
 
 
 export async function login(formData: object, callbackUrl?: string | null) {
+
+    const token = formData.token;
+    
+    const validationResponse = await validateTurnstileToken({
+        token,
+        secretKey: process.env.TURNSTILE_SECRET_KEY!,
+        // Optional: Add an idempotency key to prevent token reuse
+        idempotencyKey: uuidv4(),
+        sandbox: process.env.NODE_ENV === "development",
+    });
+
+    if (!validationResponse.success) {
+        return { error: "Invalid token" }
+    }
 
     const validateData = LoginSchema.safeParse(formData);
 
