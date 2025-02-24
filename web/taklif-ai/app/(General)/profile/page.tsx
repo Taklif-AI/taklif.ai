@@ -17,7 +17,6 @@ import { FormSuccess } from "@/components/auth/form-success";
 import { settings } from "@/actions/settings";
 import { Toast } from "@/lib/utils/toast";
 import { uploadImage } from "@/actions/upload-image";
-import imageD from "@/public/hi.png";
 export default function ProfilePage() {
   const { update } = useSession();
   const user = useCurrentUser();

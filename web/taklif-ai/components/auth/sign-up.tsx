@@ -1,9 +1,7 @@
 'use client';
 
-import { Meteors } from "@/components/ui/meteors";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Brain } from "lucide-react";
 import Link from "next/link";
 import { SocialAuthButtons } from "@/components/auth/social-auth-buttons";
 import { FormError } from "@/components/auth/form-error";

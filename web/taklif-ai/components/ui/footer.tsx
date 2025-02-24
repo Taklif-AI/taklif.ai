@@ -3,7 +3,6 @@
 import { Github, Twitter, Mail } from "lucide-react";
 
 import  {Logo} from "@/components/ui/logo";
-import Link from "next/link";
 
 export function Footer() {
   return (

@@ -4,7 +4,6 @@ import { Card } from "@/components/ui/card";
 import { Github, Linkedin, Twitter } from "lucide-react";
 import XIcon from '@mui/icons-material/X';
 import Image from "next/image";
-import { motion } from "framer-motion";
 
 interface TeamMember {
   name: string;

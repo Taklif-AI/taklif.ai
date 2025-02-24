@@ -18,9 +18,6 @@ import { signOut, useSession } from "next-auth/react";
 
 export function Navigation() {
   const { data: session } = useSession();
-  const logoLight = "../../public/Taklif.AI-Light.svg"; // Path to light mode logo
-  const logoDark = "../../public/taklif-logo.svg"; // Path to dark mode logo
-  const avatar = "../../public/hi.png"; // Path to user's avatar
   return (
     <header className="fixed top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <link
