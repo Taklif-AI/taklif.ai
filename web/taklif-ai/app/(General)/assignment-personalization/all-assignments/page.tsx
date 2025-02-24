@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
-import Link from "next/link";
 import { Eye } from "lucide-react";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { formatDistanceToNow } from "date-fns";

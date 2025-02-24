@@ -4,7 +4,6 @@ import { formatDistanceToNow } from "date-fns";
 import { Assignment } from "@/lib/types/assigment-type";
 import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
-import { Toast } from "@/lib/utils/toast";
 import { Sparkles } from "lucide-react";
 
 import rehypeSanitize from "rehype-sanitize";

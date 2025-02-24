@@ -1,6 +1,4 @@
 'use client';
-import { Meteors } from "@/components/ui/meteors";
-import { Brain } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";

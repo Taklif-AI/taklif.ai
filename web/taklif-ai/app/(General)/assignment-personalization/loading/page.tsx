@@ -1,10 +1,8 @@
 "use client";
 
 import { Card } from "@/components/ui/card";
-import { Loader2, Sparkles, Brain, Wand2, Stars } from "lucide-react";
+import { Sparkles, Brain, Wand2, Stars } from "lucide-react";
 import { motion } from "framer-motion";
-import Image from "next/image";
-import SVGIMG from "../../../../public/Taklif.AI Icon.svg";
 
 const backgroundIcons = [Brain, Wand2, Stars, Sparkles];
 
