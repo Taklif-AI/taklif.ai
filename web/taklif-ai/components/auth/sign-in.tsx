@@ -5,14 +5,15 @@ import { SocialAuthButtons } from "@/components/auth/social-auth-buttons";
 import { FormError } from "@/components/auth/form-error";
 import { FormSuccess } from "@/components/auth/form-success";
 import { login } from "@/actions/login";
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { useSearchParams } from "next/navigation";
-// import { Turnstile } from 'next-turnstile';
+import { Turnstile } from 'next-turnstile';
 import Link from "next/link";
 import Image from "next/image"
 export const SignIn = () => {
-    // const [turnstileStatus, setTurnstileStatus] = useState<
-        // "success" | "error" | "expired" | "required">("required");
+    const turnstileTokenRef = useRef<string | null>(null);
+    const [turnstileStatus, setTurnstileStatus] = useState<
+        "success" | "error" | "expired" | "required">("required");
     // const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
     const [formData, setFormData] = useState({ email: '', password: '', code: '', 'cf-turnstile-response': '' });
     const [showTwoFactor, setShowTwoFactor] = useState(false);
@@ -36,12 +37,12 @@ export const SignIn = () => {
         setError("");
         setSuccess("");
 
-        // if (turnstileStatus !== 'success' || !turnstileToken) {
-        //     setError("Please verify you are not a robot!");
-        //     return;
-        // }
+        if (turnstileStatus !== 'success' || !turnstileTokenRef.current) {
+            setError("Please verify you are not a robot!");
+            return;
+        }
         startTransition(() => {
-            login({ ...formData, /*token: turnstileToken*/ }, callbackUrl)
+            login({ ...formData, token: turnstileTokenRef.current }, callbackUrl)
                 .then((data) => {
                     if (data?.error) {
                         setError(data.error);
@@ -149,7 +150,7 @@ export const SignIn = () => {
                             )}
 
 
-                            {/* <Turnstile
+                            <Turnstile
                                 className="flex w-full justify-center"
                                 theme="dark"
                                 siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
@@ -171,10 +172,11 @@ export const SignIn = () => {
                                 }}
                                 onVerify={(token) => {
                                     setTurnstileStatus("success");
-                                    setTurnstileToken(token);
+                                    turnstileTokenRef.current = token;
+                                    // setTurnstileToken(token);
                                     setError("");
                                 }}
-                            /> */}
+                            />
 
 
                             <FormError message={error || urlError} />

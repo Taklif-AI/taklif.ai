@@ -21,19 +21,7 @@ import { v4 as uuidv4 } from "uuid";
 
 export async function login(formData: object, callbackUrl?: string | null) {
 
-    // const token = formData.token;
 
-    // const validationResponse = await validateTurnstileToken({
-    //     token,
-    //     secretKey: process.env.TURNSTILE_SECRET_KEY!,
-    //     // Optional: Add an idempotency key to prevent token reuse
-    //     idempotencyKey: uuidv4(),
-    //     // sandbox: process.env.NODE_ENV === "development",
-    // });
-
-    // if (!validationResponse.success) {
-    //     return { error: "Invalid token" }
-    // }
 
     const validateData = LoginSchema.safeParse(formData);
 
@@ -41,6 +29,20 @@ export async function login(formData: object, callbackUrl?: string | null) {
     if (!validateData.success) {
         const errors = validateData.error.errors.map((err) => err.message)
         return { error: errors[0] };
+    }
+
+    const token = formData.token;
+
+    const validationResponse = await validateTurnstileToken({
+        token,
+        secretKey: process.env.TURNSTILE_SECRET_KEY!,
+        idempotencyKey: uuidv4(),
+        // sandbox: process.env.NODE_ENV === "development",
+    });
+
+    if (!validationResponse.success) {
+        console.error("Turnstile validation failed:", validationResponse);
+        return { error: "Security check failed. Please try again!" }
     }
 
     const { email, password, code } = validateData.data;
