@@ -36,12 +36,12 @@ export const SignIn = () => {
         setError("");
         setSuccess("");
 
-        if (turnstileStatus !== 'success' || !turnstileToken) {
-            setError("Please verify you are not a robot!");
-            return;
-        }
+        // if (turnstileStatus !== 'success' || !turnstileToken) {
+        //     setError("Please verify you are not a robot!");
+        //     return;
+        // }
         startTransition(() => {
-            login({ ...formData, token: turnstileToken }, callbackUrl)
+            login({ ...formData, /*token: turnstileToken*/ }, callbackUrl)
                 .then((data) => {
                     if (data?.error) {
                         setError(data.error);
