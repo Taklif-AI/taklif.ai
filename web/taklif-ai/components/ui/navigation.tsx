@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Logo } from "@/components/ui/logo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { LogOut, User, Book } from "lucide-react";
+import { LogOut, User, Book, Sparkles } from "lucide-react";
 
 
 import {
@@ -21,9 +21,9 @@ export function Navigation() {
   return (
     <header className="fixed top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <link
-  rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/theme-toggles@4.10.1/css/around.min.css"
-/>
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/theme-toggles@4.10.1/css/around.min.css"
+      />
 
       <nav className="max-w-full container flex h-16 items-center justify-between pl-6 pr-9">
         <div className="flex items-center gap-6">
@@ -40,10 +40,20 @@ export function Navigation() {
         </div>
 
         <div className="flex items-center gap-4">
+          {session && (
+            <Link href="/assignment-personalization">
 
-        <ThemeToggle />
+              <Button
+                variant="ghost"
+                className="rounded-full w-[130px] bg-purple-600 transition-colors hover:outline-none"
+              >
+                Try magic now
+              </Button>
+
+            </Link>
+          )}
+          <ThemeToggle />
           <div className="hidden md:flex md:items-center md:gap-5"></div>
-
 
           {!session && (
             <Link href="/auth/sign-in">
@@ -59,35 +69,34 @@ export function Navigation() {
 
           {session && (
 
-<DropdownMenu modal={false}>
-<DropdownMenuTrigger asChild>
-  <Button variant="ghost" className="relative h-9 w-9 rounded-full">
-    <Avatar className="h-9 w-9">
-      <AvatarImage src={session?.user?.image || "/default-avatar.jpg"} alt="Profile"/>
-      <AvatarFallback>🤖</AvatarFallback>
-    </Avatar>
-  </Button>
-</DropdownMenuTrigger>
-<DropdownMenuContent align="end" sideOffset={5} className="w-56">
-  <DropdownMenuItem asChild>
-    <Link href="/profile" className="flex items-center">
-      <User className="mr-2 h-4 w-4" />
-      <span>Profile</span>
-    </Link>
-  </DropdownMenuItem>
-  <DropdownMenuItem asChild>
-    <Link href="/assignment-personalization/my-assignments" className="flex items-center">
-      <Book className="mr-2 h-4 w-4" />
-      <span>My Assignments</span>
-    </Link>
-  </DropdownMenuItem>
-  <DropdownMenuItem onClick={() => signOut()} className="text-red-600 dark:text-red-400">
-    <LogOut className="mr-2 h-4 w-4" />
-    <span>Log out</span>
-  </DropdownMenuItem>
-</DropdownMenuContent>
-</DropdownMenu>
-
+            <DropdownMenu modal={false}>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+                  <Avatar className="h-9 w-9">
+                    <AvatarImage src={session?.user?.image || "/default-avatar.jpg"} alt="Profile" />
+                    <AvatarFallback>🤖</AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" sideOffset={5} className="w-56">
+                <DropdownMenuItem asChild>
+                  <Link href="/profile" className="flex items-center">
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Profile</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/assignment-personalization/my-assignments" className="flex items-center">
+                    <Book className="mr-2 h-4 w-4" />
+                    <span>My Assignments</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => signOut()} className="text-red-600 dark:text-red-400">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Log out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
         </div>
       </nav>
