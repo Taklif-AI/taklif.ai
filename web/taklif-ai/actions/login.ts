@@ -37,7 +37,7 @@ export async function login(formData: object, callbackUrl?: string | null) {
         token,
         secretKey: process.env.TURNSTILE_SECRET_KEY!,
         idempotencyKey: uuidv4(),
-        // sandbox: process.env.NODE_ENV === "development",
+        sandbox: process.env.NODE_ENV === "development",
     });
 
     if (!validationResponse.success) {
