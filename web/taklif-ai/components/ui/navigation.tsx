@@ -76,9 +76,9 @@ export function Navigation() {
     </Link>
   </DropdownMenuItem>
   <DropdownMenuItem asChild>
-    <Link href="/assignment-personalization/all-assignments" className="flex items-center">
+    <Link href="/assignment-personalization/my-assignments" className="flex items-center">
       <Book className="mr-2 h-4 w-4" />
-      <span>All Assignments</span>
+      <span>My Assignments</span>
     </Link>
   </DropdownMenuItem>
   <DropdownMenuItem onClick={() => signOut()} className="text-red-600 dark:text-red-400">

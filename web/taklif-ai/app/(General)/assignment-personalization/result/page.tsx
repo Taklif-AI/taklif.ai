@@ -61,7 +61,7 @@ export default function AssignmentResultPage() {
             if (assignmentIndex === -1) {
               // If the assignment is not found, show an error and redirect
               Toast.error("Assignment not found. Redirecting...");
-              router.push('/assignment-personalization/all-assignments');
+              router.push('/assignment-personalization/my-assignments');
               return;
             }
             sessionStorage.removeItem("fromAllAssignments");
@@ -378,12 +378,12 @@ export default function AssignmentResultPage() {
                 Home Page
               </Button>
             </Link>
-            <Link href="/assignment-personalization/all-assignments"  >
+            <Link href="/assignment-personalization/my-assignments"  >
               <Button
                 variant="ghost"
                 className="rounded-full w-full outline outline-1 hover:bg-purple-600 hover:text-white transition-colors hover:outline-none"
               >
-                All Assignments
+                My Assignments
               </Button>
             </Link>
           </div>
