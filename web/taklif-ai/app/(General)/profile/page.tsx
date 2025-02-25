@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,11 +17,12 @@ import { FormSuccess } from "@/components/auth/form-success";
 import { settings } from "@/actions/settings";
 import { Toast } from "@/lib/utils/toast";
 import { uploadImage } from "@/actions/upload-image";
+import { getAssignments } from "@/actions/get-assignments";
 export default function ProfilePage() {
   const { update } = useSession();
   const user = useCurrentUser();
   const [credits] = useState(100);
-  const [assignments] = useState(24);
+  const [assignmentsCount, setAssignmentsCount] = useState(0);
   const [isPending, startTransition] = useTransition();
   const [profileFormData, setProfileFormData] = useState({
     name: user?.name || undefined,
@@ -38,6 +39,24 @@ export default function ProfilePage() {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
 
+  useEffect(() => {
+    async function fetchAssignments() {
+      if (!user?.id)
+        return;
+
+      const data = await getAssignments(user.id);
+
+      if (!data) {
+        console.warn("⚠️ No assignments returned from API.");
+        setAssignmentsCount(0); // Ensure empty array if no assignments
+        return;
+      }
+
+      setAssignmentsCount(data.length);
+    }
+
+    fetchAssignments();
+  }, [user]);
 
   const cropImage = async (file: File): Promise<Blob> => {
     return new Promise((resolve, reject) => {
@@ -208,23 +227,23 @@ export default function ProfilePage() {
             <div className="relative  ">
               <div className=" inset-0 rounded-full transition-opacity duration-300 before:absolute before:inset-0 before:rounded-full before:blur-lg before:bg-purple-500/50">
 
-              <Avatar className="w-24 h-24">
-                <AvatarImage src={image} alt="Profile Image" width={50} height={50} />
-                <AvatarFallback>🤖</AvatarFallback>
-              </Avatar>
-              <label htmlFor="avatar-upload" className="absolute -right-2 -bottom-2">
-                <div className="rounded-full bg-primary p-2 cursor-pointer hover:bg-primary/90">
-                  <Upload className="w-4 h-4 text-primary-foreground" />
-                </div>
-              </label>
-              <input
-                id="avatar-upload"
-                type="file"
-                className="hidden"
-                accept="image/*"
-                onChange={handleImageUpload}
-                disabled={isPending}
-              />
+                <Avatar className="w-24 h-24">
+                  <AvatarImage src={image} alt="Profile Image" width={50} height={50} />
+                  <AvatarFallback>🤖</AvatarFallback>
+                </Avatar>
+                <label htmlFor="avatar-upload" className="absolute -right-2 -bottom-2">
+                  <div className="rounded-full bg-primary p-2 cursor-pointer hover:bg-primary/90">
+                    <Upload className="w-4 h-4 text-primary-foreground" />
+                  </div>
+                </label>
+                <input
+                  id="avatar-upload"
+                  type="file"
+                  className="hidden"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  disabled={isPending}
+                />
               </div>
 
             </div>
@@ -243,7 +262,7 @@ export default function ProfilePage() {
                 <Book className="w-6 h-6 text-purple-600 dark:text-purple-300" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{assignments}</p>
+                <p className="text-2xl font-bold">{assignmentsCount}</p>
                 <p className="text-muted-foreground">Assignments Created</p>
               </div>
             </div>
