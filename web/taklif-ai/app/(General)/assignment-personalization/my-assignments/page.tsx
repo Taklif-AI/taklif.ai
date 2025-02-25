@@ -83,7 +83,7 @@ export default function AssignmentsPage() {
                 <h3 className="text-xl font-semibold mb-2">No assignments yet</h3>
                 <p className="text-muted-foreground mb-4">Your personalized assignments will appear here</p>
                 <Link href="/assignment-personalization">
-                  <Button size="lg" className="rounded-full w-full sm:w-auto text-white bg-violet-600 hover:bg-violet-700">
+                  <Button size="lg" className="rounded-full w-full sm:w-auto bg-violet-600 hover:bg-violet-700 text-gray-1000 dark:text-white">
                     Create Your First Assignment
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
