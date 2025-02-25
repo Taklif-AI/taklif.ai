@@ -22,7 +22,7 @@ import { v4 as uuidv4 } from "uuid";
 export async function login(formData: object, callbackUrl?: string | null) {
 
     const token = formData.token;
-    
+
     const validationResponse = await validateTurnstileToken({
         token,
         secretKey: process.env.TURNSTILE_SECRET_KEY!,
@@ -137,6 +137,8 @@ export async function login(formData: object, callbackUrl?: string | null) {
                 case "CredentialsSignin":
                     return { error: "Invalid credentials!" }
                 default:
+                    console.log(error);
+
                     return { error: 'Something went wrong!' }
             }
         }
