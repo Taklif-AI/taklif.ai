@@ -157,7 +157,7 @@ export const SignIn = () => {
                                 retry="auto"
                                 size="normal"
                                 refreshExpired="auto"
-                                // sandbox={process.env.NODE_ENV === 'development'}
+                                sandbox={process.env.NODE_ENV === 'development'}
                                 onError={() => {
                                     setTurnstileStatus("error");
                                     setError("Security check failed. Please try again.");
