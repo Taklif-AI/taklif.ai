@@ -7,13 +7,13 @@ import { FormSuccess } from "@/components/auth/form-success";
 import { login } from "@/actions/login";
 import { useState, useTransition } from "react";
 import { useSearchParams } from "next/navigation";
-import { Turnstile } from 'next-turnstile';
+// import { Turnstile } from 'next-turnstile';
 import Link from "next/link";
 import Image from "next/image"
 export const SignIn = () => {
-    const [turnstileStatus, setTurnstileStatus] = useState<
-        "success" | "error" | "expired" | "required">("required");
-    const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+    // const [turnstileStatus, setTurnstileStatus] = useState<
+        // "success" | "error" | "expired" | "required">("required");
+    // const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
     const [formData, setFormData] = useState({ email: '', password: '', code: '', 'cf-turnstile-response': '' });
     const [showTwoFactor, setShowTwoFactor] = useState(false);
     const [error, setError] = useState<string | undefined>("");
@@ -149,14 +149,14 @@ export const SignIn = () => {
                             )}
 
 
-                            <Turnstile
+                            {/* <Turnstile
                                 className="flex w-full justify-center"
                                 theme="dark"
                                 siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
                                 retry="auto"
                                 size="normal"
                                 refreshExpired="auto"
-                                sandbox={process.env.NODE_ENV === 'development'}
+                                // sandbox={process.env.NODE_ENV === 'development'}
                                 onError={() => {
                                     setTurnstileStatus("error");
                                     setError("Security check failed. Please try again.");
@@ -174,7 +174,7 @@ export const SignIn = () => {
                                     setTurnstileToken(token);
                                     setError("");
                                 }}
-                            />
+                            /> */}
 
 
                             <FormError message={error || urlError} />
