@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
-import { ArrowRight, Eye } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, Eye } from "lucide-react";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { formatDistanceToNow } from "date-fns";
 import { getAssignments } from "@/actions/get-assignments";
@@ -11,6 +11,9 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 export default function AssignmentsPage() {
   const [assignments, setAssignments] = useState([]);
+  const [lastEvaluatedKey, setLastEvaluatedKey] = useState(null);
+  const [previousKeys, setPreviousKeys] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const user = useCurrentUser();
 
@@ -20,25 +23,38 @@ export default function AssignmentsPage() {
     sessionStorage.setItem("fromAllAssignments", "true"); // Set the flag
     router.push('/assignment-personalization/result');
   }
+
+
+  const fetchAssignments = async (ExclusiveStartKey = null) => {
+    if (!user?.id) return;
+
+    setIsLoading(true);
+    const { assignments: newAssignments, lastEvaluatedKey: newLastEvaluatedKey } = await getAssignments(user.id, 2, ExclusiveStartKey);
+
+    setAssignments(newAssignments);
+    setLastEvaluatedKey(newLastEvaluatedKey);
+    setIsLoading(false);
+
+  };
+
   useEffect(() => {
-    async function fetchAssignments() {
-      if (!user?.id)
-        return;
-
-      const data = await getAssignments(user.id);
-
-      if (!data) {
-        console.warn("⚠️ No assignments returned from API.");
-        setAssignments([]); // Ensure empty array if no assignments
-        return;
-      }
-
-      setAssignments(data);
-    }
-
     fetchAssignments();
   }, [user]);
 
+  const handleNextPage = () => {
+    if (lastEvaluatedKey) {
+      setPreviousKeys((prev) => [...prev, lastEvaluatedKey]); // Push current key to the stack
+      fetchAssignments(lastEvaluatedKey); // Fetch next page
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (previousKeys.length > 0) {
+      const previousKey = previousKeys[previousKeys.length - 1]; // Get the last key from the stack
+      setPreviousKeys((prev) => prev.slice(0, -1)); // Remove the last key from the stack
+      fetchAssignments(previousKey); // Fetch previous page
+    }
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -91,6 +107,22 @@ export default function AssignmentsPage() {
               </Card>
             )
           )}
+        </div>
+        <div className="flex justify-between mt-8">
+          <Button
+            onClick={handlePreviousPage}
+            disabled={previousKeys.length === 0 || isLoading}
+            className="rounded-full bg-violet-600 hover:bg-violet-700 text-gray-1000 dark:text-white"
+          >
+            <ChevronLeft className="h-4 w-4" /> Previous
+          </Button>
+          <Button
+            onClick={handleNextPage}
+            disabled={!lastEvaluatedKey || isLoading}
+            className="rounded-full bg-violet-600 hover:bg-violet-700 text-gray-1000 dark:text-white"
+          >
+            Next <ChevronRight className="h-4 w-4" />
+          </Button>
         </div>
       </div>
     </div>
