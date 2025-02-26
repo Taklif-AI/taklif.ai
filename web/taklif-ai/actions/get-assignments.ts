@@ -3,7 +3,8 @@
 import { QueryCommand } from "@aws-sdk/lib-dynamodb";
 import { client } from "@/lib/database/dynamo-assignment-client";
 
-export async function getAssignments(userId: string) {
+
+export async function getAssignments(userId: string, limit: number = 1, ExclusiveStartKey: any = null) {
     const params = {
         TableName: "Development-AssignmentsTable",
         KeyConditionExpression: "PK = :pk",
@@ -12,20 +13,25 @@ export async function getAssignments(userId: string) {
         },
         ProjectionExpression: "SK, created_at, model_output, simplification_id",
         ScanIndexForward: false,
+        Limit: limit,
     };
 
+    if (ExclusiveStartKey) {
+        params.ExclusiveStartKey = ExclusiveStartKey;
+    }
+
     try {
-        const { Items } = await client.send(new QueryCommand(params));
+        const { Items, LastEvaluatedKey } = await client.send(new QueryCommand(params));
 
         if (!Items || Items.length === 0) {
-            return [];
+            return { assignments: [], lastEvaluatedKey: null };
         }
 
         // Filter assignments where `simplification_id` is NULL
         const assignments = Items.filter((item) => !item.simplification_id);
 
         if (assignments.length === 0) {
-            return [];
+            return { assignments: [], lastEvaluatedKey: null };
         }
 
         const processedAssignments = assignments.map((assignment) => {
@@ -41,9 +47,9 @@ export async function getAssignments(userId: string) {
         // Sort processed assignments in DESCENDING order
         processedAssignments.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
-        return processedAssignments
+        return { assignments: processedAssignments, lastEvaluatedKey: LastEvaluatedKey || null };
     } catch (error) {
         console.error("❌ Error fetching assignments:", error);
-        return [];
+        return { assignments: [], lastEvaluatedKey: null };
     }
 }
