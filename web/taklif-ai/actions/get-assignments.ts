@@ -3,8 +3,7 @@
 import { QueryCommand } from "@aws-sdk/lib-dynamodb";
 import { client } from "@/lib/database/dynamo-assignment-client";
 
-
-export async function getAssignments(userId: string, limit: number = 1, ExclusiveStartKey: any = null) {
+export async function getAssignments(userId: string, lastEvaluatedKey = null) {
     const params = {
         TableName: "Development-AssignmentsTable",
         KeyConditionExpression: "PK = :pk",
@@ -13,13 +12,12 @@ export async function getAssignments(userId: string, limit: number = 1, Exclusiv
         },
         ProjectionExpression: "SK, created_at, model_output, simplification_id",
         ScanIndexForward: false,
-        Limit: limit,
+        Limit: 1,
     };
 
-    if (ExclusiveStartKey) {
-        params.ExclusiveStartKey = ExclusiveStartKey;
+    if (lastEvaluatedKey) {
+        params.ExclusiveStartKey = lastEvaluatedKey
     }
-
     try {
         const { Items, LastEvaluatedKey } = await client.send(new QueryCommand(params));
 
