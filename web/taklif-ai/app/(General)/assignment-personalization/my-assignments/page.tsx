@@ -9,11 +9,12 @@ import { getAssignments } from "@/actions/get-assignments";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Toast } from "@/lib/utils/toast";
 export default function AssignmentsPage() {
   const [assignments, setAssignments] = useState([]);
-  const [lastEvaluatedKey, setLastEvaluatedKey] = useState(null);
-  const [previousKeys, setPreviousKeys] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [pageHistory, setPageHistory] = useState([]); // Stores past lastEvaluatedKeys for back navigation
+  const [currentLastKey, setCurrentLastKey] = useState(null); // Last key for the current page
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const user = useCurrentUser();
 
@@ -23,36 +24,47 @@ export default function AssignmentsPage() {
     sessionStorage.setItem("fromAllAssignments", "true"); // Set the flag
     router.push('/assignment-personalization/result');
   }
+  const fetchAssignments = async (newLastKey = null, isNextPage = false) => {
+    if (!user?.id || loading) return;
 
+    setLoading(true);
 
-  const fetchAssignments = async (ExclusiveStartKey = null) => {
-    if (!user?.id) return;
+    const { assignments: newAssignments, lastEvaluatedKey } = await getAssignments(user.id, newLastKey);
 
-    setIsLoading(true);
-    const { assignments: newAssignments, lastEvaluatedKey: newLastEvaluatedKey } = await getAssignments(user.id, 2, ExclusiveStartKey);
+    if (newAssignments.length === 0 || lastEvaluatedKey === null) {
+      Toast.error("There is no more assignmnets!");
+      setCurrentLastKey(null);
+    } else {
+      setAssignments(newAssignments);
+      setCurrentLastKey(lastEvaluatedKey);
+    }
 
-    setAssignments(newAssignments);
-    setLastEvaluatedKey(newLastEvaluatedKey);
-    setIsLoading(false);
+    if (isNextPage) {
+      setPageHistory((prev) => [...prev, newLastKey]);
+    } else if (newLastKey === null) {
+      setPageHistory([]);
+    }
 
+    setLoading(false);
   };
 
   useEffect(() => {
     fetchAssignments();
   }, [user]);
 
-  const handleNextPage = () => {
-    if (lastEvaluatedKey) {
-      setPreviousKeys((prev) => [...prev, lastEvaluatedKey]); // Push current key to the stack
-      fetchAssignments(lastEvaluatedKey); // Fetch next page
+  const handleNext = () => {
+    if (currentLastKey) {
+      fetchAssignments(currentLastKey, true);
     }
   };
 
-  const handlePreviousPage = () => {
-    if (previousKeys.length > 0) {
-      const previousKey = previousKeys[previousKeys.length - 1]; // Get the last key from the stack
-      setPreviousKeys((prev) => prev.slice(0, -1)); // Remove the last key from the stack
-      fetchAssignments(previousKey); // Fetch previous page
+  const handlePrevious = () => {
+    if (pageHistory.length > 1) {
+      const previousPageKey = pageHistory[pageHistory.length - 2]; // Get the previous key
+      setPageHistory((prev) => prev.slice(0, -1)); // Remove the current page from history
+      fetchAssignments(previousPageKey, false);
+    } else {
+      fetchAssignments(null, false);
     }
   };
 
@@ -108,20 +120,12 @@ export default function AssignmentsPage() {
             )
           )}
         </div>
-        <div className="flex justify-between mt-8">
-          <Button
-            onClick={handlePreviousPage}
-            disabled={previousKeys.length === 0 || isLoading}
-            className="rounded-full bg-violet-600 hover:bg-violet-700 text-gray-1000 dark:text-white"
-          >
-            <ChevronLeft className="h-4 w-4" /> Previous
+        <div className="flex justify-between items-center mt-6">
+          <Button onClick={handlePrevious} disabled={pageHistory.length === 0} className="bg-gray-500 hover:bg-gray-600">
+            <ChevronLeft className="h-5 w-5" /> Previous
           </Button>
-          <Button
-            onClick={handleNextPage}
-            disabled={!lastEvaluatedKey || isLoading}
-            className="rounded-full bg-violet-600 hover:bg-violet-700 text-gray-1000 dark:text-white"
-          >
-            Next <ChevronRight className="h-4 w-4" />
+          <Button onClick={handleNext} disabled={currentLastKey === null} className="bg-violet-600 hover:bg-violet-700">
+            Next <ChevronRight className="h-5 w-5" />
           </Button>
         </div>
       </div>
