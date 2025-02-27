@@ -3,7 +3,7 @@
 import { QueryCommand } from "@aws-sdk/lib-dynamodb";
 import { client } from "@/lib/database/dynamo-assignment-client";
 
-export async function getAssignments(userId: string, lastEvaluatedKey = null) {
+export async function getAssignments(userId: string, lastEvaluatedKey = null, limit: number = 2) {
     const params = {
         TableName: "Development-AssignmentsTable",
         KeyConditionExpression: "PK = :pk",
@@ -12,7 +12,7 @@ export async function getAssignments(userId: string, lastEvaluatedKey = null) {
         },
         ProjectionExpression: "SK, created_at, model_output, simplification_id",
         ScanIndexForward: false,
-        Limit: 1,
+        Limit: limit,
     };
 
     if (lastEvaluatedKey) {

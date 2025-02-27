@@ -10,11 +10,13 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Toast } from "@/lib/utils/toast";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 export default function AssignmentsPage() {
   const [assignments, setAssignments] = useState([]);
   const [pageHistory, setPageHistory] = useState([]); // Stores past lastEvaluatedKeys for back navigation
   const [currentLastKey, setCurrentLastKey] = useState(null); // Last key for the current page
   const [loading, setLoading] = useState(false);
+  const [pageSize, setPageSize] = useState(2); // Default page size
   const router = useRouter();
   const user = useCurrentUser();
 
@@ -29,10 +31,10 @@ export default function AssignmentsPage() {
 
     setLoading(true);
 
-    const { assignments: newAssignments, lastEvaluatedKey } = await getAssignments(user.id, newLastKey);
+    const { assignments: newAssignments, lastEvaluatedKey } = await getAssignments(user.id, newLastKey, pageSize);
 
-    if (newAssignments.length === 0 || lastEvaluatedKey === null) {
-      Toast.error("There is no more assignmnets!");
+    if (newAssignments.length === 0) {
+      Toast.error("There is no more assignments!");
       setCurrentLastKey(null);
     } else {
       setAssignments(newAssignments);
@@ -50,7 +52,7 @@ export default function AssignmentsPage() {
 
   useEffect(() => {
     fetchAssignments();
-  }, [user]);
+  }, [user, pageSize]);
 
   const handleNext = () => {
     if (currentLastKey) {
@@ -66,6 +68,13 @@ export default function AssignmentsPage() {
     } else {
       fetchAssignments(null, false);
     }
+  };
+
+  const handlePageSizeChange = (value) => {
+    setPageSize(Number(value));
+    setPageHistory([]);
+    setCurrentLastKey(null);
+    fetchAssignments(null, false);
   };
 
   return (
@@ -124,6 +133,18 @@ export default function AssignmentsPage() {
           <Button onClick={handlePrevious} disabled={pageHistory.length === 0} className="bg-gray-500 hover:bg-gray-600">
             <ChevronLeft className="h-5 w-5" /> Previous
           </Button>
+          <div className="flex items-center gap-4">
+            <Select onValueChange={handlePageSizeChange} value={pageSize.toString()}>
+              <SelectTrigger className="w-24 bg-violet-600 hover:bg-violet-700">
+                <SelectValue placeholder="Page Size" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="2">2</SelectItem>
+                <SelectItem value="5">5</SelectItem>
+                <SelectItem value="10">10</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           <Button onClick={handleNext} disabled={currentLastKey === null} className="bg-violet-600 hover:bg-violet-700">
             Next <ChevronRight className="h-5 w-5" />
           </Button>
