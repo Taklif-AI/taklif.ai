@@ -3,8 +3,6 @@ import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from "@/components/ui/sonner";
-import { SessionProvider } from 'next-auth/react';
-import { auth } from '@/auth';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -23,10 +21,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth();
-
   return (
-    <SessionProvider session={session}>
       <html lang="en" suppressHydrationWarning>
         <body className={poppins.className}>
           <ThemeProvider
@@ -40,6 +35,5 @@ export default async function RootLayout({
           </ThemeProvider>
         </body>
       </html>
-    </SessionProvider>
   );
 }
