@@ -80,18 +80,18 @@ export function Navigation() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" sideOffset={5} className="w-56">
                 <DropdownMenuItem asChild>
-                  <Link href="/profile" className="flex items-center">
+                  <Link href="/profile" className="flex items-center cursor-pointer">
                     <User className="mr-2 h-4 w-4" />
                     <span>Profile</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/assignment-personalization/my-assignments" className="flex items-center">
+                  <Link href="/assignment-personalization/my-assignments" className="flex items-center cursor-pointer">
                     <Book className="mr-2 h-4 w-4" />
                     <span>My Assignments</span>
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => signOut()} className="text-red-600 dark:text-red-400">
+                <DropdownMenuItem onClick={() => signOut()} className="text-red-600 dark:text-red-400 cursor-pointer">
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Log out</span>
                 </DropdownMenuItem>
