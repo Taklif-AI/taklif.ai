@@ -77,7 +77,6 @@ export default function AssignmentsPage() {
     setPageSize(Number(value));
     setPageHistory([]);
     setCurrentLastKey(null);
-    fetchAssignments(null, false);
   };
 
   return (
