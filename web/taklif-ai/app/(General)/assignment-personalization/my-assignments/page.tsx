@@ -11,12 +11,15 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Toast } from "@/lib/utils/toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useAssignments } from "@/components/providers/assignments-provider";
 export default function AssignmentsPage() {
   const [assignments, setAssignments] = useState([]);
   const [pageHistory, setPageHistory] = useState([]); // Stores past lastEvaluatedKeys for back navigation
   const [currentLastKey, setCurrentLastKey] = useState(null); // Last key for the current page
   const [loading, setLoading] = useState(false);
   const [pageSize, setPageSize] = useState(2); // Default page size
+  const { count } = useAssignments();
+
   const router = useRouter();
   const user = useCurrentUser();
 
@@ -82,7 +85,7 @@ export default function AssignmentsPage() {
       <div className="max-w-4xl mx-auto space-y-8">
         <div className="text-center mb-8">
           <h1 className="mb-5 p-1 text-3xl font-bold bg-gradient-to-r from-violet-600 to-violet-400 bg-clip-text text-transparent md:text-4xl">
-            Personalized Assignments [{assignments.length}]
+            [{count}] Personalized Assignments
           </h1>
           <p className="text-muted-foreground">View and manage your AI-personalized assignments</p>
         </div>

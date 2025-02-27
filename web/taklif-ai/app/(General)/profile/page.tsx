@@ -17,13 +17,15 @@ import { FormSuccess } from "@/components/auth/form-success";
 import { settings } from "@/actions/settings";
 import { Toast } from "@/lib/utils/toast";
 import { uploadImage } from "@/actions/upload-image";
-import { getAssignments } from "@/actions/get-assignments";
+import { useAssignments } from "@/components/providers/assignments-provider";
+
 export default function ProfilePage() {
   const { update } = useSession();
   const user = useCurrentUser();
   const [credits] = useState(100);
-  const [assignmentsCount, setAssignmentsCount] = useState(0);
   const [isPending, startTransition] = useTransition();
+  const { count } = useAssignments();
+
   const [profileFormData, setProfileFormData] = useState({
     name: user?.name || undefined,
     email: user?.email || undefined,
@@ -39,24 +41,6 @@ export default function ProfilePage() {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
 
-  useEffect(() => {
-    async function fetchAssignments() {
-      if (!user?.id)
-        return;
-
-      const data = await getAssignments(user.id);
-
-      if (!data) {
-        console.warn("⚠️ No assignments returned from API.");
-        setAssignmentsCount(0); // Ensure empty array if no assignments
-        return;
-      }
-
-      setAssignmentsCount(data.length);
-    }
-
-    fetchAssignments();
-  }, [user]);
 
   const cropImage = async (file: File): Promise<Blob> => {
     return new Promise((resolve, reject) => {
@@ -262,7 +246,7 @@ export default function ProfilePage() {
                 <Book className="w-6 h-6 text-purple-600 dark:text-purple-300" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{assignmentsCount}</p>
+                <p className="text-2xl font-bold">{count}</p>
                 <p className="text-muted-foreground">Assignments Created</p>
               </div>
             </div>
