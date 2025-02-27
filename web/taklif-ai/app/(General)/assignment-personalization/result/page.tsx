@@ -13,12 +13,14 @@ import { ArrowRight, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { fetchAllAssignmentVersions } from "@/actions/fetch-all-assignment-versions";
 import { Assignment } from "@/lib/types/assigment-type";
+import { useAssignments } from "@/components/providers/assignments-provider";
+
 import Link from "next/link";
 const backgroundIcons = [Brain, Wand2, Stars, Sparkles];
 
 export default function AssignmentResultPage() {
   const router = useRouter();
-
+  const { refreshCount } = useAssignments();
   const [assignmentsStack, setAssignmentsStack] = useState<Assignment[]>([]);
   const [currentAssignmentIndex, setCurrentAssignmentIndex] = useState<number>(0);
   const [isPending, setIsPending] = useState<boolean>(false);
@@ -87,6 +89,7 @@ export default function AssignmentResultPage() {
       }
     }
     getAssignment();
+    refreshCount();
   }, [router]);
 
   const handleNavigateLeft = () => {
