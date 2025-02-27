@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { Navigation } from '@/components/ui/navigation';
 import { Footer } from '@/components/ui/footer';
 import { SessionProvider } from 'next-auth/react';
+import { AssignmentsProvider } from "@/components/providers/assignments-provider";
 import { auth } from '@/auth';
 
 export const metadata: Metadata = {
@@ -18,13 +19,15 @@ export default async function GeneralLayout({
   const session = await auth();
   return (
     <SessionProvider session={session}>
-      <div className="flex min-h-screen flex-col">
-        <Navigation />
-        <div className="flex-1 pt-16">
-          {children}
+      <AssignmentsProvider>
+        <div className="flex min-h-screen flex-col">
+          <Navigation />
+          <div className="flex-1 pt-16">
+            {children}
+          </div>
+          <Footer />
         </div>
-        <Footer />
-      </div>
+      </AssignmentsProvider>
     </SessionProvider>
   );
 }
