@@ -10,7 +10,7 @@ export function HomeMagic() {
   const [selectedInterest, setSelectedInterest] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedResult, setGeneratedResult] = useState("");
-  const [displayedResult, setDisplayedResult] = useState(""); // State for streaming effect
+  const [displayedResult, setDisplayedResult] = useState("");
 
   const steps = [
     {
@@ -93,7 +93,7 @@ export function HomeMagic() {
     },
   ];
 
-  const [selectedAssignment, setSelectedAssignment] = useState(assignments[0].title); // Set first assignment as default
+  const [selectedAssignment, setSelectedAssignment] = useState(assignments[0].title);
 
   const interests = [
     { name: "Environmental Science", icon: Workflow },
@@ -105,12 +105,11 @@ export function HomeMagic() {
 
   const handleNext = () => {
     if (currentStep === 3) {
-      // Reset everything
       setCurrentStep(1);
-      setSelectedAssignment(assignments[0].title); // Reset to first assignment
+      setSelectedAssignment(assignments[0].title);
       setSelectedInterest("");
       setGeneratedResult("");
-      setDisplayedResult(""); // Reset displayed result
+      setDisplayedResult("");
       setIsGenerating(false);
     } else if (
       (currentStep === 1 && selectedAssignment) ||
@@ -125,8 +124,7 @@ export function HomeMagic() {
 
   const simulateGeneration = () => {
     setIsGenerating(true);
-    // Simulate AI generation with a typing effect
-    const result = ` Based on your selection of "${selectedAssignment}" and interest in "${selectedInterest}", here's your personalized assignment structure:
+    const result = `Based on your selection of "${selectedAssignment}" and interest in "${selectedInterest}", here's your personalized assignment structure:
 
 1. Introduction
    - Background on the topic
@@ -149,11 +147,10 @@ export function HomeMagic() {
    - Call to action
    - Future research directions`;
 
-    setGeneratedResult(result); // Set the full result
-    setIsGenerating(false); // Mark generation as complete
+    setGeneratedResult(result);
+    setIsGenerating(false);
   };
 
-  // Streaming effect logic
   useEffect(() => {
     if (generatedResult && !isGenerating) {
       let index = 0;
@@ -164,7 +161,7 @@ export function HomeMagic() {
         } else {
           clearInterval(interval);
         }
-      }, 20); // Adjust the interval for faster or slower streaming
+      }, 20);
     }
   }, [generatedResult, isGenerating]);
 
@@ -172,6 +169,7 @@ export function HomeMagic() {
 
   return (
     <div id="magic" className="container mx-auto p-4 sm:p-6">
+      
       <div>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -195,7 +193,7 @@ export function HomeMagic() {
       >
         <div className="flex flex-col lg:flex-row gap-6 max-w-6xl mx-auto bg-card rounded-lg overflow-hidden shadow-xl border">
           {/* Left Panel */}
-          <div className="w-full lg:w-1/3 bg-gradient-to-br from-violet-600 to-purple-700 p-6 sm:p-8 flex flex-col justify-between">
+          <div className="w-full lg:w-1/3 bg-gradient-to-br from-violet-600 to-purple-700 p-6 sm:p-8 flex flex-col justify-between text-center lg:text-left">
             <div className="absolute top-4 right-4">
               <CurrentIcon className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
             </div>
@@ -253,7 +251,6 @@ export function HomeMagic() {
                             <p className="text-sm text-muted-foreground">
                               {assignment.details}
                             </p>
-                            {/* Additional Details */}
                             <div className="text-sm text-muted-foreground">
                               <h4 className="font-medium">Key Topics:</h4>
                               <ul className="list-disc list-inside">
@@ -340,7 +337,6 @@ export function HomeMagic() {
           </div>
         </div>
       </motion.div>
-
     </div>
   );
-};
+}
