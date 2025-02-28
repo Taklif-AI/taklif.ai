@@ -169,7 +169,6 @@ export function HomeMagic() {
 
   return (
     <div id="magic" className="container mx-auto p-4 sm:p-6">
-      
       <div>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -194,17 +193,18 @@ export function HomeMagic() {
         <div className="flex flex-col lg:flex-row gap-6 max-w-6xl mx-auto bg-card rounded-lg overflow-hidden shadow-xl border">
           {/* Left Panel */}
           <div className="w-full lg:w-1/3 bg-gradient-to-br from-violet-600 to-purple-700 p-6 sm:p-8 flex flex-col justify-between text-center lg:text-left">
-            <div className="absolute top-4 right-4">
-              <CurrentIcon className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
-            </div>
-            <div className="space-y-4">
+            <div className="flex items-center justify-center lg:justify-start gap-4">
               <h2 className="text-xl sm:text-2xl font-bold text-white">
                 {steps[currentStep - 1].title}
               </h2>
-              <p className="text-sm sm:text-base text-white/80">
-                {steps[currentStep - 1].description}
-              </p>
+              <CurrentIcon className="w-8 h-8 text-white" />
             </div>
+
+            {/* Description */}
+            <p className="text-sm sm:text-base text-white/80 mt-4">
+              {steps[currentStep - 1].description}
+            </p>
+
             <div className="flex justify-center mt-8 space-x-2">
               {[1, 2, 3].map((step) => (
                 <div
