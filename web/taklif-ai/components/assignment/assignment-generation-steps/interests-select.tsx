@@ -8,7 +8,9 @@ import { Input } from "@/components/ui/input";
 import { validateInterest } from "@/lib/validators/assignment-validator";
 import { Toast } from "@/lib/utils/toast";
 import Image from "next/image";
-import SVGIMG from "../../../public/white.png";
+import LightSVG  from "../../../public/black.png";
+import DarkSVG  from "../../../public/white.png";
+
 interface InterestsSelectProps {
   onNext: (interest: string) => void;
   onBack: () => void;
@@ -80,11 +82,20 @@ export function InterestsSelect({ onNext, onBack, initialInterests }: InterestsS
 
       </div>
 
-      <Card className="min-h-[574.18px] p-8 max-w-xl mx-auto backdrop-blur-sm bg-white/80 dark:bg-gray-950/80">
-
+      <Card className="min-h-[580px] p-8 max-w-xl mx-auto backdrop-blur-sm bg-white/80 dark:bg-gray-950/80">
         <div className="overflow-auto h-20 ;">
-
-          <Image className=" absolute   translate-y-[-1.9rem] translate-x-[-2rem] opacity-[0.04]	 -z-10  " src={SVGIMG} alt={""} />
+          <Image
+            src={LightSVG}
+            alt="Light Mode Background"
+            fill
+            className="object-cover opacity-[0.04] -z-10 dark:hidden"
+          />
+          <Image
+            src={DarkSVG}
+            alt="Dark Mode Background"
+            fill
+            className="object-cover opacity-[0.04] -z-10 hidden dark:block"
+          />
         </div>
         <div className="text-center mb-6">
           <h2 className="text-2xl font-bold mb-2">Select Your Interest</h2>
