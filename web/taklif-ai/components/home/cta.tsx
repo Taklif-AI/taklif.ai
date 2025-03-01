@@ -65,7 +65,7 @@ export function HomeCTA() {
                 {/* YouTube Video Embed */}
                 <iframe
                   className="absolute inset-0 w-full h-full"
-                  src="https://www.youtube.com/embed/SJKeDG8lw04?si=fgx6geCcSf97NSfl" // Replace VIDEO_ID with your YouTube video ID
+                  src="https://www.youtube.com/embed/SJKeDG8lw04?si=fgx6geCcSf97NSfl&amp;controls=0" // Replace VIDEO_ID with your YouTube video ID
                   title="YouTube video player"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
