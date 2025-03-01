@@ -47,7 +47,7 @@ export function Navigation() {
                 variant="ghost"
                 className="rounded-full w-[130px] bg-purple-600 transition-colors hover:outline-none"
               >
-                Try magic now
+                Try it now!
               </Button>
 
             </Link>
@@ -74,7 +74,7 @@ export function Navigation() {
                 <Button variant="ghost" className="relative h-9 w-9 rounded-full">
                   <Avatar className="h-9 w-9">
                     <AvatarImage src={session?.user?.image || "/default-avatar.jpg"} alt="Profile" />
-                    <AvatarFallback>🤖</AvatarFallback>
+                    <AvatarFallback>⚙️</AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
