@@ -10,26 +10,25 @@ export default function NotFound() {
             <div className="relative">
                 {/* Background Gradient */}
                 <div className="absolute inset-0 " />
-                {/* bg-gradient-to-b from-purple-600/10 to-transparent rounded-full blur-3xl */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                     className="relative text-center space-y-8"
                 >
-                    <img src="404.gif" alt="404" className="w-[800px]"></img>
+                    <img src="404.gif" alt="404" className="w-[600px] mx-auto" />
                     
-                    {/* Action Button */}
+                    {/* Centered Action Button */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2, duration: 0.5 }}
-                        className="relative"
+                        className="flex justify-center"
                     >
-                        <Link href="/" className="absolute bottom-[130px] left-[340px]">
+                        <Link href="/">
                             <Button
                                 size="lg"
-                                className=" bg-purple-600 hover:bg-purple-700 text-white px-8 "
+                                className="bg-purple-600 hover:bg-purple-700 text-white px-8 rounded-full"
                             >
                                 Return Home →
                             </Button>
