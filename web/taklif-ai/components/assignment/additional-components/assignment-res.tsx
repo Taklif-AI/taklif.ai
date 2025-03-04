@@ -5,8 +5,12 @@ import { Assignment } from "@/lib/types/assigment-type";
 import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import { Sparkles } from "lucide-react";
+import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import rehypeSanitize from "rehype-sanitize"; 
+import "katex/dist/katex.min.css";
 
-import rehypeSanitize from "rehype-sanitize";
 
 interface AssignmentResultProps {
   assignment: Assignment;
@@ -72,12 +76,13 @@ export function AssignmentResult({ assignment }: AssignmentResultProps) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.4 }}
       >
-        <ReactMarkdown rehypePlugins={[rehypeSanitize]} className="text-gray-700 dark:text-gray-300 leading-relaxed">
+       <ReactMarkdown
+         remarkPlugins={[remarkGfm, remarkMath]}
+         rehypePlugins={[rehypeSanitize, rehypeKatex]}
+       >
           {assignment.model_output.content}
         </ReactMarkdown>
       </motion.div>
-
-
     </motion.div>
   );
 }
