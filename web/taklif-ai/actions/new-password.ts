@@ -3,65 +3,62 @@
 import { getPasswordResetTokenByToken } from "@/data/password-reset-token";
 import { getUserByEmail, updateOneUserField } from "@/data/user";
 import { NewPasswordSchema } from "@/lib/schemas/new-password-schema";
-import bcrypt from 'bcryptjs';
-import { client } from '@/lib/database/dynamo-client';
+import bcrypt from "bcryptjs";
+import { client } from "@/lib/database/dynamo-client";
 import { DeleteCommand } from "@aws-sdk/lib-dynamodb";
 
+export const newPassword = async (formData: object, token?: string | null) => {
+  if (!token) {
+    return { error: "Missing token!" };
+  }
 
-export const newPassword = async (
-    formData: object,
-    token?: string | null
-) => {
+  const validateData = NewPasswordSchema.safeParse(formData);
 
-    if (!token) {
-        return { error: 'Missing token!' }
-    }
+  // validate the user data
+  if (!validateData.success) {
+    const errors = validateData.error.errors.map((err) => err.message);
+    return { error: errors[0] };
+  }
 
-    const validateData = NewPasswordSchema.safeParse(formData);
+  const { password, confirmPassword } = validateData.data;
 
-    // validate the user data
-    if (!validateData.success) {
-        const errors = validateData.error.errors.map((err) => err.message)
-        return { error: errors[0] };
-    }
+  // check if passwords match
+  if (password !== confirmPassword) {
+    return { error: "Passwords do not match!" };
+  }
 
-    const { password, confirmPassword } = validateData.data;
+  // password hashing
+  const hashedPassword = await bcrypt.hash(password, 10);
 
-    // check if passwords match
-    if (password !== confirmPassword) {
-        return { error: 'Passwords do not match!' };
-    }
+  const existingToken = await getPasswordResetTokenByToken(`PR#${token}`);
 
-    // password hashing
-    const hashedPassword = await bcrypt.hash(password, 10);
+  if (!existingToken) {
+    return { error: "Invalid token!" };
+  }
 
-    const existingToken = await getPasswordResetTokenByToken(`PR#${token}`);
+  const currentTime = Math.floor(Date.now() / 1000);
+  const hasExpired = existingToken.expires < currentTime;
 
-    if (!existingToken) {
-        return { error: 'Invalid token!' }
-    }
+  if (hasExpired) {
+    return { error: "Token has expired!" };
+  }
 
-    const currentTime = Math.floor(Date.now() / 1000);
-    const hasExpired = existingToken.expires < currentTime;
+  const existingUser = await getUserByEmail(existingToken.email);
 
-    if (hasExpired) {
-        return { error: "Token has expired!" }
-    }
+  if (!existingUser) {
+    return { error: "Email does not exist!" };
+  }
+  await updateOneUserField(existingUser.pk, "password", hashedPassword);
+  await client.send(
+    new DeleteCommand({
+      TableName: "next-auth",
+      Key: {
+        pk: existingToken.pk,
+        sk: existingToken.sk,
+      },
+      ConditionExpression: "attribute_exists(pk)",
+    }),
+  );
 
-    const existingUser = await getUserByEmail(existingToken.email);
-
-    if (!existingUser) {
-        return { error: "Email does not exist!" }
-    }
-    await updateOneUserField(existingUser.pk, 'password', hashedPassword);
-    await client.send(new DeleteCommand({
-        TableName: 'next-auth',
-        Key: {
-            pk: existingToken.pk,
-            sk: existingToken.sk,
-        },
-        ConditionExpression: "attribute_exists(pk)",
-    }))
-
-    return { success: "Password updated!" };
-}
+  return { success: "Password updated!" };
+};

@@ -10,7 +10,13 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Toast } from "@/lib/utils/toast";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useAssignments } from "@/components/providers/assignments-provider";
 export default function AssignmentsPage() {
   const [assignments, setAssignments] = useState([]);
@@ -27,14 +33,15 @@ export default function AssignmentsPage() {
     sessionStorage.setItem("run_id", run_id);
     sessionStorage.setItem("personalization_id", personalization_id);
     sessionStorage.setItem("fromAllAssignments", "true"); // Set the flag
-    router.push('/assignment-personalization/result');
-  }
+    router.push("/assignment-personalization/result");
+  };
   const fetchAssignments = async (newLastKey = null, isNextPage = false) => {
     if (!user?.id || loading) return;
 
     setLoading(true);
 
-    const { assignments: newAssignments, lastEvaluatedKey } = await getAssignments(user.id, newLastKey, pageSize);
+    const { assignments: newAssignments, lastEvaluatedKey } =
+      await getAssignments(user.id, newLastKey, pageSize);
 
     if (newAssignments.length === 0) {
       Toast.error("There is no more assignments!");
@@ -86,7 +93,9 @@ export default function AssignmentsPage() {
           <h1 className="mb-5 p-1 text-3xl font-bold bg-gradient-to-r from-violet-600 to-violet-400 bg-clip-text text-transparent md:text-4xl">
             [{count}] Personalized Assignments
           </h1>
-          <p className="text-muted-foreground">View and manage your AI-personalized assignments</p>
+          <p className="text-muted-foreground">
+            View and manage your AI-personalized assignments
+          </p>
         </div>
         <div className="space-y-6">
           {assignments && assignments.length > 0 ? (
@@ -94,17 +103,32 @@ export default function AssignmentsPage() {
               const uniqueKey = `RUN#${assignment.runId}#PERSONALIZATION#${assignment.personalizationId}`;
 
               return (
-                <Card key={uniqueKey} className="hover:shadow-lg transition-all border-violet-100 dark:border-violet-800">
+                <Card
+                  key={uniqueKey}
+                  className="hover:shadow-lg transition-all border-violet-100 dark:border-violet-800"
+                >
                   <div className="p-8 bg-gradient-to-br from-violet-50 to-white dark:from-violet-950/20 dark:to-background relative">
                     <div className="flex justify-between items-start">
                       <div>
-                        <h2 className="text-xl font-semibold mb-1">{assignment.title}</h2>
+                        <h2 className="text-xl font-semibold mb-1">
+                          {assignment.title}
+                        </h2>
                         <p className="text-sm text-muted-foreground mb-4">
-                          Personalized {formatDistanceToNow(new Date(assignment.createdAt))} ago
+                          Personalized{" "}
+                          {formatDistanceToNow(new Date(assignment.createdAt))}{" "}
+                          ago
                         </p>
                       </div>
                       <div className="flex items-center gap-2">
-                        <button onClick={() => handleViewResult(assignment.runId, assignment.personalizationId)} className="text-violet-600 hover:text-violet-700 hover:bg-violet-50 dark:hover:bg-violet-900/20 p-2 rounded-full transition">
+                        <button
+                          onClick={() =>
+                            handleViewResult(
+                              assignment.runId,
+                              assignment.personalizationId,
+                            )
+                          }
+                          className="text-violet-600 hover:text-violet-700 hover:bg-violet-50 dark:hover:bg-violet-900/20 p-2 rounded-full transition"
+                        >
                           <Eye className="h-5 w-5" />
                         </button>
                       </div>
@@ -117,26 +141,36 @@ export default function AssignmentsPage() {
               );
             })
           ) : (
-            (
-              <Card className="p-12 text-center">
-                <h3 className="text-xl font-semibold mb-2">No assignments yet</h3>
-                <p className="text-muted-foreground mb-4">Your personalized assignments will appear here</p>
-                <Link href="/assignment-personalization">
-                  <Button size="lg" className="rounded-full w-full sm:w-auto bg-violet-600 hover:bg-violet-700 text-gray-1000 dark:text-white">
-                    Create Your First Assignment
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </Link>
-              </Card>
-            )
+            <Card className="p-12 text-center">
+              <h3 className="text-xl font-semibold mb-2">No assignments yet</h3>
+              <p className="text-muted-foreground mb-4">
+                Your personalized assignments will appear here
+              </p>
+              <Link href="/assignment-personalization">
+                <Button
+                  size="lg"
+                  className="rounded-full w-full sm:w-auto bg-violet-600 hover:bg-violet-700 text-gray-1000 dark:text-white"
+                >
+                  Create Your First Assignment
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+            </Card>
           )}
         </div>
         <div className="flex justify-between items-center mt-6">
-          <Button onClick={handlePrevious} disabled={pageHistory.length === 0} className="bg-gray-500 hover:bg-gray-600">
+          <Button
+            onClick={handlePrevious}
+            disabled={pageHistory.length === 0}
+            className="bg-gray-500 hover:bg-gray-600"
+          >
             <ChevronLeft className="h-5 w-5" /> Previous
           </Button>
           <div className="flex items-center gap-4">
-            <Select onValueChange={handlePageSizeChange} value={pageSize.toString()}>
+            <Select
+              onValueChange={handlePageSizeChange}
+              value={pageSize.toString()}
+            >
               <SelectTrigger className="w-24 bg-violet-600 hover:bg-violet-700">
                 <SelectValue placeholder="Page Size" />
               </SelectTrigger>
@@ -147,7 +181,11 @@ export default function AssignmentsPage() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={handleNext} disabled={currentLastKey === null} className="bg-violet-600 hover:bg-violet-700">
+          <Button
+            onClick={handleNext}
+            disabled={currentLastKey === null}
+            className="bg-violet-600 hover:bg-violet-700"
+          >
             Next <ChevronRight className="h-5 w-5" />
           </Button>
         </div>

@@ -29,7 +29,7 @@ export default function ProfilePage() {
   const [profileFormData, setProfileFormData] = useState({
     name: user?.name || undefined,
     email: user?.email || undefined,
-    institution: user?.institution || ''
+    institution: user?.institution || "",
   });
   const [settingsFormData, setSettingsFormData] = useState({
     password: undefined,
@@ -37,10 +37,9 @@ export default function ProfilePage() {
     isTwoFactorEnabled: user?.isTwoFactorEnabled,
   });
 
-  const [image, setImage] = useState(user?.image || '/default-avatar.jpg');
+  const [image, setImage] = useState(user?.image || "/default-avatar.jpg");
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
-
 
   const cropImage = async (file: File): Promise<Blob> => {
     return new Promise((resolve, reject) => {
@@ -72,7 +71,7 @@ export default function ProfilePage() {
               0,
               0,
               250,
-              250
+              250,
             );
           }
 
@@ -90,16 +89,20 @@ export default function ProfilePage() {
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-
     const file = e.target.files?.[0];
     if (!file) {
       return;
     }
 
     // Validate the selected file
-    const validImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg'];
+    const validImageTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/gif",
+      "image/jpg",
+    ];
     if (!validImageTypes.includes(file.type)) {
-      Toast.error('Only images are allowed!')
+      Toast.error("Only images are allowed!");
       return;
     }
 
@@ -115,8 +118,8 @@ export default function ProfilePage() {
           if (data.fields && data.url && data.s3Key && data.imageUrl) {
             update({
               user: {
-                image: data.imageUrl
-              }
+                image: data.imageUrl,
+              },
             });
 
             // Upload the image to S3
@@ -124,28 +127,26 @@ export default function ProfilePage() {
             Object.entries(data.fields).forEach(([key, value]) => {
               formData.append(key, value as string);
             });
-            formData.append('file', croppedImageBlob);
+            formData.append("file", croppedImageBlob);
 
             const uploadResponse = await fetch(data.url, {
-              method: 'POST',
-              body: formData
+              method: "POST",
+              body: formData,
             });
 
             if (!uploadResponse.ok) {
-              Toast.error('Failed to upload image!2');
+              Toast.error("Failed to upload image!2");
               return;
             }
             setImage(data.imageUrl);
             update({
-              image: data.imageUrl
+              image: data.imageUrl,
             });
-            Toast.success('Image uploaded successfully');
+            Toast.success("Image uploaded successfully");
           }
-
         })
-        .catch(() => Toast.error('Failed to upload image!2'))
-    })
-
+        .catch(() => Toast.error("Failed to upload image!2"));
+    });
   };
 
   const handleProfileChange = async (e) => {
@@ -168,17 +169,17 @@ export default function ProfilePage() {
       profile(profileFormData)
         .then((data) => {
           if (data.error) {
-            setError(data.error)
+            setError(data.error);
           }
 
           if (data.success) {
             update();
-            setSuccess(data.success)
+            setSuccess(data.success);
           }
         })
-        .catch(() => setError("Something went wrong!"))
-    })
-  }
+        .catch(() => setError("Something went wrong!"));
+    });
+  };
 
   const submitSettings = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -190,17 +191,17 @@ export default function ProfilePage() {
       settings(settingsFormData)
         .then((data) => {
           if (data.error) {
-            setError(data.error)
+            setError(data.error);
           }
 
           if (data.success) {
             update();
-            setSuccess(data.success)
+            setSuccess(data.success);
           }
         })
-        .catch(() => setError("Something went wrong!"))
-    })
-  }
+        .catch(() => setError("Something went wrong!"));
+    });
+  };
 
   return (
     <div className="p-6">
@@ -210,12 +211,19 @@ export default function ProfilePage() {
           <div className="absolute bottom-[50px]	 left-8 flex items-end space-x-4">
             <div className="relative  ">
               <div className=" inset-0 rounded-full transition-opacity duration-300 before:absolute before:inset-0 before:rounded-full before:blur-lg before:bg-purple-500/50">
-
                 <Avatar className="w-24 h-24">
-                  <AvatarImage src={image} alt="Profile Image" width={50} height={50} />
+                  <AvatarImage
+                    src={image}
+                    alt="Profile Image"
+                    width={50}
+                    height={50}
+                  />
                   <AvatarFallback>🤖</AvatarFallback>
                 </Avatar>
-                <label htmlFor="avatar-upload" className="absolute -right-2 -bottom-2">
+                <label
+                  htmlFor="avatar-upload"
+                  className="absolute -right-2 -bottom-2"
+                >
                   <div className="rounded-full bg-primary p-2 cursor-pointer hover:bg-primary/90">
                     <Upload className="w-4 h-4 text-primary-foreground" />
                   </div>
@@ -229,12 +237,15 @@ export default function ProfilePage() {
                   disabled={isPending}
                 />
               </div>
-
             </div>
 
             <div className="mb-2">
-              <h1 className="text-2xl font-bold text-gray dark:text-white">{user?.name}</h1>
-              <p className="text-purple-800 dark:text-purple-200">Credits left: {credits}</p>
+              <h1 className="text-2xl font-bold text-gray dark:text-white">
+                {user?.name}
+              </h1>
+              <p className="text-purple-800 dark:text-purple-200">
+                Credits left: {credits}
+              </p>
             </div>
           </div>
         </div>
@@ -273,21 +284,44 @@ export default function ProfilePage() {
               <div className="grid gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="name">Name</Label>
-                  <Input disabled={isPending} onChange={handleProfileChange} id="name" name="name" value={profileFormData.name} />
+                  <Input
+                    disabled={isPending}
+                    onChange={handleProfileChange}
+                    id="name"
+                    name="name"
+                    value={profileFormData.name}
+                  />
                 </div>
                 {user?.isOAuth == false && (
                   <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
-                    <Input disabled={isPending} onChange={handleProfileChange} id="email" name="email" type="email" value={profileFormData.email} />
+                    <Input
+                      disabled={isPending}
+                      onChange={handleProfileChange}
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={profileFormData.email}
+                    />
                   </div>
                 )}
                 <div className="space-y-2">
                   <Label htmlFor="institution">Institution</Label>
-                  <Input disabled={isPending} onChange={handleProfileChange} id="institution" name="institution" value={profileFormData.institution} />
+                  <Input
+                    disabled={isPending}
+                    onChange={handleProfileChange}
+                    id="institution"
+                    name="institution"
+                    value={profileFormData.institution}
+                  />
                 </div>
                 <FormError message={error} />
                 <FormSuccess message={success} />
-                <Button disabled={isPending} type="submit" className="w-fit bg-purple-600 hover:bg-purple-700 text-white">
+                <Button
+                  disabled={isPending}
+                  type="submit"
+                  className="w-fit bg-purple-600 hover:bg-purple-700 text-white"
+                >
                   Save Changes
                 </Button>
               </div>
@@ -309,21 +343,41 @@ export default function ProfilePage() {
                       checked={settingsFormData.isTwoFactorEnabled}
                       disabled={isPending}
                       name="isTwoFactorEnabled"
-                      onCheckedChange={() => setSettingsFormData((prev) => ({ ...prev, 'isTwoFactorEnabled': !settingsFormData.isTwoFactorEnabled }))
+                      onCheckedChange={() =>
+                        setSettingsFormData((prev) => ({
+                          ...prev,
+                          isTwoFactorEnabled:
+                            !settingsFormData.isTwoFactorEnabled,
+                        }))
                       }
                     />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="password">Current Password</Label>
-                    <Input disabled={isPending} id="password" onChange={handleSettingsChange} name="password" type="password" />
+                    <Input
+                      disabled={isPending}
+                      id="password"
+                      onChange={handleSettingsChange}
+                      name="password"
+                      type="password"
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="newPassword">New Password</Label>
-                    <Input disabled={isPending} id="newPassword" onChange={handleSettingsChange} name="newPassword" type="password" />
+                    <Input
+                      disabled={isPending}
+                      id="newPassword"
+                      onChange={handleSettingsChange}
+                      name="newPassword"
+                      type="password"
+                    />
                   </div>
                   <FormError message={error} />
                   <FormSuccess message={success} />
-                  <Button disabled={isPending} className="w-fit bg-purple-600 hover:bg-purple-700 text-white">
+                  <Button
+                    disabled={isPending}
+                    className="w-fit bg-purple-600 hover:bg-purple-700 text-white"
+                  >
                     Save Changes
                   </Button>
                 </div>

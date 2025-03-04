@@ -25,8 +25,8 @@ export function ProgressSteps({ steps, currentStep }: ProgressStepsProps) {
                   isCompleted
                     ? "bg-primary border-primary text-primary-foreground"
                     : isCurrent
-                    ? "border-primary bg-background text-primary"
-                    : "border-muted bg-background text-muted-foreground"
+                      ? "border-primary bg-background text-primary"
+                      : "border-muted bg-background text-muted-foreground"
                 }`}
               >
                 {isCompleted ? (
@@ -37,7 +37,9 @@ export function ProgressSteps({ steps, currentStep }: ProgressStepsProps) {
               </div>
               <span
                 className={`mt-2 text-sm ${
-                  isCurrent ? "text-primary font-medium" : "text-muted-foreground"
+                  isCurrent
+                    ? "text-primary font-medium"
+                    : "text-muted-foreground"
                 }`}
               >
                 {step}

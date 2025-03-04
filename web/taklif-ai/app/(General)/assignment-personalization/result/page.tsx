@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { Toast } from "@/lib/utils/toast";
 import { motion } from "framer-motion";
 import { Brain, Sparkles, Stars, Wand2 } from "lucide-react";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 import { ArrowRight, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { fetchAllAssignmentVersions } from "@/actions/fetch-all-assignment-versions";
@@ -22,7 +22,8 @@ export default function AssignmentResultPage() {
   const router = useRouter();
   const { refreshCount } = useAssignments();
   const [assignmentsStack, setAssignmentsStack] = useState<Assignment[]>([]);
-  const [currentAssignmentIndex, setCurrentAssignmentIndex] = useState<number>(0);
+  const [currentAssignmentIndex, setCurrentAssignmentIndex] =
+    useState<number>(0);
   const [isPending, setIsPending] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -35,7 +36,7 @@ export default function AssignmentResultPage() {
 
         if (!run_id || !personalization_id) {
           Toast.error("Missing required data. Redirecting...");
-          router.push('/assignment-personalization');
+          router.push("/assignment-personalization");
           return;
         }
 
@@ -49,8 +50,10 @@ export default function AssignmentResultPage() {
           localStorage.removeItem("assignment_feedback");
 
           // Sort assignments by `created_at` in descending order (most recent first)
-          const sortedAssignments = result.data.sort((a, b) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+          const sortedAssignments = result.data.sort(
+            (a, b) =>
+              new Date(b.created_at).getTime() -
+              new Date(a.created_at).getTime(),
           );
           setAssignmentsStack(sortedAssignments);
 
@@ -58,12 +61,14 @@ export default function AssignmentResultPage() {
           if (fromAllAssignments === "true") {
             // Find the index of the assignment with the matching personalization_id
             assignmentIndex = sortedAssignments.findIndex(
-              (assignment) => assignment.personalization_id === personalization_id && assignment.item_type === 'Personalization'
+              (assignment) =>
+                assignment.personalization_id === personalization_id &&
+                assignment.item_type === "Personalization",
             );
             if (assignmentIndex === -1) {
               // If the assignment is not found, show an error and redirect
               Toast.error("Assignment not found. Redirecting...");
-              router.push('/assignment-personalization/my-assignments');
+              router.push("/assignment-personalization/my-assignments");
               return;
             }
             sessionStorage.removeItem("fromAllAssignments");
@@ -76,8 +81,10 @@ export default function AssignmentResultPage() {
           if (storedFeedback) {
             setAssignmentsStack((prev) =>
               prev.map((assignment, index) =>
-                index === assignmentIndex ? { ...assignment, feedback: JSON.parse(storedFeedback) } : assignment
-              )
+                index === assignmentIndex
+                  ? { ...assignment, feedback: JSON.parse(storedFeedback) }
+                  : assignment,
+              ),
             );
           }
         }
@@ -102,7 +109,6 @@ export default function AssignmentResultPage() {
   };
 
   const handleNavigateRight = () => {
-
     if (currentAssignmentIndex > 0) {
       // Clear localStorage feedback when navigating to a different assignment
       localStorage.removeItem("assignment_feedback");
@@ -111,39 +117,41 @@ export default function AssignmentResultPage() {
     }
   };
 
-  const handleAction = async (action: 'like' | 'dislike' | 'copied' | 'repersonalized' | 'simplify') => {
+  const handleAction = async (
+    action: "like" | "dislike" | "copied" | "repersonalized" | "simplify",
+  ) => {
     const currentAssignment = assignmentsStack[currentAssignmentIndex];
     if (!currentAssignment) return;
 
     const timestamp = new Date().toISOString();
-    const updatedFeedback = { ...currentAssignment.feedback }
+    const updatedFeedback = { ...currentAssignment.feedback };
 
     switch (action) {
-      case 'like':
+      case "like":
         updatedFeedback.like = { value: true, timestamp };
-        updatedFeedback.dislike = { value: false, timestamp }
+        updatedFeedback.dislike = { value: false, timestamp };
         Toast.success("Assignment liked!");
         break;
-      case 'dislike':
-        updatedFeedback.dislike = { value: true, timestamp }
+      case "dislike":
+        updatedFeedback.dislike = { value: true, timestamp };
         updatedFeedback.like = { value: false, timestamp };
         Toast.success("Feedback recorded!");
         break;
       case "copied":
         updatedFeedback.copied = { value: true, timestamp };
         navigator.clipboard.writeText(currentAssignment.model_output.content);
-        Toast.success("Assignment copied to clipboard!",);
+        Toast.success("Assignment copied to clipboard!");
         break;
-      case 'repersonalized':
-        setIsPending(true)
+      case "repersonalized":
+        setIsPending(true);
         Toast.success("Re-personalizing assignment...");
         // redirect user to loadings page
-        router.push('/assignment-personalization/loading');
+        router.push("/assignment-personalization/loading");
         try {
           const run_id = sessionStorage.getItem("run_id");
           if (!run_id) {
             Toast.error("Missing required data. Redirecting...");
-            router.push('/assignment-personalization/result');
+            router.push("/assignment-personalization/result");
             return;
           }
           const personalization_id = uuidv4();
@@ -153,15 +161,14 @@ export default function AssignmentResultPage() {
             is_pdf: false,
             run_id: run_id,
             personalization_id: personalization_id,
-          }
+          };
           // send the assignment to the backend
-          const res = await fetch('/api/assignment-personalization', {
-            method: 'POST',
+          const res = await fetch("/api/assignment-personalization", {
+            method: "POST",
             headers: {
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
             },
-            body: JSON.stringify(dataToBackend)
-
+            body: JSON.stringify(dataToBackend),
           });
 
           const result = await res.json();
@@ -169,36 +176,37 @@ export default function AssignmentResultPage() {
           if (!res.ok || !result || result.error) {
             setIsPending(false);
             Toast.error(result.error);
-            router.push('/assignment-personalization/result');
+            router.push("/assignment-personalization/result");
             return;
           }
 
           sessionStorage.setItem("run_id", dataToBackend.run_id);
-          sessionStorage.setItem("personalization_id", dataToBackend.personalization_id);
+          sessionStorage.setItem(
+            "personalization_id",
+            dataToBackend.personalization_id,
+          );
           setIsPending(false);
           Toast.success("Assignment re-personalized successfully!");
-          router.push('/assignment-personalization/result');
-
+          router.push("/assignment-personalization/result");
         } catch (error) {
           setIsPending(false);
           console.log(error);
           Toast.error("Failed to create assignment. Please try again.2");
-          router.push('/assignment-personalization/result');
+          router.push("/assignment-personalization/result");
         }
         break;
-      case 'simplify':
+      case "simplify":
         setIsPending(true);
         Toast.success("Simplifying assignment...");
 
-
         // redirect user to loadings page
-        router.push('/assignment-personalization/loading');
+        router.push("/assignment-personalization/loading");
 
         const run_id = sessionStorage.getItem("run_id");
         const personalization_id = sessionStorage.getItem("personalization_id");
         if (!run_id || !personalization_id) {
           Toast.error("Missing required data. Redirecting...");
-          router.push('/assignment-personalization/result');
+          router.push("/assignment-personalization/result");
           return;
         }
         const simplification_id = uuidv4();
@@ -209,12 +217,12 @@ export default function AssignmentResultPage() {
           simplification_id: simplification_id,
           interest: currentAssignment.user_input.interest,
           personalized_assignment: currentAssignment?.model_output.content,
-        }
+        };
         try {
-          const res = await fetch('/api/assignment-simplification', {
-            method: 'POST',
+          const res = await fetch("/api/assignment-simplification", {
+            method: "POST",
             headers: {
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
             },
             body: JSON.stringify(dataToBackend),
           });
@@ -224,21 +232,24 @@ export default function AssignmentResultPage() {
           // check the incoming response
           if (!res.ok || !result || result.error) {
             Toast.error("Failed to simplify assignment. Please try again.1");
-            router.push('/assignment-personalization/result');
+            router.push("/assignment-personalization/result");
             return;
           }
 
           sessionStorage.setItem("run_id", dataToBackend.run_id);
-          sessionStorage.setItem("personalization_id", dataToBackend.personalization_id);
+          sessionStorage.setItem(
+            "personalization_id",
+            dataToBackend.personalization_id,
+          );
           // sessionStorage.setItem("simplification_id", dataToBackend.simplification_id);
 
           Toast.success("Assignment simplified successfully!");
-          router.push('/assignment-personalization/result');
+          router.push("/assignment-personalization/result");
           setIsPending(false);
           /* eslint-disable */
         } catch (error) {
           Toast.error("Failed to simplified assignment. Please try again");
-          router.push('/assignment-personalization/result/');
+          router.push("/assignment-personalization/result/");
         }
         /* eslint-enable */
 
@@ -246,16 +257,21 @@ export default function AssignmentResultPage() {
     }
     setAssignmentsStack((prev) =>
       prev.map((assignment, index) =>
-        index === currentAssignmentIndex ? { ...assignment, feedback: updatedFeedback } : assignment
-      )
+        index === currentAssignmentIndex
+          ? { ...assignment, feedback: updatedFeedback }
+          : assignment,
+      ),
     );
     // setDbAssignment((prev) => (prev ? { ...prev, feedback: updatedFeedback } : null))
-    localStorage.setItem("assignment_feedback", JSON.stringify(updatedFeedback));
+    localStorage.setItem(
+      "assignment_feedback",
+      JSON.stringify(updatedFeedback),
+    );
 
     try {
-      const res = await fetch('/api/save-feedback', {
-        method: 'POST',
-        headers: { "Content-Type": 'application/json' },
+      const res = await fetch("/api/save-feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           PK: currentAssignment.PK,
           SK: currentAssignment.SK,
@@ -269,7 +285,6 @@ export default function AssignmentResultPage() {
         // Clear localStorage feedback after successfully saving to the database
         localStorage.removeItem("assignment_feedback");
       }
-
     } catch (error) {
       console.log(error);
       Toast.error("Failed to save feedback.");
@@ -334,8 +349,10 @@ export default function AssignmentResultPage() {
                         size="sm"
                         className="text-violet-600 hover:text-violet-700 hover:bg-violet-50 dark:hover:bg-violet-900/20"
                       >
-
-                        <ArrowLeft className="cursor-pointer" onClick={handleNavigateLeft} />
+                        <ArrowLeft
+                          className="cursor-pointer"
+                          onClick={handleNavigateLeft}
+                        />
                       </Button>
                     )}
                   </motion.div>
@@ -347,17 +364,17 @@ export default function AssignmentResultPage() {
                     transition={{ duration: 0.5, delay: 0.5 }}
                   >
                     {currentAssignmentIndex > 0 && (
-
                       <Button
                         variant="outline"
                         size="sm"
                         className="text-violet-600 hover:text-violet-700 hover:bg-violet-50 dark:hover:bg-violet-900/20"
                       >
-
-                        <ArrowRight className="cursor-pointer" onClick={handleNavigateRight} />
+                        <ArrowRight
+                          className="cursor-pointer"
+                          onClick={handleNavigateRight}
+                        />
                       </Button>
                     )}
-
                   </motion.div>
                 </motion.div>
                 <AssignmentActions
@@ -370,10 +387,8 @@ export default function AssignmentResultPage() {
           </motion.div>
         </div>
         <div>
-
           <div className="m-5 flex justify-between">
-
-            <Link href="/" >
+            <Link href="/">
               <Button
                 variant="ghost"
                 className="rounded-full w-full outline outline-1 hover:bg-purple-600 hover:text-white transition-colors hover:outline-none"
@@ -381,7 +396,7 @@ export default function AssignmentResultPage() {
                 Home Page
               </Button>
             </Link>
-            <Link href="/assignment-personalization/my-assignments"  >
+            <Link href="/assignment-personalization/my-assignments">
               <Button
                 variant="ghost"
                 className="rounded-full w-full outline outline-1 hover:bg-purple-600 hover:text-white transition-colors hover:outline-none"
@@ -390,7 +405,6 @@ export default function AssignmentResultPage() {
               </Button>
             </Link>
           </div>
-
         </div>
       </div>
     </div>

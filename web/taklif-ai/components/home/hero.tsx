@@ -30,7 +30,9 @@ export function HomeHero() {
               {/* AI-Powered Learning Badge */}
               <div className="inline-flex items-center px-4 py-2 rounded-full bg-purple-100 dark:bg-purple-900/20 backdrop-blur-sm border border-purple-200 dark:border-purple-500/20">
                 <Sparkles className="h-4 w-4 text-sm text-purple-700 dark:text-purple-300" />
-                <span className="text-sm text-purple-700 dark:text-purple-300">&nbsp; AI-Powered Learning</span>
+                <span className="text-sm text-purple-700 dark:text-purple-300">
+                  &nbsp; AI-Powered Learning
+                </span>
               </div>
 
               {/* Main Logo */}
@@ -41,27 +43,43 @@ export function HomeHero() {
               {/* Hero Title */}
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
                 <span className="text-purple-500">Transform Learning</span>{" "}
-                <span className="text-gray-900 dark:text-white">with Personalized</span>
+                <span className="text-gray-900 dark:text-white">
+                  with Personalized
+                </span>
                 <br />
-                <span className="text-gray-900 dark:text-white"> Assignments</span>
+                <span className="text-gray-900 dark:text-white">
+                  {" "}
+                  Assignments
+                </span>
               </h1>
 
               {/* Hero Description */}
               <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 max-w-xl mx-auto lg:mx-0">
                 Upload any educational content and let our AI generate tailored
-                assignments that match your interests, difficulty level, and learning style.
+                assignments that match your interests, difficulty level, and
+                learning style.
               </p>
 
               {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mt-6 lg:mt-8">
-                <Link href="/assignment-personalization" className="w-full sm:w-auto">
-                  <Button size="lg" className="rounded-full w-full sm:w-auto bg-violet-600 hover:bg-violet-700 text-gray-1000 dark:text-white">
+                <Link
+                  href="/assignment-personalization"
+                  className="w-full sm:w-auto"
+                >
+                  <Button
+                    size="lg"
+                    className="rounded-full w-full sm:w-auto bg-violet-600 hover:bg-violet-700 text-gray-1000 dark:text-white"
+                  >
                     Create Your First Assignment
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
-                <Link href="#magic"  className="w-full sm:w-auto">
-                  <Button size="lg" variant="outline" className="rounded-full w-full sm:w-auto text-gray-900 dark:text-white">
+                <Link href="#magic" className="w-full sm:w-auto">
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="rounded-full w-full sm:w-auto text-gray-900 dark:text-white"
+                  >
                     See How It Works
                   </Button>
                 </Link>
@@ -75,12 +93,12 @@ export function HomeHero() {
                 initial={{ y: 0 }}
                 animate={{
                   y: [0, -20, 0],
-                  rotate: [0, 2, -2, 0]
+                  rotate: [0, 2, -2, 0],
                 }}
                 transition={{
                   duration: 6,
                   repeat: Infinity,
-                  ease: "easeInOut"
+                  ease: "easeInOut",
                 }}
                 className="relative"
               >
@@ -93,7 +111,7 @@ export function HomeHero() {
                       duration: 4,
                       repeat: Infinity,
                       repeatType: "reverse",
-                      ease: "easeInOut"
+                      ease: "easeInOut",
                     }}
                   >
                     <Image

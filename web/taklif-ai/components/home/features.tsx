@@ -1,13 +1,14 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { Brain, BookOpen, Sparkles } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { motion } from "framer-motion";
+import { Brain, BookOpen, Sparkles } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const features = [
   {
     title: "Smart Analysis",
-    description: "AI-powered content understanding that adapts to your learning style.",
+    description:
+      "AI-powered content understanding that adapts to your learning style.",
     icon: Brain,
   },
   {
@@ -17,10 +18,11 @@ const features = [
   },
   {
     title: "Comprehensive Coverage",
-    description: "Generate diverse questions across multiple topics and difficulty levels.",
+    description:
+      "Generate diverse questions across multiple topics and difficulty levels.",
     icon: BookOpen,
   },
-]
+];
 
 export function HomeFeatures() {
   return (
@@ -36,7 +38,8 @@ export function HomeFeatures() {
             The Three Pillars of Taklif.ai
           </h2>
           <p className="mx-auto max-w-2xl text-gray-600 dark:text-gray-300 text-base md:text-lg">
-            Discover how our AI-powered platform revolutionizes the way assignments are created and personalized.
+            Discover how our AI-powered platform revolutionizes the way
+            assignments are created and personalized.
           </p>
         </motion.div>
 
@@ -54,10 +57,14 @@ export function HomeFeatures() {
                   <div className="flex justify-center md:justify-start">
                     <feature.icon className="mb-4 h-10 w-10 md:h-12 md:w-12 text-purple-400" />
                   </div>
-                  <CardTitle className="text-xl md:text-2xl text-gray-800 dark:text-white">{feature.title}</CardTitle>
+                  <CardTitle className="text-xl md:text-2xl text-gray-800 dark:text-white">
+                    {feature.title}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="text-center md:text-left">
-                  <p className="text-gray-600 dark:text-gray-300 text-base md:text-lg">{feature.description}</p>
+                  <p className="text-gray-600 dark:text-gray-300 text-base md:text-lg">
+                    {feature.description}
+                  </p>
                 </CardContent>
               </Card>
             </motion.div>
@@ -65,5 +72,5 @@ export function HomeFeatures() {
         </div>
       </div>
     </section>
-  )
+  );
 }

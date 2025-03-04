@@ -1,7 +1,16 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Book, Sparkles, BookOpen, Cpu, Zap, Network, Workflow, Binary } from "lucide-react";
+import {
+  Book,
+  Sparkles,
+  BookOpen,
+  Cpu,
+  Zap,
+  Network,
+  Workflow,
+  Binary,
+} from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -33,7 +42,8 @@ export function HomeMagic() {
   const assignments = [
     {
       title: "Write an essay on climate change",
-      details: "Discuss the causes, effects, and potential solutions to climate change.",
+      details:
+        "Discuss the causes, effects, and potential solutions to climate change.",
       icon: Workflow,
       keyTopics: [
         "Greenhouse gas emissions",
@@ -53,7 +63,8 @@ export function HomeMagic() {
     },
     {
       title: "Create a presentation on renewable energy",
-      details: "Highlight different types of renewable energy sources and their benefits.",
+      details:
+        "Highlight different types of renewable energy sources and their benefits.",
       icon: Zap,
       keyTopics: [
         "Solar energy",
@@ -73,7 +84,8 @@ export function HomeMagic() {
     },
     {
       title: "Develop a project on sustainable living",
-      details: "Propose a plan for a sustainable living community, including energy, water, and waste management.",
+      details:
+        "Propose a plan for a sustainable living community, including energy, water, and waste management.",
       icon: Network,
       keyTopics: [
         "Zero-waste lifestyle",
@@ -93,7 +105,9 @@ export function HomeMagic() {
     },
   ];
 
-  const [selectedAssignment, setSelectedAssignment] = useState(assignments[0].title);
+  const [selectedAssignment, setSelectedAssignment] = useState(
+    assignments[0].title,
+  );
 
   const interests = [
     { name: "Environmental Science", icon: Workflow },
@@ -180,7 +194,8 @@ export function HomeMagic() {
             How It Works
           </h2>
           <p className="text-sm sm:text-lg text-muted-foreground max-w-2xl mx-auto">
-            Three simple steps to transform your learning experience with AI-powered assignments.
+            Three simple steps to transform your learning experience with
+            AI-powered assignments.
           </p>
         </motion.div>
       </div>
@@ -209,17 +224,18 @@ export function HomeMagic() {
               {[1, 2, 3].map((step) => (
                 <div
                   key={step}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${step === currentStep
-                    ? "bg-white w-4"
-                    : "bg-white/50"
-                    }`}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    step === currentStep ? "bg-white w-4" : "bg-white/50"
+                  }`}
                 />
               ))}
             </div>
             <Button
               onClick={handleNext}
-              disabled={(currentStep === 1 && !selectedAssignment) ||
-                (currentStep === 2 && !selectedInterest)}
+              disabled={
+                (currentStep === 1 && !selectedAssignment) ||
+                (currentStep === 2 && !selectedInterest)
+              }
               className="bg-white text-purple-600 hover:bg-white/90 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto mt-2"
             >
               {currentStep === 3 ? "Start Over" : "Next"}
@@ -237,8 +253,9 @@ export function HomeMagic() {
                   return (
                     <Card
                       key={index}
-                      className={`p-4 hover:bg-accent cursor-pointer transition-all hover:scale-[1.02] flex items-start space-x-4 ${isSelected ? "ring-2 ring-purple-500" : ""
-                        }`}
+                      className={`p-4 hover:bg-accent cursor-pointer transition-all hover:scale-[1.02] flex items-start space-x-4 ${
+                        isSelected ? "ring-2 ring-purple-500" : ""
+                      }`}
                       onClick={() => setSelectedAssignment(assignment.title)}
                     >
                       <div className="p-2 rounded-full bg-purple-100 dark:bg-purple-900">
@@ -291,14 +308,19 @@ export function HomeMagic() {
                   return (
                     <Card
                       key={index}
-                      className={`p-4 sm:p-6 hover:bg-accent cursor-pointer transition-all hover:scale-[1.02] flex flex-col items-center justify-center space-y-3 ${selectedInterest === interest.name ? "ring-2 ring-purple-500" : ""
-                        }`}
+                      className={`p-4 sm:p-6 hover:bg-accent cursor-pointer transition-all hover:scale-[1.02] flex flex-col items-center justify-center space-y-3 ${
+                        selectedInterest === interest.name
+                          ? "ring-2 ring-purple-500"
+                          : ""
+                      }`}
                       onClick={() => setSelectedInterest(interest.name)}
                     >
                       <div className="p-3 rounded-full bg-purple-100 dark:bg-purple-900">
                         <Icon className="h-6 w-6 text-purple-500" />
                       </div>
-                      <p className="font-medium text-sm sm:text-base">{interest.name}</p>
+                      <p className="font-medium text-sm sm:text-base">
+                        {interest.name}
+                      </p>
                     </Card>
                   );
                 })}
@@ -313,8 +335,12 @@ export function HomeMagic() {
                       <Binary className="h-5 w-5 text-purple-500" />
                     </div>
                     <div>
-                      <p className="text-lg font-medium">Selected Assignment:</p>
-                      <p className="text-muted-foreground">{selectedAssignment}</p>
+                      <p className="text-lg font-medium">
+                        Selected Assignment:
+                      </p>
+                      <p className="text-muted-foreground">
+                        {selectedAssignment}
+                      </p>
                     </div>
                   </div>
                 </Card>
@@ -328,7 +354,9 @@ export function HomeMagic() {
                     </div>
                   ) : (
                     <div className="prose dark:prose-invert max-w-none">
-                      <pre className="whitespace-pre-wrap font-sans">{displayedResult}</pre>
+                      <pre className="whitespace-pre-wrap font-sans">
+                        {displayedResult}
+                      </pre>
                     </div>
                   )}
                 </Card>
