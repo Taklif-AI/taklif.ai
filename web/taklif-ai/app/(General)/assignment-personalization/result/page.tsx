@@ -150,7 +150,7 @@ export default function AssignmentResultPage() {
           const dataToBackend = {
             student_interest: currentAssignment.user_input.interest,
             general_assignment: currentAssignment.user_input.assignment,
-            is_pdf: currentAssignment.user_input.is_PDF,
+            is_pdf: false,
             run_id: run_id,
             personalization_id: personalization_id,
           }
