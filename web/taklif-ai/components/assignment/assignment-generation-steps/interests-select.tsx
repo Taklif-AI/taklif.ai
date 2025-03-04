@@ -8,8 +8,8 @@ import { Input } from "@/components/ui/input";
 import { validateInterest } from "@/lib/validators/assignment-validator";
 import { Toast } from "@/lib/utils/toast";
 import Image from "next/image";
-import LightSVG  from "../../../public/black.png";
-import DarkSVG  from "../../../public/white.png";
+import LightSVG from "../../../public/black.png";
+import DarkSVG from "../../../public/white.png";
 
 interface InterestsSelectProps {
   onNext: (interest: string) => void;
@@ -30,8 +30,11 @@ const suggestedInterests = [
   "Psychology",
 ];
 
-
-export function InterestsSelect({ onNext, onBack, initialInterests }: InterestsSelectProps) {
+export function InterestsSelect({
+  onNext,
+  onBack,
+  initialInterests,
+}: InterestsSelectProps) {
   const [selectedInterest, setSelectedInterest] = useState<string>("");
   const [customInterest, setCustomInterest] = useState("");
   const [isCustom, setIsCustom] = useState(false);
@@ -46,14 +49,15 @@ export function InterestsSelect({ onNext, onBack, initialInterests }: InterestsS
     }
   }, [initialInterests]);
 
-
   const handleSuggestedInterestClick = (interest: string) => {
     setSelectedInterest(interest);
     setCustomInterest("");
     setIsCustom(false);
   };
 
-  const handleCustomInterestChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCustomInterestChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const value = e.target.value;
     setCustomInterest(value);
     setSelectedInterest(value);
@@ -77,9 +81,7 @@ export function InterestsSelect({ onNext, onBack, initialInterests }: InterestsS
     <div className="relative">
       {/* Background Pattern */}
       <div className="absolute inset-0 w-fit -z-10 overflow-hidden">
-
         <div className="absolute inset-0 bg-gradient-to-br from-violet-50/50 to-white dark:from-violet-950/20 dark:to-background" />
-
       </div>
 
       <Card className="min-h-[580px] p-8 max-w-xl mx-auto backdrop-blur-sm bg-white/80 dark:bg-gray-950/80">
@@ -111,11 +113,16 @@ export function InterestsSelect({ onNext, onBack, initialInterests }: InterestsS
               {suggestedInterests.map((interest) => (
                 <Badge
                   key={interest}
-                  variant={selectedInterest === interest && !isCustom ? "default" : "outline"}
-                  className={`cursor-pointer hover:bg-primary hover:text-primary-foreground ${selectedInterest === interest && !isCustom
-                    ? "bg-violet-600 text-white"
-                    : "hover:bg-violet-500 dark:hover:bg-violet-200"
-                    }`}
+                  variant={
+                    selectedInterest === interest && !isCustom
+                      ? "default"
+                      : "outline"
+                  }
+                  className={`cursor-pointer hover:bg-primary hover:text-primary-foreground ${
+                    selectedInterest === interest && !isCustom
+                      ? "bg-violet-600 text-white"
+                      : "hover:bg-violet-500 dark:hover:bg-violet-200"
+                  }`}
                   onClick={() => handleSuggestedInterestClick(interest)}
                 >
                   {interest}
@@ -130,8 +137,9 @@ export function InterestsSelect({ onNext, onBack, initialInterests }: InterestsS
               value={customInterest}
               onChange={handleCustomInterestChange}
               placeholder="Enter your interest"
-              className={`bg-white/50 dark:bg-gray-950/50 backdrop-blur-sm ${isCustom ? "border-violet-500 ring-1 ring-violet-500" : ""
-                }`}
+              className={`bg-white/50 dark:bg-gray-950/50 backdrop-blur-sm ${
+                isCustom ? "border-violet-500 ring-1 ring-violet-500" : ""
+              }`}
             />
           </div>
 

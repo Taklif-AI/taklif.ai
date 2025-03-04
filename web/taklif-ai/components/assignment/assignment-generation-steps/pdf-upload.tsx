@@ -24,9 +24,13 @@ export function PDFUpload({ onNext, initialFile }: PDFUploadProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (initialFile && typeof initialFile !== 'string' && 'type' in initialFile) {
+    if (
+      initialFile &&
+      typeof initialFile !== "string" &&
+      "type" in initialFile
+    ) {
       setSelectedFile(initialFile);
-    } else if (typeof initialFile === 'string') {
+    } else if (typeof initialFile === "string") {
       setTextContent(initialFile);
     }
   }, [initialFile]);
@@ -65,7 +69,7 @@ export function PDFUpload({ onNext, initialFile }: PDFUploadProps) {
     const file = e.target.files?.[0];
     validateAndSetFile(file || null);
     if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+      fileInputRef.current.value = "";
     }
   };
 
@@ -86,9 +90,7 @@ export function PDFUpload({ onNext, initialFile }: PDFUploadProps) {
 
   return (
     <Card className="p-8 max-w-xl mx-auto inset-0 bg-gradient-to-br from-violet-50/50 to-white dark:from-violet-950/20 dark:to-background">
-
       <div className="text-center mb-6 ">
-
         <h2 className="text-2xl font-bold mb-2">Upload Your Content</h2>
 
         <p className="text-muted-foreground">
@@ -117,8 +119,9 @@ export function PDFUpload({ onNext, initialFile }: PDFUploadProps) {
           )}
 
           <div
-            className={`border-2 border-dashed rounded-lg p-8 text-center ${isDragging ? "border-primary bg-primary/5" : "border-muted"
-              }`}
+            className={`border-2 border-dashed rounded-lg p-8 text-center ${
+              isDragging ? "border-primary bg-primary/5" : "border-muted"
+            }`}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
@@ -134,7 +137,6 @@ export function PDFUpload({ onNext, initialFile }: PDFUploadProps) {
                 onChange={handleFileChange}
               />
               <Button
-
                 variant="secondary"
                 type="button"
                 onClick={handleBrowseClick}
@@ -151,7 +153,9 @@ export function PDFUpload({ onNext, initialFile }: PDFUploadProps) {
             <div className="mt-4 p-4 bg-secondary rounded-lg flex items-center justify-between">
               <div className="flex items-center">
                 <File className="h-5 w-5 mr-2" />
-                <span className="text-sm">{truncateFilename(selectedFile.name, 30)}</span>
+                <span className="text-sm">
+                  {truncateFilename(selectedFile.name, 30)}
+                </span>
               </div>
               <span className="text-sm text-muted-foreground">
                 {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB
@@ -160,7 +164,8 @@ export function PDFUpload({ onNext, initialFile }: PDFUploadProps) {
           )}
 
           <div className="mt-6 flex justify-end">
-            <Button className="rounded-full"
+            <Button
+              className="rounded-full"
               onClick={handleFileSubmit}
               disabled={!selectedFile}
             >
@@ -178,7 +183,8 @@ export function PDFUpload({ onNext, initialFile }: PDFUploadProps) {
               className="min-h-[200px]"
             />
             <div className="mt-6 flex justify-end">
-              <Button className="rounded-full"
+              <Button
+                className="rounded-full"
                 onClick={handleTextSubmit}
                 disabled={!textContent.trim()}
               >

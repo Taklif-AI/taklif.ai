@@ -7,7 +7,6 @@ import Link from "next/link";
 export function HomeCTA() {
   return (
     <section className="relative py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
-
       {/* Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-purple-900/20 to-transparent dark:from-purple-900/20" />
 
@@ -27,19 +26,28 @@ export function HomeCTA() {
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
             <span className="text-purple-500">Ready to Transform</span>
             <br />
-            <span className="text-gray-900 dark:text-white">Your Learning</span>{" "}
+            <span className="text-gray-900 dark:text-white">
+              Your Learning
+            </span>{" "}
             <br />
             <span className="text-gray-900 dark:text-white">Experience?</span>
           </h1>
           {/* Description */}
           <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 max-w-xl mx-auto lg:mx-0">
-            Join thousands of educators and students who are already benefiting from AI-powered personalized assignments.
+            Join thousands of educators and students who are already benefiting
+            from AI-powered personalized assignments.
           </p>
 
           {/* Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mt-6 lg:mt-8">
-            <Link href="/assignment-personalization" className="w-full sm:w-auto">
-              <Button size="lg" className="rounded-full w-full sm:w-auto bg-violet-600 hover:bg-violet-700 text-gray-1000 dark:text-white">
+            <Link
+              href="/assignment-personalization"
+              className="w-full sm:w-auto"
+            >
+              <Button
+                size="lg"
+                className="rounded-full w-full sm:w-auto bg-violet-600 hover:bg-violet-700 text-gray-1000 dark:text-white"
+              >
                 Create Your First Assignment
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>

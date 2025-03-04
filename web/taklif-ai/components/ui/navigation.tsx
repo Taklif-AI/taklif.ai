@@ -1,11 +1,10 @@
-'use client';
+"use client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Logo } from "@/components/ui/logo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LogOut, User, Book, Sparkles } from "lucide-react";
-
 
 import {
   DropdownMenu,
@@ -34,22 +33,18 @@ export function Navigation() {
             <Logo />
           </Link>
 
-          <div className="hidden md:flex md:items-center md:gap-5">
-
-          </div>
+          <div className="hidden md:flex md:items-center md:gap-5"></div>
         </div>
 
         <div className="flex items-center gap-4">
           {session && (
             <Link href="/assignment-personalization">
-
               <Button
                 variant="ghost"
                 className="rounded-full w-[130px] bg-purple-600 transition-colors hover:outline-none"
               >
                 Try it now!
               </Button>
-
             </Link>
           )}
           <ThemeToggle />
@@ -63,35 +58,48 @@ export function Navigation() {
               >
                 Sign in
               </Button>
-
             </Link>
           )}
 
           {session && (
-
             <DropdownMenu modal={false}>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+                <Button
+                  variant="ghost"
+                  className="relative h-9 w-9 rounded-full"
+                >
                   <Avatar className="h-9 w-9">
-                    <AvatarImage src={session?.user?.image || "/default-avatar.jpg"} alt="Profile" />
+                    <AvatarImage
+                      src={session?.user?.image || "/default-avatar.jpg"}
+                      alt="Profile"
+                    />
                     <AvatarFallback>⚙️</AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" sideOffset={5} className="w-56">
                 <DropdownMenuItem asChild>
-                  <Link href="/profile" className="flex items-center cursor-pointer">
+                  <Link
+                    href="/profile"
+                    className="flex items-center cursor-pointer"
+                  >
                     <User className="mr-2 h-4 w-4" />
                     <span>Profile</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/assignment-personalization/my-assignments" className="flex items-center cursor-pointer">
+                  <Link
+                    href="/assignment-personalization/my-assignments"
+                    className="flex items-center cursor-pointer"
+                  >
                     <Book className="mr-2 h-4 w-4" />
                     <span>My Assignments</span>
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => signOut()} className="text-red-600 dark:text-red-400 cursor-pointer">
+                <DropdownMenuItem
+                  onClick={() => signOut()}
+                  className="text-red-600 dark:text-red-400 cursor-pointer"
+                >
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Log out</span>
                 </DropdownMenuItem>

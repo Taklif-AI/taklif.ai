@@ -2,7 +2,7 @@
 
 import { Card } from "@/components/ui/card";
 import { Github, Linkedin, Twitter } from "lucide-react";
-import XIcon from '@mui/icons-material/X';
+import XIcon from "@mui/icons-material/X";
 import Image from "next/image";
 
 interface TeamMember {
@@ -26,8 +26,8 @@ const teamMembers: TeamMember[] = [
     social: {
       github: "https://www.linkedin.com/in/zakikurdya/",
       linkedin: "https://www.linkedin.com/in/zakikurdya/",
-      twitter: "https://x.com/ZakiKurdya"
-    }
+      twitter: "https://x.com/ZakiKurdya",
+    },
   },
   {
     name: "Salem Amassi",
@@ -36,8 +36,8 @@ const teamMembers: TeamMember[] = [
     bio: "15 years experience in curriculum development and educational technology",
     social: {
       linkedin: "https://linkedin.com/in/salem-amassi-b961aa229",
-      github: "https://github.com/salemAmassi"
-    }
+      github: "https://github.com/salemAmassi",
+    },
   },
   {
     name: "Mohammed Basil",
@@ -46,8 +46,8 @@ const teamMembers: TeamMember[] = [
     bio: "Expert in building scalable educational platforms and AI integration",
     social: {
       github: "https://github.com/Mohammedbasi",
-      linkedin: "#"
-    }
+      linkedin: "#",
+    },
   },
   {
     name: "Shady Telbany",
@@ -57,9 +57,9 @@ const teamMembers: TeamMember[] = [
     social: {
       github: "https://github.com/ShDXMT",
       linkedin: "https://www.linkedin.com/in/shadytelbany/",
-      twitter: "https://x.com/shady_telbani"
-    }
-  }
+      twitter: "https://x.com/shady_telbani",
+    },
+  },
 ];
 
 function TeamMemberCard({ member }: { member: TeamMember }) {
@@ -76,26 +76,37 @@ function TeamMemberCard({ member }: { member: TeamMember }) {
           />
         </div>
         <h3 className="text-lg sm:text-xl font-semibold mb-1">{member.name}</h3>
-        <p className="text-sm sm:text-base text-violet-600 dark:text-violet-400 font-medium mb-2">{member.role}</p>
+        <p className="text-sm sm:text-base text-violet-600 dark:text-violet-400 font-medium mb-2">
+          {member.role}
+        </p>
         <div className="flex justify-center space-x-3">
           {member.social.github && (
-            <a href={member.social.github} className="text-muted-foreground hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
+            <a
+              href={member.social.github}
+              className="text-muted-foreground hover:text-violet-600 dark:hover:text-violet-400 transition-colors"
+            >
               <Github className="h-5 w-5" />
             </a>
           )}
           {member.social.linkedin && (
-            <a href={member.social.linkedin} className="text-muted-foreground hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
+            <a
+              href={member.social.linkedin}
+              className="text-muted-foreground hover:text-violet-600 dark:hover:text-violet-400 transition-colors"
+            >
               <Linkedin className="h-5 w-5" />
             </a>
           )}
           {member.social.twitter && (
-            <a href={member.social.twitter} className="text-muted-foreground hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
+            <a
+              href={member.social.twitter}
+              className="text-muted-foreground hover:text-violet-600 dark:hover:text-violet-400 transition-colors"
+            >
               <XIcon fontSize="small" />
             </a>
           )}
         </div>
       </div>
-    </Card>    
+    </Card>
   );
 }
 
@@ -108,7 +119,8 @@ export function HomeTeam() {
             Meet Our Team
           </h2>
           <p className="text-sm sm:text-base lg:text-lg text-muted-foreground max-w-2xl mx-auto">
-            A diverse group of experts committed to revolutionizing education through AI technology
+            A diverse group of experts committed to revolutionizing education
+            through AI technology
           </p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">

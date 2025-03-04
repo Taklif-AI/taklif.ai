@@ -4,12 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Check } from "lucide-react";
 
-function PricingCard({ 
-  title, 
-  price, 
-  description, 
-  features, 
-  highlighted = false 
+function PricingCard({
+  title,
+  price,
+  description,
+  features,
+  highlighted = false,
 }: {
   title: string;
   price: string;
@@ -18,11 +18,13 @@ function PricingCard({
   highlighted?: boolean;
 }) {
   return (
-    <Card className={`p-8 relative overflow-hidden transition-all duration-300 hover:scale-105 ${
-      highlighted 
-        ? "border-2 border-violet-500 shadow-xl bg-gradient-to-br from-violet-50 to-white dark:from-violet-950/20 dark:to-background" 
-        : "hover:border-violet-200"
-    }`}>
+    <Card
+      className={`p-8 relative overflow-hidden transition-all duration-300 hover:scale-105 ${
+        highlighted
+          ? "border-2 border-violet-500 shadow-xl bg-gradient-to-br from-violet-50 to-white dark:from-violet-950/20 dark:to-background"
+          : "hover:border-violet-200"
+      }`}
+    >
       {highlighted && (
         <div className="absolute top-0 right-0 bg-violet-500 text-white px-4 py-1 rounded-bl-lg text-sm font-medium">
           Popular
@@ -33,7 +35,9 @@ function PricingCard({
         <span className="text-4xl font-bold bg-gradient-to-r from-violet-600 to-violet-400 bg-clip-text text-transparent">
           {price}
         </span>
-        {price !== "Custom" && <span className="text-muted-foreground">/month</span>}
+        {price !== "Custom" && (
+          <span className="text-muted-foreground">/month</span>
+        )}
       </div>
       <p className="text-muted-foreground mb-6">{description}</p>
       <ul className="space-y-3 mb-6">
@@ -44,10 +48,10 @@ function PricingCard({
           </li>
         ))}
       </ul>
-      <Button 
+      <Button
         className={`w-full ${
-          highlighted 
-            ? "bg-violet-600 hover:bg-violet-700" 
+          highlighted
+            ? "bg-violet-600 hover:bg-violet-700"
             : "bg-violet-100 hover:bg-violet-200 text-violet-900"
         }`}
       >
@@ -59,13 +63,18 @@ function PricingCard({
 
 export function HomePricing() {
   return (
-    <section id="pricing" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-violet-50 dark:from-background dark:to-violet-950/20">
+    <section
+      id="pricing"
+      className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-violet-50 dark:from-background dark:to-violet-950/20"
+    >
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-violet-600 to-violet-400 bg-clip-text text-transparent">
             Simple, Transparent Pricing
           </h2>
-          <p className="text-lg text-muted-foreground">Choose the perfect plan for your needs</p>
+          <p className="text-lg text-muted-foreground">
+            Choose the perfect plan for your needs
+          </p>
         </div>
         <div className="grid md:grid-cols-3 gap-8">
           <PricingCard
@@ -76,7 +85,7 @@ export function HomePricing() {
               "5 AI generations/day",
               "Basic assignment types",
               "Community support",
-              "Standard templates"
+              "Standard templates",
             ]}
           />
           <PricingCard
@@ -88,7 +97,7 @@ export function HomePricing() {
               "Advanced assignment types",
               "Priority support",
               "Custom templates",
-              "Analytics dashboard"
+              "Analytics dashboard",
             ]}
             highlighted
           />
@@ -102,7 +111,7 @@ export function HomePricing() {
               "SLA guarantee",
               "Advanced security",
               "API access",
-              "Team collaboration"
+              "Team collaboration",
             ]}
           />
         </div>

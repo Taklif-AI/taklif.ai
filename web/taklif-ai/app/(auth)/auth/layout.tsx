@@ -1,10 +1,9 @@
-import './globals.css';
-import type { Metadata } from 'next';
-
+import "./globals.css";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Taklif.AI',
-  description: 'AI-powered assignment generation for personalized learning',
+  title: "Taklif.AI",
+  description: "AI-powered assignment generation for personalized learning",
 };
 
 export default function RootLayout({
@@ -12,11 +11,5 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <div>
-      {children}
-    </div>
-
-
-  );
+  return <div>{children}</div>;
 }

@@ -19,39 +19,52 @@ export default function TermsOfUse() {
 
           <div className="prose prose-invert max-w-none space-y-6">
             <section className="bg-purple-900/10 p-6 rounded-lg border border-purple-500/20">
-              <h2 className="text-2xl font-semibold text-white mb-4">1. Acceptance of Terms</h2>
+              <h2 className="text-2xl font-semibold text-white mb-4">
+                1. Acceptance of Terms
+              </h2>
               <p className="text-gray-300">
-                By accessing and using Taklif.AI, you accept and agree to be bound by these Terms of Use. If you do not agree to these terms, please do not use our service.
+                By accessing and using Taklif.AI, you accept and agree to be
+                bound by these Terms of Use. If you do not agree to these terms,
+                please do not use our service.
               </p>
               <br></br>
-              <h2 className="text-2xl font-semibold text-white mb-4">2. User Accounts</h2>
+              <h2 className="text-2xl font-semibold text-white mb-4">
+                2. User Accounts
+              </h2>
               <p className="text-gray-300">
                 When creating an account, you must:
               </p>
               <ul className="list-disc pl-6 text-gray-300 space-y-2">
                 <li>Provide accurate and complete information</li>
                 <li>Maintain the security of your account</li>
-                <li>Accept responsibility for all activities under your account</li>
+                <li>
+                  Accept responsibility for all activities under your account
+                </li>
                 <li>Notify us immediately of any unauthorized use</li>
               </ul>
               <br></br>
 
-              <h2 className="text-2xl font-semibold text-white mb-4">3. Intellectual Property</h2>
+              <h2 className="text-2xl font-semibold text-white mb-4">
+                3. Intellectual Property
+              </h2>
               <p className="text-gray-300">
-                All content generated through our platform is subject to the following terms:
+                All content generated through our platform is subject to the
+                following terms:
               </p>
               <ul className="list-disc pl-6 text-gray-300 space-y-2">
                 <li>Users retain rights to their uploaded content</li>
                 <li>AI-generated assignments are for personal use only</li>
                 <li>Sharing or reselling generated content is prohibited</li>
-                <li>Our platform and its features are protected by copyright</li>
+                <li>
+                  Our platform and its features are protected by copyright
+                </li>
               </ul>
               <br></br>
 
-              <h2 className="text-2xl font-semibold text-white mb-4">4. Prohibited Activities</h2>
-              <p className="text-gray-300">
-                Users must not:
-              </p>
+              <h2 className="text-2xl font-semibold text-white mb-4">
+                4. Prohibited Activities
+              </h2>
+              <p className="text-gray-300">Users must not:</p>
               <ul className="list-disc pl-6 text-gray-300 space-y-2">
                 <li>Upload harmful or malicious content</li>
                 <li>Attempt to breach system security</li>
@@ -60,24 +73,30 @@ export default function TermsOfUse() {
               </ul>
               <br></br>
 
-              <h2 className="text-2xl font-semibold text-white mb-4">5. Termination</h2>
+              <h2 className="text-2xl font-semibold text-white mb-4">
+                5. Termination
+              </h2>
               <p className="text-gray-300">
-                We reserve the right to terminate or suspend access to our service immediately, without prior notice, for any violation of these Terms of Use.
+                We reserve the right to terminate or suspend access to our
+                service immediately, without prior notice, for any violation of
+                these Terms of Use.
               </p>
               <br></br>
 
-              <h2 className="text-2xl font-semibold text-white mb-4">6. Contact</h2>
+              <h2 className="text-2xl font-semibold text-white mb-4">
+                6. Contact
+              </h2>
               <p className="text-gray-300">
                 For questions about these Terms of Use, please contact:
                 <br />
-                <a href="mailto:legal@taklif.ai" className="text-purple-400 hover:text-purple-300">
+                <a
+                  href="mailto:legal@taklif.ai"
+                  className="text-purple-400 hover:text-purple-300"
+                >
                   legal@taklif.ai
                 </a>
               </p>
             </section>
-
-        
-
           </div>
         </motion.div>
       </div>

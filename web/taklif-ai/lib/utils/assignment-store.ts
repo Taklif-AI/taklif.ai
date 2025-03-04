@@ -1,6 +1,6 @@
 "use client";
 
-import { create } from 'zustand';
+import { create } from "zustand";
 
 interface AssignmentData {
   file: File | string | null;
@@ -15,7 +15,7 @@ interface AssignmentStore {
 export const useAssignmentStore = create<AssignmentStore>((set) => ({
   assignmentData: {
     file: null,
-    interests:  "",
+    interests: "",
   },
   setAssignmentData: (data) => set({ assignmentData: data }),
 }));

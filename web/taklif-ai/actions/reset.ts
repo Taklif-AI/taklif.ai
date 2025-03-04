@@ -6,27 +6,25 @@ import { generatePasswordResetToken } from "@/lib/utils/tokens";
 import { sendPasswordResetEmail } from "@/lib/utils/mail";
 
 export async function reset(formData: object) {
+  const validateData = ResetSchema.safeParse(formData);
 
-    const validateData = ResetSchema.safeParse(formData);
+  if (!validateData.success) {
+    return { error: "Invalid email!" };
+  }
 
-    if (!validateData.success) {
+  const { email } = validateData.data;
 
-        return { error: 'Invalid email!' };
-    }
+  const existingUser = await getUserByEmail(email);
 
-    const { email } = validateData.data;
+  if (!existingUser) {
+    return { error: "Email not found!" };
+  }
 
-    const existingUser = await getUserByEmail(email);
+  const passwordResetToken = await generatePasswordResetToken(email);
 
-    if (!existingUser) {
-        return { error: "Email not found!" }
-    }
-
-    const passwordResetToken = await generatePasswordResetToken(email);
-
-    await sendPasswordResetEmail(
-        passwordResetToken.email,
-        passwordResetToken.token,
-    );
-    return { success: 'Reset email sent!' };
+  await sendPasswordResetEmail(
+    passwordResetToken.email,
+    passwordResetToken.token,
+  );
+  return { success: "Reset email sent!" };
 }

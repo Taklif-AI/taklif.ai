@@ -6,7 +6,7 @@ import { client } from "@/lib/database/dynamo-assignment-client";
 export async function getAssignments(
   userId: string,
   lastEvaluatedKey = null,
-  limit: number = 2
+  limit: number = 2,
 ) {
   const params: any = {
     TableName: "Development-AssignmentsTable",
@@ -27,7 +27,7 @@ export async function getAssignments(
 
   try {
     const { Items, LastEvaluatedKey } = await client.send(
-      new QueryCommand(params)
+      new QueryCommand(params),
     );
 
     if (!Items || Items.length === 0) {
@@ -45,7 +45,7 @@ export async function getAssignments(
     // Sort processed assignments in DESCENDING order
     processedAssignments.sort(
       (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     );
 
     return {
