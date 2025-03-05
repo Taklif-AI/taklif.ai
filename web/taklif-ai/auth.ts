@@ -125,6 +125,9 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
       token.createdAt = existingUser.createdAt;
       token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
       token.theme = existingUser.theme;
+
+      // Set the JWT token expiration to match the session maxAge
+      token.exp = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 10; // 10 days
       return token;
     },
   },
