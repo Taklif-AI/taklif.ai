@@ -176,13 +176,16 @@ export default function AssignmentsPage() {
           )}
         </div>
         <div className="flex justify-between items-center mt-6">
-          <Button
-            onClick={handlePrevious}
-            disabled={pageHistory.length === 0}
-            className="bg-gray-500 hover:bg-gray-600"
-          >
-            <ChevronLeft className="h-5 w-5" /> Previous
-          </Button>
+          {pageHistory.length !== 0 && (
+            <Button
+              onClick={handlePrevious}
+              disabled={pageHistory.length === 0}
+              className="bg-gray-500 hover:bg-gray-600"
+            >
+              <ChevronLeft className="h-5 w-5" /> Previous
+            </Button>
+          )}
+
           <div className="flex items-center gap-4">
             <Select
               onValueChange={handlePageSizeChange}
@@ -199,13 +202,16 @@ export default function AssignmentsPage() {
               </SelectContent>
             </Select>
           </div>
-          <Button
-            onClick={handleNext}
-            disabled={currentLastKey === null}
-            className="bg-violet-600 hover:bg-violet-700"
-          >
-            Next <ChevronRight className="h-5 w-5" />
-          </Button>
+          {currentLastKey !== null && (
+            <Button
+              onClick={handleNext}
+              disabled={currentLastKey === null}
+              className="bg-violet-600 hover:bg-violet-700"
+            >
+              Next <ChevronRight className="h-5 w-5" />
+            </Button>
+          )}
+
         </div>
       </div>
     </div>
