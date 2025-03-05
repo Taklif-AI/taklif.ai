@@ -131,7 +131,7 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
   adapter: DynamoDBAdapter(client),
   session: {
     strategy: "jwt",
-    maxAge: 60 * 60 * 24 * 30, // 30 days
+    maxAge: 60 * 60 * 24 * 10, // 30 days
   },
   ...authConfig,
 });
