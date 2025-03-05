@@ -30,7 +30,8 @@ export default function AssignmentsPage() {
   const [pageHistory, setPageHistory] = useState([]); // Stores past lastEvaluatedKeys for back navigation
   const [currentLastKey, setCurrentLastKey] = useState(null); // Last key for the current page
   const [loading, setLoading] = useState(false);
-  const [pageSize, setPageSize] = useState(2); // Default page size
+  const savedPageSize = sessionStorage.getItem("pageSize");
+  const [pageSize, setPageSize] = useState(Number(savedPageSize) || 5); // Default page size
 
   const router = useRouter();
   const user = useCurrentUser();
@@ -67,6 +68,10 @@ export default function AssignmentsPage() {
   };
 
   useEffect(() => {
+    const savedPageSize = sessionStorage.getItem("pageSize");
+    if (savedPageSize) {
+      setPageSize(Number(savedPageSize));
+    }
     fetchAssignments();
   }, [user, pageSize]);
 
@@ -87,7 +92,9 @@ export default function AssignmentsPage() {
   };
 
   const handlePageSizeChange = (value) => {
-    setPageSize(Number(value));
+    const newSize = Number(value);
+    setPageSize(newSize);
+    sessionStorage.setItem("pageSize", newSize.toString());
     setPageHistory([]);
     setCurrentLastKey(null);
   };
@@ -185,9 +192,10 @@ export default function AssignmentsPage() {
                 <SelectValue placeholder="Page Size" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="2">2</SelectItem>
                 <SelectItem value="5">5</SelectItem>
                 <SelectItem value="10">10</SelectItem>
+                <SelectItem value="15">15</SelectItem>
+                <SelectItem value="20">20</SelectItem>
               </SelectContent>
             </Select>
           </div>
