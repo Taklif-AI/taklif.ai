@@ -10,6 +10,13 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Toast } from "@/lib/utils/toast";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import rehypeSanitize from "rehype-sanitize";
+import "katex/dist/katex.min.css";
+
 import {
   Select,
   SelectContent,
@@ -24,7 +31,6 @@ export default function AssignmentsPage() {
   const [currentLastKey, setCurrentLastKey] = useState(null); // Last key for the current page
   const [loading, setLoading] = useState(false);
   const [pageSize, setPageSize] = useState(2); // Default page size
-  const { count } = useAssignments();
 
   const router = useRouter();
   const user = useCurrentUser();
@@ -91,7 +97,7 @@ export default function AssignmentsPage() {
       <div className="max-w-4xl mx-auto space-y-8">
         <div className="text-center mb-8">
           <h1 className="mb-5 p-1 text-3xl font-bold bg-gradient-to-r from-violet-600 to-violet-400 bg-clip-text text-transparent md:text-4xl">
-            [{count}] Personalized Assignments
+            Personalized Assignments
           </h1>
           <p className="text-muted-foreground">
             View and manage your AI-personalized assignments
@@ -133,9 +139,13 @@ export default function AssignmentsPage() {
                         </button>
                       </div>
                     </div>
-                    <p className="text-gray-700 dark:text-gray-300 leading-relaxed line-clamp-3">
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm, remarkMath]}
+                      rehypePlugins={[rehypeSanitize, rehypeKatex]}
+                      className="text-gray-700 dark:text-gray-300 leading-relaxed line-clamp-3"
+                    >
                       {assignment.text}
-                    </p>
+                    </ReactMarkdown>
                   </div>
                 </Card>
               );
