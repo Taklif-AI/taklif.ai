@@ -11,7 +11,7 @@ export function HomeHero() {
   return (
     <section>
       {/* Hero Section */}
-      <div className="relative min-h-screen bg-white dark:bg-[#13111C] overflow-hidden">
+      <div className="relative min-h-screen overflow-hidden">
         {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-purple-900/20 to-transparent dark:from-purple-900/20" />
 
