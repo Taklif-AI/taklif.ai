@@ -18,6 +18,7 @@ declare module "next-auth/jwt" {
     institution: string | undefined;
     image?: string;
     s3Key?: string;
+    theme: string;
   }
 }
 
@@ -30,6 +31,7 @@ declare module "next-auth" {
       institution: string | undefined;
       image: string;
       s3Key: string;
+      theme: string;
     } & DefaultSession["user"];
   }
 }
@@ -91,6 +93,7 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
         session.user.s3Key = token.s3Key as string;
         session.user.isOAuth = token.isOAuth;
         session.user.institution = token.institution || undefined;
+        session.user.theme = token.theme;
       }
 
       return session;
@@ -121,7 +124,7 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
       token.institution = existingUser.institution || undefined;
       token.createdAt = existingUser.createdAt;
       token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
-
+      token.theme = existingUser.theme;
       return token;
     },
   },
