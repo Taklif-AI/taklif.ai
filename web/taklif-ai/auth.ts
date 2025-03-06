@@ -2,7 +2,7 @@ import NextAuth, { type DefaultSession } from "next-auth";
 import { DynamoDBAdapter } from "@auth/dynamodb-adapter";
 import { client } from "@/lib/database/dynamo-client";
 import authConfig from "@/auth.config";
-import { getUserById, updateUserFields } from "./data/user";
+import { getUserById, updateUserDynamicData, updateUserFields } from "./data/user";
 import {
   deleteTwoFactorConfirmation,
   getTwoFactorConfirmationByUserId,
@@ -45,13 +45,16 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
     async linkAccount({ user }) {
       if (user.id) {
         user.id = `USER#${user.id}`;
-        await updateUserFields(
-          user.id,
-          "emailVerified",
-          new Date().toISOString(),
-          "createdAt",
-          new Date().toISOString(),
-        );
+        await updateUserDynamicData(user.id as string, {
+          emailVerified: new Date().toISOString(),
+          createdAt: new Date().toISOString(),
+          subscription: {
+            plan: "free",
+            plan_credits: 60,
+            remaining_credits: 60,
+            subscription_date: new Date().toISOString(),
+          },
+        })
       }
     },
   },
