@@ -46,6 +46,12 @@ export async function register(formData: object) {
       password: hashedPassword,
       isTwoFactorEnabled: false,
       createdAt: new Date().toISOString(),
+      subscription: {
+        plan: "free",
+        plan_credits: 60,
+        remaining_credits: 60,
+        subscription_date: new Date().toISOString(),
+      },
     },
     ConditionExpression: "attribute_not_exists(pk)",
   };
