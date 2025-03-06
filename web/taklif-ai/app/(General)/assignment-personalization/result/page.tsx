@@ -16,6 +16,8 @@ import { Assignment } from "@/lib/types/assigment-type";
 import { useAssignments } from "@/components/providers/assignments-provider";
 
 import Link from "next/link";
+import { checkAndRenewSubscription } from "@/actions/check-update-subscription";
+import { decrementRemainingCredit } from "@/actions/decrement-remaining-credit";
 const backgroundIcons = [Brain, Wand2, Stars, Sparkles];
 
 export default function AssignmentResultPage() {
@@ -144,7 +146,31 @@ export default function AssignmentResultPage() {
         break;
       case "repersonalized":
         setIsPending(true);
-        Toast.success("Re-personalizing assignment...");
+        const check = await checkAndRenewSubscription();
+        if (!check) {
+          setIsPending(false);
+          Toast.error("Error while checking subscription!");
+          router.push("/assignment-personalization/result");
+          return;
+        }
+        if (check.error) {
+          setIsPending(false);
+          Toast.error(check.error);
+          router.push("/assignment-personalization/result");
+          return;
+        }
+        if (check.renewed) {
+          Toast.success(check.message);
+        }
+        if (check.subscription) {
+          if (check.subscription.remaining_credits <= 0) {
+            setIsPending(false);
+            Toast.error("You have no remaining credits.");
+            router.push("/assignment-personalization/result");
+            return;
+          }
+        }
+
         // redirect user to loadings page
         router.push("/assignment-personalization/loading");
         try {
@@ -185,8 +211,14 @@ export default function AssignmentResultPage() {
             "personalization_id",
             dataToBackend.personalization_id,
           );
-          setIsPending(false);
+
+          const decrement = await decrementRemainingCredit();
+          if (decrement.error) {
+            Toast.error(decrement.error);
+          }
+
           Toast.success("Assignment re-personalized successfully!");
+          setIsPending(false);
           router.push("/assignment-personalization/result");
         } catch (error) {
           setIsPending(false);
@@ -197,7 +229,31 @@ export default function AssignmentResultPage() {
         break;
       case "simplify":
         setIsPending(true);
-        Toast.success("Simplifying assignment...");
+
+        const check1 = await checkAndRenewSubscription();
+        if (!check1) {
+          setIsPending(false);
+          Toast.error("Error while checking subscription!");
+          router.push("/assignment-personalization/result");
+          return;
+        }
+        if (check1.error) {
+          setIsPending(false);
+          Toast.error(check1.error);
+          router.push("/assignment-personalization/result");
+          return;
+        }
+        if (check1.renewed) {
+          Toast.success(check1.message);
+        }
+        if (check1.subscription) {
+          if (check1.subscription.remaining_credits <= 0) {
+            setIsPending(false);
+            Toast.error("You have no remaining credits.");
+            router.push("/assignment-personalization/result");
+            return;
+          }
+        }
 
         // redirect user to loadings page
         router.push("/assignment-personalization/loading");
@@ -241,11 +297,15 @@ export default function AssignmentResultPage() {
             "personalization_id",
             dataToBackend.personalization_id,
           );
-          // sessionStorage.setItem("simplification_id", dataToBackend.simplification_id);
+
+          const decrement1 = await decrementRemainingCredit();
+          if (decrement1.error) {
+            Toast.error(decrement1.error);
+          }
 
           Toast.success("Assignment simplified successfully!");
-          router.push("/assignment-personalization/result");
           setIsPending(false);
+          router.push("/assignment-personalization/result");
           /* eslint-disable */
         } catch (error) {
           Toast.error("Failed to simplified assignment. Please try again");
