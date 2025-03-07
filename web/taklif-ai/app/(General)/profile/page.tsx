@@ -8,7 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-import { Book, Monitor, Moon, Sun, Upload, User } from "lucide-react";
+import { Book, Coins, Moon, Sun, Upload, User } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { profile } from "@/actions/profile";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { useSession } from "next-auth/react";
@@ -20,14 +21,33 @@ import { uploadImage } from "@/actions/upload-image";
 import { useAssignments } from "@/components/providers/assignments-provider";
 import { useTheme } from "next-themes";
 
-export default function ProfilePage() {
+function addDays(date: Date, days: number) {
+  const copy = new Date(date);
+  copy.setDate(copy.getDate() + days);
+  return copy;
+}
 
+export default function ProfilePage() {
   const { update } = useSession();
   const user = useCurrentUser();
-  const [credits] = useState(100);
   const [isPending, startTransition] = useTransition();
   const { count } = useAssignments();
   const { theme, setTheme } = useTheme();
+
+  const [planCredits] = useState<number>(user?.plan_credits);
+  const [remainingCredits] = useState<number>(user?.remaining_credits);
+
+  const creditsColorClass =
+    remainingCredits < 10
+      ? "text-red-500"
+      : remainingCredits < 30
+        ? "text-orange-500"
+        : "text-green-600";
+
+  const subscriptionDate = user?.subscription_date
+    ? new Date(user.subscription_date)
+    : new Date(); // fallback to now
+  const renewalDate = addDays(subscriptionDate, 30);
 
   const [profileFormData, setProfileFormData] = useState({
     name: user?.name || undefined,
@@ -223,7 +243,9 @@ export default function ProfilePage() {
                     width={50}
                     height={50}
                   />
-                  <AvatarFallback>🤖</AvatarFallback>
+                  <AvatarFallback style={{ fontFamily: "Noto Color Emoji" }}>
+                    ⚙️
+                  </AvatarFallback>
                 </Avatar>
                 <label
                   htmlFor="avatar-upload"
@@ -244,16 +266,44 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            <div className="mb-2">
-              <h1 className="text-2xl font-bold text-gray dark:text-white">
-                {user?.name}
-              </h1>
-              <p className="text-purple-800 dark:text-purple-200">
-                Credits left: {credits}
+            <div className="space-y-1">
+              <div className="flex flex-wrap gap-2 justify-center md:justify-start">
+                <h1 className="text-2xl font-bold text-gray dark:text-white">
+                  {user?.name}
+                </h1>
+                {/* Plan Badge */}
+                <Badge className="bg-violet-100 text-violet-800 dark:bg-violet-900 dark:text-violet-100">
+                  {user?.plan
+                    ?.split(" ")
+                    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(" ")}{" "}
+                  Member
+                </Badge>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Coins className="w-5 h-5 text-purple-800 dark:text-purple-200" />
+                <span className="font-semibold">
+                  <span className={`${creditsColorClass} font-semibold`}>
+                    {remainingCredits}
+                  </span>
+                  <span className="text-purple-800 dark:text-purple-200">
+                    {" "}
+                    / {planCredits} Credits
+                  </span>
+                </span>
+              </div>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                Credits renew on{" "}
+                {renewalDate.toLocaleDateString("en-GB", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                })}{" "}
               </p>
             </div>
           </div>
         </div>
+
         {/* Stats Card */}
         <Card className="mt-16">
           <CardContent className="p-6">
@@ -281,7 +331,8 @@ export default function ProfilePage() {
               Settings
             </TabsTrigger>
           </TabsList>
-          {/* ************************************************************* */}
+
+          {/* Profile Tab */}
           <TabsContent value="profile" className="mt-6 space-y-6">
             <form method="POST" onSubmit={submitProfile}>
               <div className="grid gap-4">
@@ -330,8 +381,8 @@ export default function ProfilePage() {
               </div>
             </form>
           </TabsContent>
-          {/* ************************************************** */}
 
+          {/* Settings Tab */}
           <TabsContent value="settings" className="mt-6 space-y-6">
             <form onSubmit={submitSettings}>
               <div className="grid gap-6">
@@ -348,8 +399,8 @@ export default function ProfilePage() {
                       onClick={() => {
                         setSettingsFormData((prev) => ({
                           ...prev,
-                          theme: 'light',
-                        }))
+                          theme: "light",
+                        }));
                       }}
                     >
                       <Sun className="w-5 h-5" />
@@ -359,8 +410,8 @@ export default function ProfilePage() {
                       onClick={() => {
                         setSettingsFormData((prev) => ({
                           ...prev,
-                          theme: 'dark',
-                        }))
+                          theme: "dark",
+                        }));
                       }}
                     >
                       <Moon className="w-5 h-5" />
@@ -422,7 +473,6 @@ export default function ProfilePage() {
               </div>
             </form>
           </TabsContent>
-          {/* *************************************************** */}
         </Tabs>
       </div>
     </div>
