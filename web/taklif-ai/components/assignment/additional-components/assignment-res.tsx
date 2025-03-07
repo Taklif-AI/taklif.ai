@@ -45,12 +45,7 @@ export function AssignmentResult({ assignment }: AssignmentResultProps) {
             >
               {titleWithoutEmojis}
             </motion.span>
-            <span
-              style={{ fontFamily: "Noto-Color-Emoji" }}
-              className="font-Noto-Color-Emoji"
-            >
-              {emojis}
-            </span>
+            <span style={{ fontFamily: "Noto Color Emoji" }}>{emojis}</span>
           </h1>
         </div>
 
