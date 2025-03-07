@@ -20,7 +20,7 @@ export default async function GeneralLayout({
   return (
     <SessionProvider session={session}>
       <AssignmentsProvider>
-        <div className="flex min-h-screen flex-col">
+        <div className="relative flex min-h-screen flex-col bg-[#F8F9FA] dark:bg-[#121212] text-gray-900 dark:text-gray-100">
           <Navigation />
           <div className="flex-1 pt-16">{children}</div>
           <Footer />

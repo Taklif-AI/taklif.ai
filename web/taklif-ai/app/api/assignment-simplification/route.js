@@ -33,7 +33,6 @@ export async function POST(req) {
     );
 
     const data = await res.json();
-    console.log(data);
 
     if (res.status == 400 && data?.rejected) {
       return new Response(JSON.stringify({ error: data.rejected }), {

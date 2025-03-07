@@ -1,6 +1,7 @@
 "use server";
 
 import { signIn } from "@/auth";
+import bcrypt from "bcryptjs";
 import {
   deleteTwoFactorToken,
   getTwoFactorTokenByEmail,
@@ -56,7 +57,11 @@ export async function login(formData: object, callbackUrl?: string | null) {
   if (!existingUser || !existingUser.email || !existingUser.password) {
     return { error: "Email does not exist!" };
   }
+  const passwordsMatch = await bcrypt.compare(password, existingUser.password);
 
+  if (!passwordsMatch) {
+    return { error: "Invalid credentials!" };
+  }
   // check the email verification
   if (!existingUser.emailVerified) {
     const verificationToken = await generateVerificationToken(

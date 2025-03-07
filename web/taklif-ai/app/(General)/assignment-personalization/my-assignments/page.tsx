@@ -30,7 +30,8 @@ export default function AssignmentsPage() {
   const [pageHistory, setPageHistory] = useState([]); // Stores past lastEvaluatedKeys for back navigation
   const [currentLastKey, setCurrentLastKey] = useState(null); // Last key for the current page
   const [loading, setLoading] = useState(false);
-  const [pageSize, setPageSize] = useState(2); // Default page size
+  const savedPageSize = sessionStorage.getItem("pageSize");
+  const [pageSize, setPageSize] = useState(Number(savedPageSize) || 5); // Default page size
 
   const router = useRouter();
   const user = useCurrentUser();
@@ -67,6 +68,10 @@ export default function AssignmentsPage() {
   };
 
   useEffect(() => {
+    const savedPageSize = sessionStorage.getItem("pageSize");
+    if (savedPageSize) {
+      setPageSize(Number(savedPageSize));
+    }
     fetchAssignments();
   }, [user, pageSize]);
 
@@ -87,7 +92,9 @@ export default function AssignmentsPage() {
   };
 
   const handlePageSizeChange = (value) => {
-    setPageSize(Number(value));
+    const newSize = Number(value);
+    setPageSize(newSize);
+    sessionStorage.setItem("pageSize", newSize.toString());
     setPageHistory([]);
     setCurrentLastKey(null);
   };
@@ -182,13 +189,16 @@ export default function AssignmentsPage() {
           )}
         </div>
         <div className="flex justify-between items-center mt-6">
-          <Button
-            onClick={handlePrevious}
-            disabled={pageHistory.length === 0}
-            className="bg-gray-500 hover:bg-gray-600"
-          >
-            <ChevronLeft className="h-5 w-5" /> Previous
-          </Button>
+          {pageHistory.length !== 0 && (
+            <Button
+              onClick={handlePrevious}
+              disabled={pageHistory.length === 0}
+              className="bg-gray-500 hover:bg-gray-600"
+            >
+              <ChevronLeft className="h-5 w-5" /> Previous
+            </Button>
+          )}
+
           <div className="flex items-center gap-4">
             <Select
               onValueChange={handlePageSizeChange}
@@ -198,19 +208,23 @@ export default function AssignmentsPage() {
                 <SelectValue placeholder="Page Size" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="2">2</SelectItem>
                 <SelectItem value="5">5</SelectItem>
                 <SelectItem value="10">10</SelectItem>
+                <SelectItem value="15">15</SelectItem>
+                <SelectItem value="20">20</SelectItem>
               </SelectContent>
             </Select>
           </div>
-          <Button
-            onClick={handleNext}
-            disabled={currentLastKey === null}
-            className="bg-violet-600 hover:bg-violet-700"
-          >
-            Next <ChevronRight className="h-5 w-5" />
-          </Button>
+          {currentLastKey !== null && (
+            <Button
+              onClick={handleNext}
+              disabled={currentLastKey === null}
+              className="bg-violet-600 hover:bg-violet-700"
+            >
+              Next <ChevronRight className="h-5 w-5" />
+            </Button>
+          )}
+
         </div>
       </div>
     </div>

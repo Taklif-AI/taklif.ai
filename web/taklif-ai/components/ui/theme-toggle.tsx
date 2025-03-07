@@ -5,9 +5,9 @@ import { useTheme } from "next-themes";
 import "@theme-toggles/react/css/Around.css";
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  const { setTheme } = useTheme();
 
-  // Ensure theme is set correctly
+
   React.useEffect(() => {
     setTheme("dark");
   }, [setTheme]);
