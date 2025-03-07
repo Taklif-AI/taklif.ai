@@ -28,7 +28,7 @@ export default async function RootLayout({
       <body className={poppins.className}>
         <ThemeProvider
           attribute="class"
-          defaultTheme={user?.theme || 'dark'}
+          defaultTheme={user?.theme || "dark"}
           enableSystem
           disableTransitionOnChange
         >

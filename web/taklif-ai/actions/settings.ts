@@ -73,25 +73,25 @@ export const settings = async (formData) => {
       await unstable_update({
         user: {
           isTwoFactorEnabled: isTwoFactorEnabled,
-          theme: formData.theme
+          theme: formData.theme,
         },
       });
     }
   }
 
-  const allowedTheme = ['dark', 'light']
+  const allowedTheme = ["dark", "light"];
   if (formData.theme) {
     if (!allowedTheme.includes(formData.theme)) {
-      return { error: 'Unallowd theme value!' }
+      return { error: "Unallowd theme value!" };
     }
-    data.theme = formData.theme
+    data.theme = formData.theme;
   }
   await updateUserDynamicData(dbUser.pk, data);
 
   if (formData.theme) {
     await unstable_update({
       user: {
-        theme: formData.theme
+        theme: formData.theme,
       },
     });
   }
