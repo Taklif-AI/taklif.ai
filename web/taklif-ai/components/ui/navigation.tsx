@@ -73,7 +73,9 @@ export function Navigation() {
                       src={session?.user?.image || "/default-avatar.jpg"}
                       alt="Profile"
                     />
-                    <AvatarFallback>⚙️</AvatarFallback>
+                    <AvatarFallback style={{ fontFamily: "Noto Color Emoji" }}>
+                      ⚙️
+                    </AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>

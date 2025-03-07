@@ -107,6 +107,16 @@ export default function AssignmentsPage() {
           {assignments && assignments.length > 0 ? (
             assignments.map((assignment) => {
               const uniqueKey = `RUN#${assignment.runId}#PERSONALIZATION#${assignment.personalizationId}`;
+              const title = assignment.title;
+
+              // Regular expression to match emojis
+              const emojiRegex =
+                /(?:\p{Extended_Pictographic}|\p{Emoji_Presentation}|\p{Emoji_Modifier_Base}|\p{Emoji})+/gu;
+
+              // Extract emojis from the title
+              const emojis = title.match(emojiRegex) || [];
+              // Remove emojis from the title
+              const titleWithoutEmojis = title.replace(emojiRegex, "").trim();
 
               return (
                 <Card
@@ -117,7 +127,10 @@ export default function AssignmentsPage() {
                     <div className="flex justify-between items-start">
                       <div>
                         <h2 className="text-xl font-semibold mb-1">
-                          {assignment.title}
+                          {titleWithoutEmojis}
+                          <span style={{ fontFamily: "Noto Color Emoji" }}>
+                            {emojis}
+                          </span>
                         </h2>
                         <p className="text-sm text-muted-foreground mb-4">
                           Personalized{" "}
