@@ -24,7 +24,7 @@ export function Navigation() {
   const { setTheme } = useTheme();
   useEffect(() => {
     if (user && user?.theme) {
-      setTheme(user.theme)
+      setTheme(user.theme);
     } else {
       setTheme("dark");
     }
@@ -59,9 +59,7 @@ export function Navigation() {
               </Button>
             </Link>
           )}
-          {!session && (
-            <ThemeToggle />
-          )}
+          {!session && <ThemeToggle />}
           <div className="hidden md:flex md:items-center md:gap-5"></div>
 
           {!session && (
