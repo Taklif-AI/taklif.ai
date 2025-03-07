@@ -10,6 +10,8 @@ import { storage } from "@/lib/utils/local-storage";
 import { Toast } from "@/lib/utils/toast";
 import { fileToBase64 } from "@/lib/utils/files/file-to-base64";
 import { v4 as uuidv4 } from "uuid";
+import { checkAndRenewSubscription } from "@/actions/check-update-subscription";
+import { decrementRemainingCredit } from "@/actions/decrement-remaining-credit";
 
 const steps = ["Upload PDF", "Choose Interests", "Review Inputs"];
 
@@ -112,6 +114,31 @@ export default function AssignmentPage() {
   const handleSubmit = async () => {
     setIsPending(true);
 
+    const check = await checkAndRenewSubscription();
+    if (!check) {
+      setIsPending(false);
+      Toast.error("Error while checking subscription!");
+      router.push("/assignment-personalization");
+      return;
+    }
+    if (check.error) {
+      setIsPending(false);
+      Toast.error(check.error);
+      router.push("/assignment-personalization");
+      return;
+    }
+    if (check.renewed) {
+      Toast.success(check.message);
+    }
+    if (check.subscription) {
+      if (check.subscription.remaining_credits <= 0) {
+        setIsPending(false);
+        Toast.error("You have no remaining credits.");
+        router.push("/assignment-personalization");
+        return;
+      }
+    }
+
     // prepare the assignment-data to the backend
     const dataToBackend = {
       student_interest: assignmentData.interest,
@@ -168,6 +195,8 @@ export default function AssignmentPage() {
         return;
       }
 
+
+
       storage.clearProgress();
 
       sessionStorage.removeItem("simplification_id");
@@ -177,14 +206,19 @@ export default function AssignmentPage() {
         dataToBackend.personalization_id,
       );
 
-      Toast.success("Assignment created successfully!");
+      const decrement = await decrementRemainingCredit();
+      if (decrement.error) {
+        Toast.error(decrement.error);
+      }
+
+      Toast.success("Assignment personalized successfully!");
       setIsPending(false);
       router.push("/assignment-personalization/result");
 
       /* eslint-disable */
     } catch (error) {
       setIsPending(false);
-      Toast.error("Failed to create assignment. Please try again");
+      Toast.error("Failed to personalize assignment. Please try again");
       router.push("/assignment-personalization");
     }
     /* eslint-enable */

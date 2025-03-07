@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Logo } from "@/components/ui/logo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { LogOut, User, Book, Sparkles } from "lucide-react";
+import { LogOut, User, Book } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -14,9 +14,21 @@ import {
 } from "@/components/ui/dropdown-menu";
 // import { auth, signOut } from "@/auth";
 import { signOut, useSession } from "next-auth/react";
+import { useEffect } from "react";
+import { useTheme } from "next-themes";
+import { useCurrentUser } from "@/hooks/use-current-user";
 
 export function Navigation() {
   const { data: session } = useSession();
+  const user = useCurrentUser();
+  const { setTheme } = useTheme();
+  useEffect(() => {
+    if (user && user?.theme) {
+      setTheme(user.theme)
+    } else {
+      setTheme("dark");
+    }
+  }, [user, setTheme]);
   return (
     <header className="fixed top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <link
@@ -47,7 +59,9 @@ export function Navigation() {
               </Button>
             </Link>
           )}
-          <ThemeToggle />
+          {!session && (
+            <ThemeToggle />
+          )}
           <div className="hidden md:flex md:items-center md:gap-5"></div>
 
           {!session && (

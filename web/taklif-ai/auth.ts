@@ -2,7 +2,7 @@ import NextAuth, { type DefaultSession } from "next-auth";
 import { DynamoDBAdapter } from "@auth/dynamodb-adapter";
 import { client } from "@/lib/database/dynamo-client";
 import authConfig from "@/auth.config";
-import { getUserById, updateUserFields } from "./data/user";
+import { getUserById, updateUserDynamicData, updateUserFields } from "./data/user";
 import {
   deleteTwoFactorConfirmation,
   getTwoFactorConfirmationByUserId,
@@ -18,6 +18,7 @@ declare module "next-auth/jwt" {
     institution: string | undefined;
     image?: string;
     s3Key?: string;
+    theme: string;
   }
 }
 
@@ -30,6 +31,7 @@ declare module "next-auth" {
       institution: string | undefined;
       image: string;
       s3Key: string;
+      theme: string;
     } & DefaultSession["user"];
   }
 }
@@ -43,13 +45,16 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
     async linkAccount({ user }) {
       if (user.id) {
         user.id = `USER#${user.id}`;
-        await updateUserFields(
-          user.id,
-          "emailVerified",
-          new Date().toISOString(),
-          "createdAt",
-          new Date().toISOString(),
-        );
+        await updateUserDynamicData(user.id as string, {
+          emailVerified: new Date().toISOString(),
+          createdAt: new Date().toISOString(),
+          subscription: {
+            plan: "free",
+            plan_credits: 60,
+            remaining_credits: 60,
+            subscription_date: new Date().toISOString(),
+          },
+        })
       }
     },
   },
@@ -91,6 +96,7 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
         session.user.s3Key = token.s3Key as string;
         session.user.isOAuth = token.isOAuth;
         session.user.institution = token.institution || undefined;
+        session.user.theme = token.theme;
       }
 
       return session;
@@ -121,14 +127,17 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
       token.institution = existingUser.institution || undefined;
       token.createdAt = existingUser.createdAt;
       token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
+      token.theme = existingUser.theme;
 
+      // Set the JWT token expiration to match the session maxAge
+      token.exp = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 10; // 10 days
       return token;
     },
   },
   adapter: DynamoDBAdapter(client),
   session: {
     strategy: "jwt",
-    maxAge: 60 * 60 * 24 * 30, // 30 days
+    maxAge: 60 * 60 * 24 * 10, // 30 days
   },
   ...authConfig,
 });
