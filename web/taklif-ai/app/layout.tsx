@@ -1,38 +1,38 @@
-import './globals.css';
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import { Navigation } from '@/components/ui/navigation';
-import { ThemeProvider } from '@/components/theme-provider';
+import "./globals.css";
+import type { Metadata } from "next";
+import { Poppins } from "next/font/google";
+import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
-import { Footer } from '@/components/ui/footer';
-const inter = Inter({ subsets: ['latin'] });
+import { currentUser } from "@/lib/auth/auth";
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-poppins",
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+});
 
 export const metadata: Metadata = {
-  title: 'Taklif.AI',
-  description: 'AI-powered assignment generation for personalized learning',
+  title: "Taklif.AI",
+  description: "AI-powered assignment generation for personalized learning",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const user = await currentUser();
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={poppins.className}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme={user?.theme || "dark"}
           enableSystem
           disableTransitionOnChange
         >
-          <div className="flex min-h-screen flex-col">
-            <Navigation />
-              <div className="flex-1 pt-16">
-                {children}
-              </div>
-            <Footer />
-          </div>
+          {children}
           <Toaster />
         </ThemeProvider>
       </body>

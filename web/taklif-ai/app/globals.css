@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@tailwind typography;
 
 :root {
   --foreground-rgb: 0, 0, 0;
@@ -14,6 +15,14 @@
     --background-start-rgb: 0, 0, 0;
     --background-end-rgb: 0, 0, 0;
   }
+}
+
+@font-face {
+  font-family: "Noto Color Emoji";
+  src: url("../public/NotoColorEmoji-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }
 
 @layer base {

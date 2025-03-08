@@ -1,8 +1,8 @@
-export type StorageKey = 'PDF_FILE' | 'INTERESTS' | 'CURRENT_STEP';
+export type StorageKey = "PDF_FILE" | "INTERESTS" | "CURRENT_STEP";
 
 export const storage = {
   saveProgress: (key: StorageKey, value: any) => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
     try {
       if (value === null) {
@@ -16,7 +16,7 @@ export const storage = {
   },
 
   getProgress: (key: StorageKey) => {
-    if (typeof window === 'undefined') return null;
+    if (typeof window === "undefined") return null;
 
     try {
       const value = localStorage.getItem(key);
@@ -28,14 +28,14 @@ export const storage = {
   },
 
   clearProgress: () => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
     try {
-      localStorage.removeItem('PDF_FILE');
-      localStorage.removeItem('INTERESTS');
-      localStorage.removeItem('CURRENT_STEP');
+      localStorage.removeItem("PDF_FILE");
+      localStorage.removeItem("INTERESTS");
+      localStorage.removeItem("CURRENT_STEP");
     } catch (error) {
-      console.error('Error clearing storage:', error);
+      console.error("Error clearing storage:", error);
     }
-  }
+  },
 };
