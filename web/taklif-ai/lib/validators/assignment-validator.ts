@@ -46,10 +46,10 @@ export const validateInterest = (interest: string): ValidationResult => {
     };
   }
 
-  if (length > 20) {
+  if (length > 40) {
     return {
       isValid: false,
-      error: "Interest should be at most 15 characters long",
+      error: "Interest should be at most 40 characters long",
     };
   }
 
@@ -59,41 +59,6 @@ export const validateInterest = (interest: string): ValidationResult => {
       isValid: false,
       error:
         "Interest must contain letters only (no spaces, numbers, or symbols)",
-    };
-  }
-
-  return { isValid: true };
-};
-
-export const validateDifficulty = (
-  difficulty: string,
-  wordCount: number,
-): ValidationResult => {
-  if (!difficulty || typeof difficulty !== "string") {
-    return { isValid: false, error: "Please select a difficulty level" };
-  }
-
-  const validDifficulties = ["easy", "medium", "hard"];
-  if (!validDifficulties.includes(difficulty)) {
-    return { isValid: false, error: "Invalid difficulty level selected" };
-  }
-
-  if (!wordCount || typeof wordCount !== "number") {
-    return { isValid: false, error: "Please enter a word count" };
-  }
-  if (wordCount < 100) {
-    return { isValid: false, error: "Word count should be at least 100" };
-  }
-
-  if (wordCount > 1000) {
-    return { isValid: false, error: "Word count should be at most 1000" };
-  }
-
-  const validNumber = /^(100|[1-9][0-9][0-9]|1000)$/;
-  if (!validNumber.test(`${wordCount}`)) {
-    return {
-      isValid: false,
-      error: "Choose an integer number in (100 - 1000)",
     };
   }
 
