@@ -18,16 +18,16 @@ interface InterestsSelectProps {
 }
 
 const suggestedInterests = [
-  "Mathematics",
-  "Physics",
-  "Computer Science",
-  "Biology",
-  "Chemistry",
-  "History",
-  "Literature",
-  "Art",
-  "Music",
-  "Psychology",
+  "Astrophotography",
+  "Origami",
+  "Beekeeping",
+  "Anime",
+  "Cooking",
+  "Arabian History",
+  "Swimming",
+  "Rock Music",
+  "Soccer",
+  "Yoga",
 ];
 
 export function InterestsSelect({
