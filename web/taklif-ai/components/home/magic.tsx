@@ -41,17 +41,91 @@ export function HomeMagic() {
   ];
 
   // Use the data from the JSON file
-  const assignments = assignmentsData.assignments;
+  //const assignments = assignmentsData.assignments;
+
+  const assignments = [
+    {
+      title: "Write an essay on climate change",
+      details:
+        "Discuss the causes, effects, and potential solutions to climate change.",
+      icon: Workflow,
+      keyTopics: [
+        "Greenhouse gas emissions",
+        "Global warming",
+        "Renewable energy solutions",
+        "Carbon footprint reduction",
+      ],
+      examples: [
+        "Case study: Impact of deforestation in the Amazon",
+        "Example: Transition to solar energy in Germany",
+      ],
+      resources: [
+        "IPCC Climate Reports",
+        "NASA Climate Change Website",
+        "UN Sustainable Development Goals",
+      ],
+    },
+    {
+      title: "Create a presentation on renewable energy",
+      details:
+        "Highlight different types of renewable energy sources and their benefits.",
+      icon: Zap,
+      keyTopics: [
+        "Solar energy",
+        "Wind energy",
+        "Hydropower",
+        "Geothermal energy",
+      ],
+      examples: [
+        "Example: Solar farms in California",
+        "Case study: Wind energy in Denmark",
+      ],
+      resources: [
+        "International Renewable Energy Agency (IRENA)",
+        "U.S. Department of Energy",
+        "Renewable Energy World",
+      ],
+    },
+    {
+      title: "Develop a project on sustainable living",
+      details:
+        "Propose a plan for a sustainable living community, including energy, water, and waste management.",
+      icon: Network,
+      keyTopics: [
+        "Zero-waste lifestyle",
+        "Sustainable architecture",
+        "Community gardens",
+        "Water conservation techniques",
+      ],
+      examples: [
+        "Example: Eco-villages in Scandinavia",
+        "Case study: Sustainable urban planning in Singapore",
+      ],
+      resources: [
+        "World Green Building Council",
+        "Sustainable Living Foundation",
+        "UN Environment Programme",
+      ],
+    },
+  ];
 
   const [selectedAssignment, setSelectedAssignment] = useState(
     assignments[0].title,
   );
 
+  // const interests = [
+  //   { name: "Basketball", icon: Workflow },
+  //   { name: "Astronomy", icon: Zap },
+  //   { name: "Painting", icon: Binary },
+  //   { name: "Poetry", icon: Network },
+  // ];
+
   const interests = [
-    { name: "Basketball", icon: Workflow },
-    { name: "Astronomy", icon: Zap },
-    { name: "Painting", icon: Binary },
-    { name: "Poetry", icon: Network },
+    { name: "Environmental Science", icon: Workflow },
+    { name: "Renewable Energy", icon: Zap },
+    { name: "Climate Policy", icon: Binary },
+    { name: "Sustainable Living", icon: Network },
+    { name: "Green Technology", icon: Cpu },
   ];
 
   const handleNext = () => {
