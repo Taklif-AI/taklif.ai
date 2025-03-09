@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import assignmentsData from '@/data/assignments.json';
 
 export function HomeMagic() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -39,82 +40,18 @@ export function HomeMagic() {
     },
   ];
 
-  const assignments = [
-    {
-      title: "Write an essay on climate change",
-      details:
-        "Discuss the causes, effects, and potential solutions to climate change.",
-      icon: Workflow,
-      keyTopics: [
-        "Greenhouse gas emissions",
-        "Global warming",
-        "Renewable energy solutions",
-        "Carbon footprint reduction",
-      ],
-      examples: [
-        "Case study: Impact of deforestation in the Amazon",
-        "Example: Transition to solar energy in Germany",
-      ],
-      resources: [
-        "IPCC Climate Reports",
-        "NASA Climate Change Website",
-        "UN Sustainable Development Goals",
-      ],
-    },
-    {
-      title: "Create a presentation on renewable energy",
-      details:
-        "Highlight different types of renewable energy sources and their benefits.",
-      icon: Zap,
-      keyTopics: [
-        "Solar energy",
-        "Wind energy",
-        "Hydropower",
-        "Geothermal energy",
-      ],
-      examples: [
-        "Example: Solar farms in California",
-        "Case study: Wind energy in Denmark",
-      ],
-      resources: [
-        "International Renewable Energy Agency (IRENA)",
-        "U.S. Department of Energy",
-        "Renewable Energy World",
-      ],
-    },
-    {
-      title: "Develop a project on sustainable living",
-      details:
-        "Propose a plan for a sustainable living community, including energy, water, and waste management.",
-      icon: Network,
-      keyTopics: [
-        "Zero-waste lifestyle",
-        "Sustainable architecture",
-        "Community gardens",
-        "Water conservation techniques",
-      ],
-      examples: [
-        "Example: Eco-villages in Scandinavia",
-        "Case study: Sustainable urban planning in Singapore",
-      ],
-      resources: [
-        "World Green Building Council",
-        "Sustainable Living Foundation",
-        "UN Environment Programme",
-      ],
-    },
-  ];
+  // Use the data from the JSON file
+  const assignments = assignmentsData.assignments;
 
   const [selectedAssignment, setSelectedAssignment] = useState(
     assignments[0].title,
   );
 
   const interests = [
-    { name: "Environmental Science", icon: Workflow },
-    { name: "Renewable Energy", icon: Zap },
-    { name: "Climate Policy", icon: Binary },
-    { name: "Sustainable Living", icon: Network },
-    { name: "Green Technology", icon: Cpu },
+    { name: "Basketball", icon: Workflow },
+    { name: "Astronomy", icon: Zap },
+    { name: "Painting", icon: Binary },
+    { name: "Poetry", icon: Network },
   ];
 
   const handleNext = () => {
@@ -224,9 +161,8 @@ export function HomeMagic() {
               {[1, 2, 3].map((step) => (
                 <div
                   key={step}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                    step === currentStep ? "bg-white w-4" : "bg-white/50"
-                  }`}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${step === currentStep ? "bg-white w-4" : "bg-white/50"
+                    }`}
                 />
               ))}
             </div>
@@ -253,9 +189,8 @@ export function HomeMagic() {
                   return (
                     <Card
                       key={index}
-                      className={`p-4 hover:bg-accent cursor-pointer transition-all hover:scale-[1.02] flex items-start space-x-4 ${
-                        isSelected ? "ring-2 ring-purple-500" : ""
-                      }`}
+                      className={`p-4 hover:bg-accent cursor-pointer transition-all hover:scale-[1.02] flex items-start space-x-4 ${isSelected ? "ring-2 ring-purple-500" : ""
+                        }`}
                       onClick={() => setSelectedAssignment(assignment.title)}
                     >
                       <div className="p-2 rounded-full bg-purple-100 dark:bg-purple-900">
@@ -308,11 +243,10 @@ export function HomeMagic() {
                   return (
                     <Card
                       key={index}
-                      className={`p-4 sm:p-6 hover:bg-accent cursor-pointer transition-all hover:scale-[1.02] flex flex-col items-center justify-center space-y-3 ${
-                        selectedInterest === interest.name
-                          ? "ring-2 ring-purple-500"
-                          : ""
-                      }`}
+                      className={`p-4 sm:p-6 hover:bg-accent cursor-pointer transition-all hover:scale-[1.02] flex flex-col items-center justify-center space-y-3 ${selectedInterest === interest.name
+                        ? "ring-2 ring-purple-500"
+                        : ""
+                        }`}
                       onClick={() => setSelectedInterest(interest.name)}
                     >
                       <div className="p-3 rounded-full bg-purple-100 dark:bg-purple-900">
