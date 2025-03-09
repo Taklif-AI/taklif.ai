@@ -1,142 +1,86 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { SportsBasketballOutlined } from '@mui/icons-material';
 import {
   Book,
   Sparkles,
-  BookOpen,
+  Earth,
   Cpu,
-  Zap,
-  Network,
-  Workflow,
   Binary,
+  CodeXml,
+  SquareSigma,
+  Dices,
+  Rocket,
+  Palette,
+  BookText,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import assignmentsData from '@/data/assignments.json';
+import assignmentsData from "@/data/assignments.json";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import rehypeSanitize from "rehype-sanitize";
+import "katex/dist/katex.min.css";
+
+const assignmentIcons: Record<number, any> = {
+  1: CodeXml,
+  2: SquareSigma,
+  3: Dices,
+};
+
+const interestIcons: Record<string, any> = {
+  Basketball: SportsBasketballOutlined,
+  Astronomy: Rocket,
+  Painting: Palette,
+  Poetry: BookText,
+};
 
 export function HomeMagic() {
   const [currentStep, setCurrentStep] = useState(1);
+
+  const [selectedAssignment, setSelectedAssignment] = useState(
+    assignmentsData.assignments[0]
+  );
+
   const [selectedInterest, setSelectedInterest] = useState("");
+
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedResult, setGeneratedResult] = useState("");
   const [displayedResult, setDisplayedResult] = useState("");
 
   const steps = [
     {
-      title: "Step 1: Enter Your Assignment",
-      description: "Select one of the predefined assignments to get started.",
+      title: "Step 1: Choose an Assignment",
+      description: "Pick one of the assignments from the JSON data below.",
       icon: Book,
     },
     {
-      title: "Step 2: Choose Your Interest",
-      description: "Select one of the interest options below.",
-      icon: Sparkles,
+      title: "Step 2: Choose an Interest",
+      description: "Select an interest related to that assignment.",
+      icon: Earth,
     },
     {
       title: "Step 3: Generate",
-      description: "Your assignment result is being generated.",
-      icon: BookOpen,
+      description: "Watch the AI tailor the assignment for you.",
+      icon: Sparkles,
     },
-  ];
-
-  // Use the data from the JSON file
-  //const assignments = assignmentsData.assignments;
-
-  const assignments = [
-    {
-      title: "Write an essay on climate change",
-      details:
-        "Discuss the causes, effects, and potential solutions to climate change.",
-      icon: Workflow,
-      keyTopics: [
-        "Greenhouse gas emissions",
-        "Global warming",
-        "Renewable energy solutions",
-        "Carbon footprint reduction",
-      ],
-      examples: [
-        "Case study: Impact of deforestation in the Amazon",
-        "Example: Transition to solar energy in Germany",
-      ],
-      resources: [
-        "IPCC Climate Reports",
-        "NASA Climate Change Website",
-        "UN Sustainable Development Goals",
-      ],
-    },
-    {
-      title: "Create a presentation on renewable energy",
-      details:
-        "Highlight different types of renewable energy sources and their benefits.",
-      icon: Zap,
-      keyTopics: [
-        "Solar energy",
-        "Wind energy",
-        "Hydropower",
-        "Geothermal energy",
-      ],
-      examples: [
-        "Example: Solar farms in California",
-        "Case study: Wind energy in Denmark",
-      ],
-      resources: [
-        "International Renewable Energy Agency (IRENA)",
-        "U.S. Department of Energy",
-        "Renewable Energy World",
-      ],
-    },
-    {
-      title: "Develop a project on sustainable living",
-      details:
-        "Propose a plan for a sustainable living community, including energy, water, and waste management.",
-      icon: Network,
-      keyTopics: [
-        "Zero-waste lifestyle",
-        "Sustainable architecture",
-        "Community gardens",
-        "Water conservation techniques",
-      ],
-      examples: [
-        "Example: Eco-villages in Scandinavia",
-        "Case study: Sustainable urban planning in Singapore",
-      ],
-      resources: [
-        "World Green Building Council",
-        "Sustainable Living Foundation",
-        "UN Environment Programme",
-      ],
-    },
-  ];
-
-  const [selectedAssignment, setSelectedAssignment] = useState(
-    assignments[0].title,
-  );
-
-  // const interests = [
-  //   { name: "Basketball", icon: Workflow },
-  //   { name: "Astronomy", icon: Zap },
-  //   { name: "Painting", icon: Binary },
-  //   { name: "Poetry", icon: Network },
-  // ];
-
-  const interests = [
-    { name: "Environmental Science", icon: Workflow },
-    { name: "Renewable Energy", icon: Zap },
-    { name: "Climate Policy", icon: Binary },
-    { name: "Sustainable Living", icon: Network },
-    { name: "Green Technology", icon: Cpu },
   ];
 
   const handleNext = () => {
     if (currentStep === 3) {
       setCurrentStep(1);
-      setSelectedAssignment(assignments[0].title);
+      setSelectedAssignment(assignmentsData.assignments[0]);
       setSelectedInterest("");
       setGeneratedResult("");
       setDisplayedResult("");
       setIsGenerating(false);
-    } else if (
+      return;
+    }
+
+    if (
       (currentStep === 1 && selectedAssignment) ||
       (currentStep === 2 && selectedInterest)
     ) {
@@ -145,71 +89,68 @@ export function HomeMagic() {
       }
       setCurrentStep((prev) => prev + 1);
     }
+
   };
 
   const simulateGeneration = () => {
     setIsGenerating(true);
-    const result = `Based on your selection of "${selectedAssignment}" and interest in "${selectedInterest}", here's your personalized assignment structure:
 
-1. Introduction
-   - Background on the topic
-   - Current relevance
-   - Thesis statement
+    const assignmentTitle = selectedAssignment.title;
+    const interestTitle =
+      selectedAssignment.interests[selectedInterest]?.title || selectedInterest;
+    const interestContent =
+      selectedAssignment.interests[selectedInterest]?.content || "";
 
-2. Main Body
-   - Key concepts and definitions
-   - Analysis of current trends
-   - Supporting evidence and data
-   - Expert opinions and research
+    const result = `${interestTitle}\n\n${interestContent}`;
 
-3. Recommendations
-   - Practical solutions
-   - Implementation strategies
-   - Future implications
+    // Simulate a small delay  
+    setTimeout(() => {
+      setGeneratedResult(result);
+      setIsGenerating(false);
+    }, 1000);
 
-4. Conclusion
-   - Summary of key points
-   - Call to action
-   - Future research directions`;
-
-    setGeneratedResult(result);
-    setIsGenerating(false);
   };
 
+  // Animate the "typing" effect
   useEffect(() => {
     if (generatedResult && !isGenerating) {
       let index = 0;
+      let typed = "";
       const interval = setInterval(() => {
         if (index < generatedResult.length) {
-          setDisplayedResult((prev) => prev + generatedResult[index]);
+          typed += generatedResult[index];
           index++;
+          setDisplayedResult(typed);
         } else {
           clearInterval(interval);
         }
       }, 20);
+      return () => clearInterval(interval);
     }
   }, [generatedResult, isGenerating]);
 
+  // Current step's icon
   const CurrentIcon = steps[currentStep - 1].icon;
 
   return (
     <div id="magic" className="container mx-auto p-4 sm:p-6">
-      <div>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="mb-8 sm:mb-16 text-center"
-        >
-          <h2 className="mb-4 text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-violet-600 to-violet-400 bg-clip-text text-transparent">
-            How It Works
-          </h2>
-          <p className="text-sm sm:text-lg text-muted-foreground max-w-2xl mx-auto">
-            Three simple steps to transform your learning experience with
-            AI-powered assignments.
-          </p>
-        </motion.div>
-      </div>
+      {/* Heading */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="mb-8 sm:mb-16 text-center"
+      >
+        <h2 className="mb-4 text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-violet-600 to-violet-400 bg-clip-text text-transparent">
+          How It Works
+        </h2>
+        <p className="text-sm sm:text-lg text-muted-foreground max-w-2xl mx-auto">
+          Three simple steps to transform your learning experience with
+          AI-powered assignments.
+        </p>
+      </motion.div>
+
+      {/* Main Card / Panel */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -217,91 +158,76 @@ export function HomeMagic() {
         className="mb-8 sm:mb-16"
       >
         <div className="flex flex-col lg:flex-row gap-6 max-w-6xl mx-auto bg-card rounded-lg overflow-hidden shadow-xl border">
-          {/* Left Panel */}
+          {/* Left Panel: Step Info */}
           <div className="w-full lg:w-1/3 bg-gradient-to-br from-violet-600 to-purple-700 p-6 sm:p-8 flex flex-col justify-between text-center lg:text-left">
-            <div className="flex items-center justify-center lg:justify-start gap-4">
-              <h2 className="text-xl sm:text-2xl font-bold text-white">
-                {steps[currentStep - 1].title}
-              </h2>
-              <CurrentIcon className="w-8 h-8 text-white" />
-            </div>
+            <div className=" sticky top-0 h-max">
+              {/* Step Title & Icon */}
+              <div className="flex items-center justify-center lg:justify-start gap-4">
+                <h2 className="text-xl sm:text-2xl font-bold text-white">
+                  {steps[currentStep - 1].title}
+                </h2>
+                <CurrentIcon className="w-8 h-8 text-white" />
+              </div>
 
-            {/* Description */}
-            <p className="text-sm sm:text-base text-white/80 mt-4">
-              {steps[currentStep - 1].description}
-            </p>
+              {/* Step Description */}
+              <p className="text-sm sm:text-base text-white/80 mt-4">
+                {steps[currentStep - 1].description}
+              </p>
 
-            <div className="flex justify-center mt-8 space-x-2">
-              {[1, 2, 3].map((step) => (
-                <div
-                  key={step}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${step === currentStep ? "bg-white w-4" : "bg-white/50"
-                    }`}
-                />
-              ))}
+              {/* Step Indicators */}
+              <div className="flex justify-center mt-8 space-x-2">
+                {[1, 2, 3].map((step) => (
+                  <div
+                    key={step}
+                    className={`w-2 h-2 rounded-full transition-all duration-300 ${step === currentStep ? "bg-white w-4" : "bg-white/50"
+                      }`}
+                  />
+                ))}
+              </div>
+
+              {/* Next or Restart Button */}
+              <Button
+                onClick={handleNext}
+                disabled={
+                  (currentStep === 1 && !selectedAssignment) ||
+                  (currentStep === 2 && !selectedInterest)
+                }
+                className="bg-white text-purple-600 hover:bg-white/90 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto mt-2"
+              >
+                {currentStep === 3 ? "Start Over" : "Next"}
+              </Button>
             </div>
-            <Button
-              onClick={handleNext}
-              disabled={
-                (currentStep === 1 && !selectedAssignment) ||
-                (currentStep === 2 && !selectedInterest)
-              }
-              className="bg-white text-purple-600 hover:bg-white/90 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto mt-2"
-            >
-              {currentStep === 3 ? "Start Over" : "Next"}
-            </Button>
           </div>
 
-          {/* Right Panel */}
+          {/* Right Panel: Content */}
           <div className="lg:w-2/3 p-6 sm:p-8">
+            {/* STEP 1: Choose Assignment */}
             {currentStep === 1 && (
               <div className="space-y-4">
-                {assignments.map((assignment, index) => {
-                  const Icon = assignment.icon;
-                  const isSelected = selectedAssignment === assignment.title;
+                {assignmentsData.assignments.map((assignment) => {
+                  const Icon =
+                    assignmentIcons[assignment.id] || assignmentIcons[1];
+                  const isSelected = assignment.id === selectedAssignment.id;
 
                   return (
                     <Card
-                      key={index}
+                      key={assignment.id}
+                      onClick={() => setSelectedAssignment(assignment)}
                       className={`p-4 hover:bg-accent cursor-pointer transition-all hover:scale-[1.02] flex items-start space-x-4 ${isSelected ? "ring-2 ring-purple-500" : ""
                         }`}
-                      onClick={() => setSelectedAssignment(assignment.title)}
                     >
                       <div className="p-2 rounded-full bg-purple-100 dark:bg-purple-900">
                         <Icon className="h-5 w-5 text-purple-500" />
                       </div>
                       <div className="flex-1">
                         <h3 className="font-semibold">{assignment.title}</h3>
+                        {/* Optionally show some excerpt of content */}
                         {isSelected && (
-                          <div className="mt-2 space-y-2">
-                            <p className="text-sm text-muted-foreground">
-                              {assignment.details}
-                            </p>
-                            <div className="text-sm text-muted-foreground">
-                              <h4 className="font-medium">Key Topics:</h4>
-                              <ul className="list-disc list-inside">
-                                {assignment.keyTopics?.map((topic, i) => (
-                                  <li key={i}>{topic}</li>
-                                ))}
-                              </ul>
-                            </div>
-                            <div className="text-sm text-muted-foreground">
-                              <h4 className="font-medium">Examples:</h4>
-                              <ul className="list-disc list-inside">
-                                {assignment.examples?.map((example, i) => (
-                                  <li key={i}>{example}</li>
-                                ))}
-                              </ul>
-                            </div>
-                            <div className="text-sm text-muted-foreground">
-                              <h4 className="font-medium">Resources:</h4>
-                              <ul className="list-disc list-inside">
-                                {assignment.resources?.map((resource, i) => (
-                                  <li key={i}>{resource}</li>
-                                ))}
-                              </ul>
-                            </div>
-                          </div>
+                          <p className="text-sm text-muted-foreground mt-2">
+                            {assignment.content.length > 120
+                              ? assignment.content.slice(0, 120) + "..."
+                              : assignment.content}
+                          </p>
                         )}
                       </div>
                     </Card>
@@ -310,24 +236,27 @@ export function HomeMagic() {
               </div>
             )}
 
+            {/* STEP 2: Choose Interest */}
             {currentStep === 2 && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {interests.map((interest, index) => {
-                  const Icon = interest.icon;
+                {/* Get the interest keys from the selected assignment */}
+                {Object.keys(selectedAssignment.interests).map((interestKey) => {
+                  const Icon =
+                    interestIcons[interestKey] || interestIcons["Basketball"];
+                  const isSelected = selectedInterest === interestKey;
+
                   return (
                     <Card
-                      key={index}
-                      className={`p-4 sm:p-6 hover:bg-accent cursor-pointer transition-all hover:scale-[1.02] flex flex-col items-center justify-center space-y-3 ${selectedInterest === interest.name
-                        ? "ring-2 ring-purple-500"
-                        : ""
+                      key={interestKey}
+                      onClick={() => setSelectedInterest(interestKey)}
+                      className={`p-4 sm:p-6 hover:bg-accent cursor-pointer transition-all hover:scale-[1.02] flex flex-col items-center justify-center space-y-3 ${isSelected ? "ring-2 ring-purple-500" : ""
                         }`}
-                      onClick={() => setSelectedInterest(interest.name)}
                     >
                       <div className="p-3 rounded-full bg-purple-100 dark:bg-purple-900">
                         <Icon className="h-6 w-6 text-purple-500" />
                       </div>
                       <p className="font-medium text-sm sm:text-base">
-                        {interest.name}
+                        {interestKey}
                       </p>
                     </Card>
                   );
@@ -335,6 +264,7 @@ export function HomeMagic() {
               </div>
             )}
 
+            {/* STEP 3: Generate / Display Generated Content */}
             {currentStep === 3 && (
               <div className="space-y-4">
                 <Card className="p-4 sm:p-6 border-purple-200 dark:border-purple-800">
@@ -347,7 +277,7 @@ export function HomeMagic() {
                         Selected Assignment:
                       </p>
                       <p className="text-muted-foreground">
-                        {selectedAssignment}
+                        {selectedAssignment.title}
                       </p>
                     </div>
                   </div>
@@ -361,9 +291,23 @@ export function HomeMagic() {
                       <p>AI is generating your personalized assignment...</p>
                     </div>
                   ) : (
-                    <div className="prose dark:prose-invert max-w-none">
-                      <pre className="whitespace-pre-wrap font-sans">
-                        {displayedResult}
+                    <div className="
+                    prose 
+                    dark:prose-invert 
+                    max-w-none 
+                    prose-headings:my-0
+                    prose-p:my-0
+                    prose-ul:my-0
+                    prose-ol:my-0
+                    prose-li:my-0
+                  ">
+                      <pre className="whitespace-pre-wrap font-sans leading-relaxed">
+                        <ReactMarkdown
+                          remarkPlugins={[remarkGfm, remarkMath]}
+                          rehypePlugins={[rehypeSanitize, rehypeKatex]}
+                        >
+                          {displayedResult}
+                        </ReactMarkdown>
                       </pre>
                     </div>
                   )}
@@ -374,5 +318,6 @@ export function HomeMagic() {
         </div>
       </motion.div>
     </div>
+
   );
 }
