@@ -139,8 +139,6 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
       token.subscription_date = existingUser.subscription?.subscription_date
         ? new Date(existingUser.subscription.subscription_date)
         : new Date();
-
-      token.exp = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 10;
       return token;
     },
   },
