@@ -175,6 +175,7 @@ export default function AssignmentResultPage() {
           }
         }
 
+        sessionStorage.setItem("allowLoadingPage", "true");
         // redirect user to loadings page
         router.push("/assignment-personalization/loading");
         try {
@@ -224,6 +225,7 @@ export default function AssignmentResultPage() {
           Toast.success("Assignment re-personalized successfully!");
           setIsPending(false);
           router.push("/assignment-personalization/result");
+          sessionStorage.removeItem("allowLoadingPage");
         } catch (error) {
           setIsPending(false);
           console.log(error);
@@ -258,6 +260,8 @@ export default function AssignmentResultPage() {
             return;
           }
         }
+
+        sessionStorage.setItem("allowLoadingPage", "true");
 
         // redirect user to loadings page
         router.push("/assignment-personalization/loading");
@@ -310,6 +314,7 @@ export default function AssignmentResultPage() {
           Toast.success("Assignment simplified successfully!");
           setIsPending(false);
           router.push("/assignment-personalization/result");
+          sessionStorage.removeItem("allowLoadingPage");
           /* eslint-disable */
         } catch (error) {
           Toast.error("Failed to simplified assignment. Please try again");

@@ -151,6 +151,7 @@ export default function AssignmentPage() {
       run_id: runId,
       personalization_id: uuidv4(),
     };
+    sessionStorage.setItem("allowLoadingPage", "true");
     // redirect user to loadings page
     router.push("assignment-personalization/loading");
 
@@ -218,7 +219,7 @@ export default function AssignmentPage() {
       Toast.success("Assignment personalized successfully!");
       setIsPending(false);
       router.push("/assignment-personalization/result");
-
+      sessionStorage.removeItem("allowLoadingPage");
       /* eslint-disable */
     } catch (error) {
       setIsPending(false);

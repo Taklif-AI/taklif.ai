@@ -4,13 +4,20 @@ import { Card } from "@/components/ui/card";
 import { Sparkles, Brain, Wand2, Stars } from "lucide-react";
 import { motion } from "framer-motion";
 import { useEffect } from "react";
-
+import { useRouter } from "next/navigation";
 const backgroundIcons = [Brain, Wand2, Stars, Sparkles];
 
 export default function AssignmentLoadingPage() {
+  const router = useRouter();
   useEffect(() => {
     document.title = "Loading...";
   }, []);
+  useEffect(() => {
+    const allow = sessionStorage.getItem("allowLoadingPage");
+    if (!allow) {
+      router.push("/");
+    }
+  }, [router]);
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-3xl mx-auto">
