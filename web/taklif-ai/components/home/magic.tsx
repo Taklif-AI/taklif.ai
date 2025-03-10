@@ -222,23 +222,16 @@ export function HomeMagic() {
                       </div>
                       <div className="flex-1">
                         <h3 className="font-semibold">{assignment.title}</h3>
-                        {/* Optionally show some excerpt of content */}
                         {isSelected && (
-                          <div className="
-                          prose 
-                          dark:prose-invert 
-                          max-w-none
-                        ">
-                          <p className="text-sm text-muted-foreground mt-2 leading-tight">
+                        <div className="prose dark:prose-invert max-w-none text-sm text-muted-foreground mt-2 leading-tight">
                           <ReactMarkdown
-                                remarkPlugins={[remarkGfm, remarkMath]}
-                                rehypePlugins={[rehypeSanitize, rehypeKatex]}
-                              >
-                                {assignment.content}
-                              </ReactMarkdown>
-                          </p>
-                          </div>
-                        )}
+                            remarkPlugins={[remarkGfm, remarkMath]}
+                            rehypePlugins={[rehypeSanitize, rehypeKatex]}
+                          >
+                            {assignment.content}
+                          </ReactMarkdown>
+                        </div>
+                      )}
                       </div>
                     </Card>
                   );
