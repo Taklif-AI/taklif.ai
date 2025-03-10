@@ -108,7 +108,7 @@ export function HomeMagic() {
     setTimeout(() => {
       setGeneratedResult(result);
       setIsGenerating(false);
-    }, 100);
+    }, 1000);
 
   };
 
@@ -125,7 +125,7 @@ export function HomeMagic() {
         } else {
           clearInterval(interval);
         }
-      }, 20);
+      }, 10);
       return () => clearInterval(interval);
     }
   }, [generatedResult, isGenerating]);
