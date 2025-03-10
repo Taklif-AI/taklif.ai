@@ -65,23 +65,24 @@ def handler(event, context):
         guard = Guardrails()
 
         # Interest guardrail
-        interest_validation = guard.validate(
-            validator_type="interest",
-            content=params["interest"],
-            metadata={
-                "langsmith_client": langsmith_client,
-            },
-        )
-        if interest_validation["content"]["decision"] == "rejected":
-            return {
-                "statusCode": 400,
-                "body": json.dumps(
-                    {
-                        "guardrail": "interest",
-                        "rejected": interest_validation["content"]["explanation"],
-                    }
-                ),
-            }
+        if task == "personalization":
+            interest_validation = guard.validate(
+                validator_type="interest",
+                content=params["interest"],
+                metadata={
+                    "langsmith_client": langsmith_client,
+                },
+            )
+            if interest_validation["content"]["decision"] == "rejected":
+                return {
+                    "statusCode": 400,
+                    "body": json.dumps(
+                        {
+                            "guardrail": "interest",
+                            "rejected": interest_validation["content"]["explanation"],
+                        }
+                    ),
+                }
 
         # PDF assignment processing
         if task == "personalization" and params.get("is_pdf") is True:
@@ -106,25 +107,26 @@ def handler(event, context):
                 }
 
         # Assignment guardrail
-        assignment_validation = guard.validate(
-            validator_type="assignment",
-            content=params["general_assignment"]
-            if task == "personalization"
-            else params["personalized_assignment"],
-            metadata={
-                "langsmith_client": langsmith_client,
-            },
-        )
-        if assignment_validation["content"]["decision"] == "rejected":
-            return {
-                "statusCode": 400,
-                "body": json.dumps(
-                    {
-                        "guardrail": "assignment",
-                        "rejected": assignment_validation["content"]["explanation"],
-                    }
-                ),
-            }
+        if task == "personalization":
+            assignment_validation = guard.validate(
+                validator_type="assignment",
+                content=params["general_assignment"]
+                if task == "personalization"
+                else params["personalized_assignment"],
+                metadata={
+                    "langsmith_client": langsmith_client,
+                },
+            )
+            if assignment_validation["content"]["decision"] == "rejected":
+                return {
+                    "statusCode": 400,
+                    "body": json.dumps(
+                        {
+                            "guardrail": "assignment",
+                            "rejected": assignment_validation["content"]["explanation"],
+                        }
+                    ),
+                }
 
         # LLM calling
         response = ""
@@ -204,12 +206,12 @@ def handler(event, context):
                 "decision": interest_validation["content"]["decision"],
                 "explanation": interest_validation["content"]["explanation"],
                 "request_info": interest_validation["request_info"],
-            },
+            } if task == "personalization" else {},
             "assignment_guardrail_decision": {
                 "decision": assignment_validation["content"]["decision"],
                 "explanation": assignment_validation["content"]["explanation"],
                 "request_info": assignment_validation["request_info"],
-            },
+            } if task == "personalization" else {},
             "output_guardrail_decision": {
                 "decision": assignment_output_validation["content"]["decision"],
                 "explanation": assignment_output_validation["content"]["explanation"],
