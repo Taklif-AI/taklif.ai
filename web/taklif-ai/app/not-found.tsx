@@ -3,8 +3,12 @@
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useEffect } from "react";
 
 export default function NotFound() {
+  useEffect(() => {
+    document.title = "Not Found";
+  }, []);
   return (
     <div className="min-h-screen bg-[#13111C] flex items-center justify-center p-4">
       <div className="relative">

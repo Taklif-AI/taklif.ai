@@ -3,10 +3,14 @@
 import { Card } from "@/components/ui/card";
 import { Sparkles, Brain, Wand2, Stars } from "lucide-react";
 import { motion } from "framer-motion";
+import { useEffect } from "react";
 
 const backgroundIcons = [Brain, Wand2, Stars, Sparkles];
 
 export default function AssignmentLoadingPage() {
+  useEffect(() => {
+    document.title = "Loading...";
+  }, []);
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-3xl mx-auto">

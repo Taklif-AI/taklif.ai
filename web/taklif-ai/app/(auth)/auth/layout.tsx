@@ -2,7 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Taklif.AI",
+  title: "Authentication",
   description: "AI-powered assignment generation for personalized learning",
 };
 

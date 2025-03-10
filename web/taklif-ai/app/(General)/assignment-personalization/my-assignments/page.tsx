@@ -9,7 +9,6 @@ import { getAssignments } from "@/actions/get-assignments";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Toast } from "@/lib/utils/toast";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
@@ -24,7 +23,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useAssignments } from "@/components/providers/assignments-provider";
 export default function AssignmentsPage() {
   const [assignments, setAssignments] = useState([]);
   const [pageHistory, setPageHistory] = useState([]); // Stores past lastEvaluatedKeys for back navigation
@@ -65,6 +63,10 @@ export default function AssignmentsPage() {
 
     setLoading(false);
   };
+
+  useEffect(() => {
+    document.title = "My Assignments";
+  }, []);
 
   useEffect(() => {
     const savedPageSize = sessionStorage.getItem("pageSize");

@@ -26,6 +26,10 @@ export default function AssignmentPage() {
   const [runId, setRunId] = useState("");
 
   useEffect(() => {
+    document.title = "Assignment Personalization";
+  }, []);
+
+  useEffect(() => {
     if (currentStep === 2) {
       const new_run_id = uuidv4();
       setRunId(new_run_id);

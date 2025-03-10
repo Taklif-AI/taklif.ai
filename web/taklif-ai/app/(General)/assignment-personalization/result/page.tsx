@@ -101,6 +101,10 @@ export default function AssignmentResultPage() {
     refreshCount();
   }, [router]);
 
+  useEffect(() => {
+    document.title = "Personalization Result";
+  }, []);
+
   const handleNavigateLeft = () => {
     if (currentAssignmentIndex < assignmentsStack.length - 1) {
       // Clear localStorage feedback when navigating to a different assignment
