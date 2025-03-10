@@ -101,7 +101,7 @@ export function HomeMagic() {
     const interestContent =
       selectedAssignment.interests[selectedInterest]?.content || "";
 
-    const result = `${interestTitle}\n\n${interestContent}`;
+    const result = `### ${interestTitle}\n\n${interestContent}`;
 
     // Simulate a small delay  
     setTimeout(() => {
@@ -294,21 +294,15 @@ export function HomeMagic() {
                     <div className="
                     prose 
                     dark:prose-invert 
-                    max-w-none 
-                    prose-headings:my-0
-                    prose-p:my-0
-                    prose-ul:my-0
-                    prose-ol:my-0
-                    prose-li:my-0
+                    max-w-none
+                    font-sans
                   ">
-                      <pre className="whitespace-pre-wrap font-sans leading-relaxed">
                         <ReactMarkdown
                           remarkPlugins={[remarkGfm, remarkMath]}
                           rehypePlugins={[rehypeSanitize, rehypeKatex]}
                         >
                           {displayedResult}
                         </ReactMarkdown>
-                      </pre>
                     </div>
                   )}
                 </Card>
