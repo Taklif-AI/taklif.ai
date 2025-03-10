@@ -51,7 +51,6 @@ export default function AssignmentsPage() {
       await getAssignments(user.id, newLastKey, pageSize);
 
     if (newAssignments.length === 0) {
-      Toast.error("There is no more assignments!");
       setCurrentLastKey(null);
     } else {
       setAssignments(newAssignments);
