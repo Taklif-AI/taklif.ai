@@ -49,7 +49,7 @@
         {
             "id": 3,
             "title": "Probability",
-            "content": "With the following non-transitive dice:\nBlue: 3 3 3 3 3 6; \nOrange: 1 4 4 4 4 4; \nWhite: 2 2 2 5 5 5.\n(a) Find the probability that white beats orange, the probability that orange beats blue, and the probability that blue beats white. \nCan you line the dice up in order from best to worst? (Hint: This is why these are called ‘non-transitive’.)\n(b) Suppose you roll two white dice against two blue dice. What is the probability that the sum of the white dice is greater than the sum of the blue dice?",
+            "content": "With the following non-transitive dice:\n\n- **Blue:** 3, 3, 3, 3, 3, 6  \n- **Orange:** 1, 4, 4, 4, 4, 4  \n- **White:** 2, 2, 2, 5, 5, 5  \n\n### (a) Probability Comparisons\nFind the probability of the following events:\n\n1. **White beats Orange**\n2. **Orange beats Blue**\n3. **Blue beats White**\n\nCan you arrange the dice in order from best to worst? *(Hint: This is why these are called ‘non-transitive’.)*\n\n### (b) Two Dice Rolls\nSuppose you roll **two white dice** against **two blue dice**. What is the probability that the sum of the white dice is greater than the sum of the blue dice?",
             "interests": {
                 "Basketball": {
                     "title": "Hoops of Chance: Non-Transitive Dice Showdown 🏀🎲",

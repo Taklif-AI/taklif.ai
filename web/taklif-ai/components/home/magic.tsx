@@ -7,7 +7,6 @@ import {
   Sparkles,
   Earth,
   Cpu,
-  Binary,
   CodeXml,
   SquareSigma,
   Dices,
@@ -44,6 +43,8 @@ export function HomeMagic() {
   const [selectedAssignment, setSelectedAssignment] = useState(
     assignmentsData.assignments[0]
   );
+
+  const SelectedAssignmentIcon = assignmentIcons[selectedAssignment.id] || CodeXml;
 
   const [selectedInterest, setSelectedInterest] = useState("");
 
@@ -107,7 +108,7 @@ export function HomeMagic() {
     setTimeout(() => {
       setGeneratedResult(result);
       setIsGenerating(false);
-    }, 1000);
+    }, 100);
 
   };
 
@@ -223,11 +224,20 @@ export function HomeMagic() {
                         <h3 className="font-semibold">{assignment.title}</h3>
                         {/* Optionally show some excerpt of content */}
                         {isSelected && (
-                          <p className="text-sm text-muted-foreground mt-2">
-                            {assignment.content.length > 120
-                              ? assignment.content.slice(0, 120) + "..."
-                              : assignment.content}
+                          <div className="
+                          prose 
+                          dark:prose-invert 
+                          max-w-none
+                        ">
+                          <p className="text-sm text-muted-foreground mt-2 leading-tight">
+                          <ReactMarkdown
+                                remarkPlugins={[remarkGfm, remarkMath]}
+                                rehypePlugins={[rehypeSanitize, rehypeKatex]}
+                              >
+                                {assignment.content}
+                              </ReactMarkdown>
                           </p>
+                          </div>
                         )}
                       </div>
                     </Card>
@@ -270,7 +280,7 @@ export function HomeMagic() {
                 <Card className="p-4 sm:p-6 border-purple-200 dark:border-purple-800">
                   <div className="flex items-center space-x-3">
                     <div className="p-2 rounded-full bg-purple-100 dark:bg-purple-900">
-                      <Binary className="h-5 w-5 text-purple-500" />
+                      <SelectedAssignmentIcon className="h-5 w-5 text-purple-500" />
                     </div>
                     <div>
                       <p className="text-lg font-medium">
