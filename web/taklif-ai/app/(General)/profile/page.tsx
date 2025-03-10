@@ -272,7 +272,7 @@ export default function ProfilePage() {
                   {user?.name}
                 </h1>
                 {/* Plan Badge */}
-                <Badge className="bg-violet-100 text-violet-800 dark:bg-violet-900 dark:text-violet-100">
+                <Badge className="bg-violet-100 text-violet-800 dark:bg-violet-900 dark:text-violet-100 pointer-events-none">
                   {user?.plan
                     ?.split(" ")
                     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
