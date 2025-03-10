@@ -147,8 +147,5 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
     strategy: "jwt",
     maxAge: 60 * 60 * 24 * 10, // 10 days
   },
-  jwt: {
-    maxAge: 60 * 60 * 24 * 10, // 10 days
-  },
   ...authConfig,
 });
