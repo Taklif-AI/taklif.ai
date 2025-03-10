@@ -53,7 +53,7 @@ export function Navigation() {
             <Link href="/assignment-personalization">
               <Button
                 variant="ghost"
-                className="rounded-full w-[130px] bg-purple-600 transition-colors hover:outline-none"
+                className="rounded-full h-9 w-[120px] bg-purple-600 transition-colors hover:outline-none "
               >
                 Try it now!
               </Button>
