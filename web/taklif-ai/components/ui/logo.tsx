@@ -1,4 +1,5 @@
 "use client"; // Add this line
+import { useEffect, useState } from "react";
 import SVGIMG from "../../public/taklif-logo.svg";
 import SVGIMGt from "../../public/Taklif.AI-Light.svg";
 
@@ -9,6 +10,16 @@ export function Logo() {
   const { resolvedTheme } = useTheme();
   const logoLight = SVGIMGt; // Path to light mode logo
   const logoDark = SVGIMG; // Path to dark mode logo
+
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
   return (
     <Image
       loading="eager"
