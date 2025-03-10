@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -64,6 +64,10 @@ export default function ProfilePage() {
   const [image, setImage] = useState(user?.image || "/default-avatar.jpg");
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
+
+  useEffect(() => {
+    document.title = "Profile";
+  }, []);
 
   const cropImage = async (file: File): Promise<Blob> => {
     return new Promise((resolve, reject) => {
