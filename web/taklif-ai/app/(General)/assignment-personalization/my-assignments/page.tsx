@@ -27,8 +27,7 @@ import { generateUrlToken } from "@/actions/generate-url-token";
 import { Toast } from "@/lib/utils/toast";
 export default function AssignmentsPage() {
   const [assignments, setAssignments] = useState([]);
-  const [pageHistory, setPageHistory] = useState([]); // Stores past lastEvaluatedKeys for back navigation
-  const [currentLastKey, setCurrentLastKey] = useState(null); // Last key for the current page
+  const [pageIndex, setPageIndex] = useState(0);
   const [loading, setLoading] = useState(false);
   const savedPageSize = sessionStorage.getItem("pageSize");
   const [pageSize, setPageSize] = useState(Number(savedPageSize) || 5); // Default page size
@@ -40,7 +39,7 @@ export default function AssignmentsPage() {
 
     sessionStorage.setItem("fromAllAssignments", "true"); // Set the flag
 
-    const data = await generateUrlToken(run_id,personalization_id);
+    const data = await generateUrlToken(run_id, personalization_id);
     if (data.token) {
       router.push(`/assignment-personalization/result?token=${encodeURIComponent(data.token)}`);
     } else if (data.error) {
@@ -49,27 +48,14 @@ export default function AssignmentsPage() {
       return;
     }
   };
-  const fetchAssignments = async (newLastKey = null, isNextPage = false) => {
+  const fetchAssignments = async () => {
     if (!user?.id || loading) return;
 
     setLoading(true);
 
-    const { assignments: newAssignments, lastEvaluatedKey } =
-      await getAssignments(user.id, newLastKey, pageSize);
+    const { assignments: newAssignments } = await getAssignments(user.id);
 
-    if (newAssignments.length === 0) {
-      setCurrentLastKey(null);
-    } else {
-      setAssignments(newAssignments);
-      setCurrentLastKey(lastEvaluatedKey);
-    }
-
-    if (isNextPage) {
-      setPageHistory((prev) => [...prev, newLastKey]);
-    } else if (newLastKey === null) {
-      setPageHistory([]);
-    }
-
+    setAssignments(newAssignments);
     setLoading(false);
   };
 
@@ -85,19 +71,19 @@ export default function AssignmentsPage() {
     fetchAssignments();
   }, [user, pageSize]);
 
+  const paginatedAssignments = assignments.slice(
+    pageIndex * pageSize,
+    (pageIndex + 1) * pageSize
+  )
   const handleNext = () => {
-    if (currentLastKey) {
-      fetchAssignments(currentLastKey, true);
+    if ((pageIndex + 1) * pageSize < assignments.length) {
+      setPageIndex(pageIndex + 1);
     }
   };
 
   const handlePrevious = () => {
-    if (pageHistory.length > 1) {
-      const previousPageKey = pageHistory[pageHistory.length - 2]; // Get the previous key
-      setPageHistory((prev) => prev.slice(0, -1)); // Remove the current page from history
-      fetchAssignments(previousPageKey, false);
-    } else {
-      fetchAssignments(null, false);
+    if (pageIndex > 0) {
+      setPageIndex(pageIndex - 1);
     }
   };
 
@@ -105,8 +91,7 @@ export default function AssignmentsPage() {
     const newSize = Number(value);
     setPageSize(newSize);
     sessionStorage.setItem("pageSize", newSize.toString());
-    setPageHistory([]);
-    setCurrentLastKey(null);
+    setPageIndex(0);
   };
 
   return (
@@ -121,15 +106,17 @@ export default function AssignmentsPage() {
           </p>
         </div>
         <div className="space-y-6">
-          {assignments && assignments.length > 0 ? (
-            assignments.map((assignment) => {
+          {loading ? (
+            <div className="flex items-center justify-center w-full h-24">
+              <div className="animate-spin border-4 border-t-primary-500 border-opacity-50 h-12 w-12 text-primary-500" />
+            </div>
+          ) : paginatedAssignments && paginatedAssignments.length > 0 ? (
+            paginatedAssignments.map((assignment) => {
               const uniqueKey = `RUN#${assignment.runId}#PERSONALIZATION#${assignment.personalizationId}`;
               const title = assignment.title;
-
               // Regular expression to match emojis
               const emojiRegex =
                 /(?:\p{Extended_Pictographic}|\p{Emoji_Presentation}|\p{Emoji_Modifier_Base}|\p{Emoji})+/gu;
-
               // Extract emojis from the title
               const emojis = title.match(emojiRegex) || [];
               // Remove emojis from the title
@@ -160,7 +147,7 @@ export default function AssignmentsPage() {
                           onClick={() =>
                             handleViewResult(
                               assignment.runId,
-                              assignment.personalizationId,
+                              assignment.personalizationId
                             )
                           }
                           className="text-violet-600 hover:text-violet-700 hover:bg-violet-50 dark:hover:bg-violet-900/20 p-2 rounded-full transition"
@@ -199,16 +186,17 @@ export default function AssignmentsPage() {
           )}
         </div>
         <div className="flex justify-between items-center mt-6">
-          {pageHistory.length !== 0 && (
+          {pageIndex !== 0 && (
+
+
             <Button
               onClick={handlePrevious}
-              disabled={pageHistory.length === 0}
+              disabled={pageIndex === 0}
               className="bg-gray-500 hover:bg-gray-600"
             >
               <ChevronLeft className="h-5 w-5" /> Previous
             </Button>
           )}
-
           <div className="flex items-center gap-4">
             <Select
               onValueChange={handlePageSizeChange}
@@ -225,15 +213,16 @@ export default function AssignmentsPage() {
               </SelectContent>
             </Select>
           </div>
-          {currentLastKey !== null && (
+          {!((pageIndex + 1) * pageSize >= assignments.length) && (
             <Button
               onClick={handleNext}
-              disabled={currentLastKey === null}
+              disabled={(pageIndex + 1) * pageSize >= assignments.length}
               className="bg-violet-600 hover:bg-violet-700"
             >
               Next <ChevronRight className="h-5 w-5" />
             </Button>
           )}
+
 
         </div>
       </div>
