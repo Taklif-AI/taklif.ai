@@ -16,6 +16,7 @@ def personalization_parser(body: dict):
         "user_id": params.get("user_id"),
         "run_id": params.get("run_id"),
         "personalization_id": params.get("personalization_id"),
+        "is_first_try": bool(params.get("is_first_try")),
     }
 
 
