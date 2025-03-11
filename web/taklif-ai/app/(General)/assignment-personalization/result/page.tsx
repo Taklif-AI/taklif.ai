@@ -208,6 +208,7 @@ export default function AssignmentResultPage() {
             is_pdf: false,
             run_id: runId,
             personalization_id: personalization_id,
+            is_first_try:false,
           };
           // send the assignment to the backend
           const res = await fetch("/api/assignment-personalization", {
