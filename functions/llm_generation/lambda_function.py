@@ -251,6 +251,7 @@ def handler(event, context):
                     )
                 ),
             },
+            "is_first_try": params.get("is_first_try", False),
             "created_at": datetime.now(timezone.utc).isoformat(),
         }
 
