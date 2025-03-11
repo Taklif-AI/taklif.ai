@@ -15,6 +15,7 @@ export const SignIn = () => {
   const [turnstileStatus, setTurnstileStatus] = useState<
     "success" | "error" | "expired" | "required"
   >("required");
+  // const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -162,34 +163,36 @@ export const SignIn = () => {
                   </div>
                 </>
               )}
-              {!showTwoFactor && (
-                <Turnstile
-                  className="flex w-full"
-                  theme="dark"
-                  siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
-                  retry="auto"
-                  size="normal"
-                  refreshExpired="auto"
-                  sandbox={process.env.NODE_ENV === "development"}
-                  onError={() => {
-                    setTurnstileStatus("error");
-                    setError("Security check failed. Please try again.");
-                  }}
-                  onExpire={() => {
-                    setTurnstileStatus("expired");
-                    setError("Security check expired. Please verify again.");
-                  }}
-                  onLoad={() => {
-                    setTurnstileStatus("required");
-                    setError("");
-                  }}
-                  onVerify={(token) => {
-                    setTurnstileStatus("success");
-                    turnstileTokenRef.current = token;
-                    setError("");
-                  }}
-                />
-              )}
+
+              <Turnstile
+                key={showTwoFactor ? "2fa" : "login"}
+                className="flex w-full"
+                theme="dark"
+                siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+                retry="auto"
+                size="normal"
+                refreshExpired="auto"
+                sandbox={process.env.NODE_ENV === "development"}
+                onError={() => {
+                  setTurnstileStatus("error");
+                  setError("Security check failed. Please try again.");
+                }}
+                onExpire={() => {
+                  setTurnstileStatus("expired");
+                  setError("Security check expired. Please verify again.");
+                }}
+                onLoad={() => {
+                  setTurnstileStatus("required");
+                  setError("");
+                }}
+                onVerify={(token) => {
+                  setTurnstileStatus("success");
+                  turnstileTokenRef.current = token;
+                  // setTurnstileToken(token);
+                  setError("");
+                }}
+              />
+
               <FormError message={error || urlError} />
               <FormSuccess message={success} />
               <Button
