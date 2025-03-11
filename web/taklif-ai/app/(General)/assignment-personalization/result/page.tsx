@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { AssignmentResult } from "@/components/assignment/additional-components/assignment-res";
 import { AssignmentActions } from "@/components/assignment/additional-components/assignment-action";
 import { Card } from "@/components/ui/card";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Toast } from "@/lib/utils/toast";
 import { motion } from "framer-motion";
 import { Brain, Sparkles, Stars, Wand2 } from "lucide-react";
@@ -18,9 +18,15 @@ import { useAssignments } from "@/components/providers/assignments-provider";
 import Link from "next/link";
 import { checkAndRenewSubscription } from "@/actions/check-update-subscription";
 import { decrementRemainingCredit } from "@/actions/decrement-remaining-credit";
+import { useSession } from "next-auth/react";
+import { useCurrentUser } from "@/hooks/use-current-user";
+import { decodeUrlToken } from "@/actions/decode-url-token";
+import { generateUrlToken } from "@/actions/generate-url-token";
 const backgroundIcons = [Brain, Wand2, Stars, Sparkles];
 
 export default function AssignmentResultPage() {
+  const { update } = useSession();
+  const user = useCurrentUser();
   const router = useRouter();
   const { refreshCount } = useAssignments();
   const [assignmentsStack, setAssignmentsStack] = useState<Assignment[]>([]);
@@ -28,21 +34,35 @@ export default function AssignmentResultPage() {
     useState<number>(0);
   const [isPending, setIsPending] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(true);
+  const searchParams = useSearchParams();
+  const [runId, setRunId] = useState("");
+  const [personalizationId, setPersonalizationId] = useState("");
+
+  useEffect(() => {
+    const token = searchParams.get("token");
+    if (!token) {
+      router.push("/");
+      return;
+    }
+    async function getToken(token: string) {
+      const result = await decodeUrlToken(token);
+      if (result?.error) {
+        Toast.error(result.error);
+        router.push("/");
+        return;
+      }
+      setRunId(result.run_id as string);
+      setPersonalizationId(result.personalization_id as string);
+    }
+    getToken(token);
+  }, [router, searchParams]);
 
   useEffect(() => {
     async function getAssignment() {
       try {
-        const run_id = sessionStorage.getItem("run_id");
-        const personalization_id = sessionStorage.getItem("personalization_id");
         const fromAllAssignments = sessionStorage.getItem("fromAllAssignments");
 
-        if (!run_id || !personalization_id) {
-          Toast.error("Missing required data. Redirecting...");
-          router.push("/assignment-personalization");
-          return;
-        }
-
-        const result = await fetchAllAssignmentVersions(run_id as string);
+        const result = await fetchAllAssignmentVersions(runId);
         if (result?.error) {
           Toast.error(result.error);
           return;
@@ -64,7 +84,7 @@ export default function AssignmentResultPage() {
             // Find the index of the assignment with the matching personalization_id
             assignmentIndex = sortedAssignments.findIndex(
               (assignment) =>
-                assignment.personalization_id === personalization_id &&
+                assignment.personalization_id === personalizationId &&
                 assignment.item_type === "Personalization",
             );
             if (assignmentIndex === -1) {
@@ -97,9 +117,11 @@ export default function AssignmentResultPage() {
         setIsLoading(false);
       }
     }
-    getAssignment();
+    if (runId) {
+      getAssignment();
+    }
     refreshCount();
-  }, [router]);
+  }, [router, refreshCount, personalizationId, runId]);
 
   useEffect(() => {
     document.title = "Personalization Result";
@@ -179,18 +201,12 @@ export default function AssignmentResultPage() {
         // redirect user to loadings page
         router.push("/assignment-personalization/loading");
         try {
-          const run_id = sessionStorage.getItem("run_id");
-          if (!run_id) {
-            Toast.error("Missing required data. Redirecting...");
-            router.push("/assignment-personalization/result");
-            return;
-          }
           const personalization_id = uuidv4();
           const dataToBackend = {
             student_interest: currentAssignment.user_input.interest,
             general_assignment: currentAssignment.user_input.assignment,
             is_pdf: false,
-            run_id: run_id,
+            run_id: runId,
             personalization_id: personalization_id,
           };
           // send the assignment to the backend
@@ -211,22 +227,35 @@ export default function AssignmentResultPage() {
             return;
           }
 
-          sessionStorage.setItem("run_id", dataToBackend.run_id);
-          sessionStorage.setItem(
-            "personalization_id",
-            dataToBackend.personalization_id,
-          );
-
           const decrement = await decrementRemainingCredit();
           if (decrement.error) {
             Toast.error(decrement.error);
           }
 
+          if (user?.remaining_credits) {
+            const value = user.remaining_credits - 1;
+            await update({
+              user: {
+                remaining_credits: value,
+              },
+            });
+          }
+
           Toast.success("Assignment re-personalized successfully!");
           setIsPending(false);
-          router.push("/assignment-personalization/result");
-          sessionStorage.removeItem("allowLoadingPage");
+
+          const data = await generateUrlToken(dataToBackend.run_id, dataToBackend.personalization_id);
+          if (data.token) {
+            router.push(`/assignment-personalization/result?token=${encodeURIComponent(data.token)}`);
+            sessionStorage.removeItem("allowLoadingPage");
+          } else if (data.error) {
+            Toast.error(data.error);
+            sessionStorage.removeItem("allowLoadingPage");
+            router.push("/assignment-personalization/my-assignments");
+            return;
+          }
         } catch (error) {
+          sessionStorage.removeItem("allowLoadingPage");
           setIsPending(false);
           console.log(error);
           Toast.error("Failed to create assignment. Please try again.2");
@@ -266,18 +295,11 @@ export default function AssignmentResultPage() {
         // redirect user to loadings page
         router.push("/assignment-personalization/loading");
 
-        const run_id = sessionStorage.getItem("run_id");
-        const personalization_id = sessionStorage.getItem("personalization_id");
-        if (!run_id || !personalization_id) {
-          Toast.error("Missing required data. Redirecting...");
-          router.push("/assignment-personalization/result");
-          return;
-        }
         const simplification_id = uuidv4();
 
         const dataToBackend = {
-          run_id: run_id,
-          personalization_id: personalization_id,
+          run_id: runId,
+          personalization_id: personalizationId,
           simplification_id: simplification_id,
           interest: currentAssignment.user_input.interest,
           personalized_assignment: currentAssignment?.model_output.content,
@@ -300,23 +322,37 @@ export default function AssignmentResultPage() {
             return;
           }
 
-          sessionStorage.setItem("run_id", dataToBackend.run_id);
-          sessionStorage.setItem(
-            "personalization_id",
-            dataToBackend.personalization_id,
-          );
-
           const decrement1 = await decrementRemainingCredit();
           if (decrement1.error) {
             Toast.error(decrement1.error);
           }
 
+          if (user?.remaining_credits) {
+            const value = user.remaining_credits - 1;
+            await update({
+              user: {
+                remaining_credits: value,
+              },
+            });
+          }
+
           Toast.success("Assignment simplified successfully!");
           setIsPending(false);
-          router.push("/assignment-personalization/result");
-          sessionStorage.removeItem("allowLoadingPage");
+
+          const data = await generateUrlToken(dataToBackend.run_id, dataToBackend.personalization_id);
+          if (data.token) {
+            router.push(`/assignment-personalization/result?token=${encodeURIComponent(data.token)}`);
+            sessionStorage.removeItem("allowLoadingPage");
+          } else if (data.error) {
+            Toast.error(data.error);
+            sessionStorage.removeItem("allowLoadingPage");
+            router.push("/assignment-personalization/my-assignments");
+            return;
+          }
           /* eslint-disable */
         } catch (error) {
+          sessionStorage.removeItem("allowLoadingPage");
+          setIsPending(false);
           Toast.error("Failed to simplified assignment. Please try again");
           router.push("/assignment-personalization/result/");
         }

@@ -12,10 +12,15 @@ import { fileToBase64 } from "@/lib/utils/files/file-to-base64";
 import { v4 as uuidv4 } from "uuid";
 import { checkAndRenewSubscription } from "@/actions/check-update-subscription";
 import { decrementRemainingCredit } from "@/actions/decrement-remaining-credit";
+import { useSession } from "next-auth/react";
+import { useCurrentUser } from "@/hooks/use-current-user";
+import { generateUrlToken } from "@/actions/generate-url-token";
 
 const steps = ["Upload PDF", "Choose Interests", "Review Inputs"];
 
 export default function AssignmentPage() {
+  const { update } = useSession();
+  const user = useCurrentUser();
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
   const [isPending, setIsPending] = useState(false);
@@ -196,32 +201,42 @@ export default function AssignmentPage() {
           Toast.error(result.error.rejected);
         }
         setIsPending(false);
+        sessionStorage.removeItem("allowLoadingPage");
         router.push("/assignment-personalization");
         return;
       }
 
-
-
       storage.clearProgress();
-
-      sessionStorage.removeItem("simplification_id");
-      sessionStorage.setItem("run_id", dataToBackend.run_id);
-      sessionStorage.setItem(
-        "personalization_id",
-        dataToBackend.personalization_id,
-      );
 
       const decrement = await decrementRemainingCredit();
       if (decrement.error) {
         Toast.error(decrement.error);
       }
+      if (user?.remaining_credits) {
+        const value = user.remaining_credits - 1;
+        await update({
+          user: {
+            remaining_credits: value,
+          },
+        });
+      }
 
       Toast.success("Assignment personalized successfully!");
       setIsPending(false);
-      router.push("/assignment-personalization/result");
-      sessionStorage.removeItem("allowLoadingPage");
+
+      const data = await generateUrlToken(dataToBackend.run_id, dataToBackend.personalization_id);
+      if (data.token) {
+        router.push(`/assignment-personalization/result?token=${encodeURIComponent(data.token)}`);
+        sessionStorage.removeItem("allowLoadingPage");
+      } else if (data.error) {
+        Toast.error(data.error);
+        sessionStorage.removeItem("allowLoadingPage");
+        router.push("/assignment-personalization/my-assignments");
+        return;
+      }
       /* eslint-disable */
     } catch (error) {
+      sessionStorage.removeItem("allowLoadingPage");
       setIsPending(false);
       Toast.error("Failed to personalize assignment. Please try again");
       router.push("/assignment-personalization");
@@ -262,7 +277,7 @@ export default function AssignmentPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-3xl mx-auto">
-        <div className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-6 rounded-lg shadow-sm">
+        <div className=" bg-[rgb(18 18 18)] backdrop-blur  p-6 rounded-lg shadow-sm">
           <ProgressSteps currentStep={currentStep} steps={steps} />
         </div>
         <div className="mt-8">{renderStep()}</div>

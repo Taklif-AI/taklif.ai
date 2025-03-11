@@ -165,6 +165,7 @@ export const SignIn = () => {
               )}
 
               <Turnstile
+                key={showTwoFactor ? "2fa" : "login"}
                 className="flex w-full"
                 theme="dark"
                 siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}

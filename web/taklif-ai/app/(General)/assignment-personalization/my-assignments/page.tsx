@@ -23,6 +23,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { generateUrlToken } from "@/actions/generate-url-token";
+import { Toast } from "@/lib/utils/toast";
 export default function AssignmentsPage() {
   const [assignments, setAssignments] = useState([]);
   const [pageHistory, setPageHistory] = useState([]); // Stores past lastEvaluatedKeys for back navigation
@@ -34,11 +36,18 @@ export default function AssignmentsPage() {
   const router = useRouter();
   const user = useCurrentUser();
 
-  const handleViewResult = (run_id: string, personalization_id: string) => {
-    sessionStorage.setItem("run_id", run_id);
-    sessionStorage.setItem("personalization_id", personalization_id);
+  const handleViewResult = async (run_id: string, personalization_id: string) => {
+
     sessionStorage.setItem("fromAllAssignments", "true"); // Set the flag
-    router.push("/assignment-personalization/result");
+
+    const data = await generateUrlToken(run_id,personalization_id);
+    if (data.token) {
+      router.push(`/assignment-personalization/result?token=${encodeURIComponent(data.token)}`);
+    } else if (data.error) {
+      Toast.error(data.error);
+      router.push("/assignment-personalization/my-assignments");
+      return;
+    }
   };
   const fetchAssignments = async (newLastKey = null, isNextPage = false) => {
     if (!user?.id || loading) return;

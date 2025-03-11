@@ -2,6 +2,7 @@
 import { currentUser } from "@/lib/auth/auth";
 import { client } from "@/lib/database/dynamo-client";
 import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import { unstable_update } from "@/auth";
 
 export const decrementRemainingCredit = async () => {
   const user = await currentUser();
@@ -26,6 +27,15 @@ export const decrementRemainingCredit = async () => {
   };
   try {
     await client.send(new UpdateCommand(params));
+    if (user.remaining_credits) {
+      const value = user.remaining_credits - 1;
+      await unstable_update({
+        user: {
+          remaining_credits: value,
+        },
+      });
+    }
+
     return { success: true };
   } catch (error) {
     console.log(error);
