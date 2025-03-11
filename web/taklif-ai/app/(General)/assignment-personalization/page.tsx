@@ -14,6 +14,7 @@ import { checkAndRenewSubscription } from "@/actions/check-update-subscription";
 import { decrementRemainingCredit } from "@/actions/decrement-remaining-credit";
 import { useSession } from "next-auth/react";
 import { useCurrentUser } from "@/hooks/use-current-user";
+import { generateUrlToken } from "@/actions/generate-url-token";
 
 const steps = ["Upload PDF", "Choose Interests", "Review Inputs"];
 
@@ -200,20 +201,12 @@ export default function AssignmentPage() {
           Toast.error(result.error.rejected);
         }
         setIsPending(false);
+        sessionStorage.removeItem("allowLoadingPage");
         router.push("/assignment-personalization");
         return;
       }
 
-
-
       storage.clearProgress();
-
-      sessionStorage.removeItem("simplification_id");
-      sessionStorage.setItem("run_id", dataToBackend.run_id);
-      sessionStorage.setItem(
-        "personalization_id",
-        dataToBackend.personalization_id,
-      );
 
       const decrement = await decrementRemainingCredit();
       if (decrement.error) {
@@ -227,12 +220,23 @@ export default function AssignmentPage() {
           },
         });
       }
+
       Toast.success("Assignment personalized successfully!");
       setIsPending(false);
-      router.push("/assignment-personalization/result");
-      sessionStorage.removeItem("allowLoadingPage");
+
+      const data = await generateUrlToken(dataToBackend.run_id, dataToBackend.personalization_id);
+      if (data.token) {
+        router.push(`/assignment-personalization/result?token=${encodeURIComponent(data.token)}`);
+        sessionStorage.removeItem("allowLoadingPage");
+      } else if (data.error) {
+        Toast.error(data.error);
+        sessionStorage.removeItem("allowLoadingPage");
+        router.push("/assignment-personalization/my-assignments");
+        return;
+      }
       /* eslint-disable */
     } catch (error) {
+      sessionStorage.removeItem("allowLoadingPage");
       setIsPending(false);
       Toast.error("Failed to personalize assignment. Please try again");
       router.push("/assignment-personalization");
