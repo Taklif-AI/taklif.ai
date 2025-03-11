@@ -324,6 +324,15 @@ export default function AssignmentResultPage() {
             Toast.error(decrement1.error);
           }
 
+          if (user?.remaining_credits) {
+            const value = user.remaining_credits - 1;
+            await update({
+              user: {
+                remaining_credits: value,
+              },
+            });
+          }
+
           Toast.success("Assignment simplified successfully!");
           setIsPending(false);
           router.push("/assignment-personalization/result");
