@@ -273,7 +273,7 @@ export default function AssignmentPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-3xl mx-auto">
-        <div className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-6 rounded-lg shadow-sm">
+        <div className=" bg-[rgb(18 18 18)] backdrop-blur  p-6 rounded-lg shadow-sm">
           <ProgressSteps currentStep={currentStep} steps={steps} />
         </div>
         <div className="mt-8">{renderStep()}</div>
