@@ -5,33 +5,25 @@ import { client } from "@/lib/database/dynamo-assignment-client";
 
 export async function getAssignments(
   userId: string,
-  lastEvaluatedKey = null,
-  limit: number = 2,
 ) {
   const params: any = {
     TableName: "Development-AssignmentsTable",
     KeyConditionExpression: "PK = :pk",
-    FilterExpression: "size(simplification_id) = :zero",
+    FilterExpression: "is_first_try = :true",
     ExpressionAttributeValues: {
       ":pk": userId,
-      ":zero": 0,
+      ":true": true,
     },
-    ProjectionExpression: "SK, created_at, model_output, simplification_id",
+    ProjectionExpression: "SK, created_at, model_output, is_first_try",
     ScanIndexForward: false,
-    Limit: limit,
   };
 
-  if (lastEvaluatedKey) {
-    params.ExclusiveStartKey = lastEvaluatedKey;
-  }
 
   try {
-    const { Items, LastEvaluatedKey } = await client.send(
-      new QueryCommand(params),
-    );
+    const { Items } = await client.send(new QueryCommand(params),);
 
     if (!Items || Items.length === 0) {
-      return { assignments: [], lastEvaluatedKey: null };
+      return { assignments: [] };
     }
 
     const processedAssignments = Items.map((assignment) => ({
@@ -42,18 +34,15 @@ export async function getAssignments(
       createdAt: assignment.created_at,
     }));
 
-    // Sort processed assignments in DESCENDING order
+    // Sort assignments in descending order (most recent first)
     processedAssignments.sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     );
 
-    return {
-      assignments: processedAssignments,
-      lastEvaluatedKey: LastEvaluatedKey || null,
-    };
+
+    return { assignments: processedAssignments };
   } catch (error) {
     console.error("❌ Error fetching assignments:", error);
-    return { assignments: [], lastEvaluatedKey: null };
+    return { assignments: [] };
   }
 }
