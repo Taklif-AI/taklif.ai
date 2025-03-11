@@ -288,7 +288,7 @@ export default function ProfilePage() {
                 <Coins className="w-5 h-5 text-purple-800 dark:text-purple-200" />
                 <span className="font-semibold">
                   <span className={`${creditsColorClass} font-semibold`}>
-                    {remainingCredits}
+                    {user?.remaining_credits}
                   </span>
                   <span className="text-purple-800 dark:text-purple-200">
                     {" "}

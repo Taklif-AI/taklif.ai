@@ -18,9 +18,13 @@ import { useAssignments } from "@/components/providers/assignments-provider";
 import Link from "next/link";
 import { checkAndRenewSubscription } from "@/actions/check-update-subscription";
 import { decrementRemainingCredit } from "@/actions/decrement-remaining-credit";
+import { useSession } from "next-auth/react";
+import { useCurrentUser } from "@/hooks/use-current-user";
 const backgroundIcons = [Brain, Wand2, Stars, Sparkles];
 
 export default function AssignmentResultPage() {
+  const { update } = useSession();
+  const user = useCurrentUser();
   const router = useRouter();
   const { refreshCount } = useAssignments();
   const [assignmentsStack, setAssignmentsStack] = useState<Assignment[]>([]);
@@ -220,6 +224,15 @@ export default function AssignmentResultPage() {
           const decrement = await decrementRemainingCredit();
           if (decrement.error) {
             Toast.error(decrement.error);
+          }
+
+          if (user?.remaining_credits) {
+            const value = user.remaining_credits - 1;
+            await update({
+              user: {
+                remaining_credits: value,
+              },
+            });
           }
 
           Toast.success("Assignment re-personalized successfully!");

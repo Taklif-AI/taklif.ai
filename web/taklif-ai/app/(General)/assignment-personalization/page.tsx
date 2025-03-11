@@ -12,10 +12,14 @@ import { fileToBase64 } from "@/lib/utils/files/file-to-base64";
 import { v4 as uuidv4 } from "uuid";
 import { checkAndRenewSubscription } from "@/actions/check-update-subscription";
 import { decrementRemainingCredit } from "@/actions/decrement-remaining-credit";
+import { useSession } from "next-auth/react";
+import { useCurrentUser } from "@/hooks/use-current-user";
 
 const steps = ["Upload PDF", "Choose Interests", "Review Inputs"];
 
 export default function AssignmentPage() {
+  const { update } = useSession();
+  const user = useCurrentUser();
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
   const [isPending, setIsPending] = useState(false);
@@ -215,7 +219,14 @@ export default function AssignmentPage() {
       if (decrement.error) {
         Toast.error(decrement.error);
       }
-
+      if (user?.remaining_credits) {
+        const value = user.remaining_credits - 1;
+        await update({
+          user: {
+            remaining_credits: value,
+          },
+        });
+      }
       Toast.success("Assignment personalized successfully!");
       setIsPending(false);
       router.push("/assignment-personalization/result");
