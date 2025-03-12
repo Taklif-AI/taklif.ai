@@ -39,8 +39,7 @@ import {
 
 export default function AssignmentsPage() {
   const [assignments, setAssignments] = useState([]);
-  const [pageHistory, setPageHistory] = useState([]); // Stores past lastEvaluatedKeys for back navigation
-  const [currentLastKey, setCurrentLastKey] = useState(null); // Last key for the current page
+  const [pageIndex, setPageIndex] = useState(0);
   const [loading, setLoading] = useState(false);
   const savedPageSize = sessionStorage.getItem("pageSize");
   const [pageSize, setPageSize] = useState(Number(savedPageSize) || 5); // Default page size
@@ -56,7 +55,7 @@ export default function AssignmentsPage() {
 
     sessionStorage.setItem("fromAllAssignments", "true"); // Set the flag
 
-    const data = await generateUrlToken(run_id,personalization_id);
+    const data = await generateUrlToken(run_id, personalization_id);
     if (data.token) {
       router.push(`/assignment-personalization/result?token=${encodeURIComponent(data.token)}`);
     } else if (data.error) {
@@ -65,31 +64,14 @@ export default function AssignmentsPage() {
       return;
     }
   };
-
-  const fetchAssignments = async (newLastKey = null, isNextPage = false) => {
+  const fetchAssignments = async () => {
     if (!user?.id || loading) return;
 
     setLoading(true);
 
-    const { assignments: newAssignments, lastEvaluatedKey } = await getAssignments(
-      user.id,
-      newLastKey,
-      pageSize
-    );
+    const { assignments: newAssignments } = await getAssignments(user.id);
 
-    if (newAssignments.length === 0) {
-      setCurrentLastKey(null);
-    } else {
-      setAssignments(newAssignments);
-      setCurrentLastKey(lastEvaluatedKey);
-    }
-
-    if (isNextPage) {
-      setPageHistory((prev) => [...prev, newLastKey]);
-    } else if (newLastKey === null) {
-      setPageHistory([]);
-    }
-
+    setAssignments(newAssignments);
     setLoading(false);
   };
 
@@ -106,19 +88,19 @@ export default function AssignmentsPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, pageSize]);
 
+  const paginatedAssignments = assignments.slice(
+    pageIndex * pageSize,
+    (pageIndex + 1) * pageSize
+  )
   const handleNext = () => {
-    if (currentLastKey) {
-      fetchAssignments(currentLastKey, true);
+    if ((pageIndex + 1) * pageSize < assignments.length) {
+      setPageIndex(pageIndex + 1);
     }
   };
 
   const handlePrevious = () => {
-    if (pageHistory.length > 1) {
-      const previousPageKey = pageHistory[pageHistory.length - 2]; // Get the previous key
-      setPageHistory((prev) => prev.slice(0, -1)); // Remove the current page from history
-      fetchAssignments(previousPageKey, false);
-    } else {
-      fetchAssignments(null, false);
+    if (pageIndex > 0) {
+      setPageIndex(pageIndex - 1);
     }
   };
 
@@ -126,8 +108,7 @@ export default function AssignmentsPage() {
     const newSize = Number(value);
     setPageSize(newSize);
     sessionStorage.setItem("pageSize", newSize.toString());
-    setPageHistory([]);
-    setCurrentLastKey(null);
+    setPageIndex(0);
   };
 
   // --- Open the delete confirmation dialog ---
@@ -173,11 +154,14 @@ export default function AssignmentsPage() {
         </div>
 
         <div className="space-y-6">
-          {assignments && assignments.length > 0 ? (
-            assignments.map((assignment) => {
+          {loading ? (
+            <div className="flex items-center justify-center w-full h-24">
+              <div className="animate-spin border-4 border-t-primary-500 border-opacity-50 h-12 w-12 text-primary-500" />
+            </div>
+          ) : paginatedAssignments && paginatedAssignments.length > 0 ? (
+            paginatedAssignments.map((assignment) => {
               const uniqueKey = `RUN#${assignment.runId}#PERSONALIZATION#${assignment.personalizationId}`;
               const title = assignment.title;
-
               // Regular expression to match emojis
               const emojiRegex =
                 /(?:\p{Extended_Pictographic}|\p{Emoji_Presentation}|\p{Emoji_Modifier_Base}|\p{Emoji})+/gu;
@@ -259,24 +243,26 @@ export default function AssignmentsPage() {
             </Card>
           )}
         </div>
-
         <div className="flex items-center w-full mt-6">
-          {/* Left section (Previous button) */}
-          <div className="flex-1">
-            {pageHistory.length !== 0 && (
-              <Button
-                onClick={handlePrevious}
-                disabled={pageHistory.length === 0}
-                className="bg-gray-500 hover:bg-gray-600 rounded-full"
-              >
-                <ChevronLeft className="h-5 w-5" /> Previous
-              </Button>
-            )}
-          </div>
-          {/* Middle section (Select) */}
-          <div className="flex-1 flex justify-center">
-            <Select onValueChange={handlePageSizeChange} value={pageSize.toString()}>
-              <SelectTrigger className="w-20 bg-violet-600 hover:bg-violet-700 text-white">
+        {/* Left section (Previous button) */}
+        <div className="flex-1">
+          {pageIndex !== 0 && (
+            <Button
+              onClick={handlePrevious}
+              disabled={pageIndex === 0}
+              className="bg-gray-500 hover:bg-gray-600 rounded-full"
+            >
+              <ChevronLeft className="h-5 w-5" /> Previous
+            </Button>
+          )}
+        </div>
+        {/* Middle section (Select) */}
+        <div className="flex-1 flex justify-center">
+            <Select
+              onValueChange={handlePageSizeChange}
+              value={pageSize.toString()}
+            >
+              <SelectTrigger className="w-24 bg-violet-600 hover:bg-violet-700 text-white">
                 <SelectValue placeholder="Page Size" />
               </SelectTrigger>
               <SelectContent>
@@ -289,15 +275,15 @@ export default function AssignmentsPage() {
           </div>
           {/* Right section (Next button) */}
           <div className="flex-1 flex justify-end">
-            {currentLastKey !== null && (
-              <Button
-                onClick={handleNext}
-                disabled={currentLastKey === null}
-                className="bg-violet-600 hover:bg-violet-700 rounded-full"
-              >
-                Next <ChevronRight className="h-5 w-5" />
-              </Button>
-            )}
+          {!((pageIndex + 1) * pageSize >= assignments.length) && (
+            <Button
+              onClick={handleNext}
+              disabled={(pageIndex + 1) * pageSize >= assignments.length}
+              className="bg-violet-600 hover:bg-violet-700 rounded-full"
+            >
+              Next <ChevronRight className="h-5 w-5" />
+            </Button>
+          )}
           </div>
         </div>
       </div>

@@ -20,11 +20,20 @@ export async function reset(formData: object) {
     return { error: "Email not found!" };
   }
 
-  const passwordResetToken = await generatePasswordResetToken(email);
+  if (!existingUser.emailVerified) {
+    return { error: "Please verify your email and try again!" };
+  }
+  try {
+    const passwordResetToken = await generatePasswordResetToken(email);
 
-  await sendPasswordResetEmail(
-    passwordResetToken.email,
-    passwordResetToken.token,
-  );
-  return { success: "Reset email sent!" };
+    await sendPasswordResetEmail(
+      passwordResetToken.email,
+      passwordResetToken.token,
+    );
+
+    return { success: "Reset email sent!" };
+  } catch (error: any) {
+    return { error: error.message };
+  }
+
 }

@@ -64,18 +64,22 @@ export async function login(formData: object, callbackUrl?: string | null) {
   }
   // check the email verification
   if (!existingUser.emailVerified) {
-    const verificationToken = await generateVerificationToken(
-      existingUser.email,
-      existingUser.email,
-    );
+    try {
+      const verificationToken = await generateVerificationToken(
+        existingUser.email,
+        existingUser.email,
+      );
 
-    // send verification token email
-    await sendVerificationEmail(
-      verificationToken.email,
-      verificationToken.token,
-    );
+      // send verification token email
+      await sendVerificationEmail(
+        verificationToken.email,
+        verificationToken.token,
+      );
 
-    return { success: "Confirmation email sent!" };
+      return { success: "Confirmation email sent!" };
+    } catch (error: any) {
+      return { error: error.message }
+    }
   }
 
   // check the two factor enabled or not
@@ -127,10 +131,14 @@ export async function login(formData: object, callbackUrl?: string | null) {
       await createTwoFactorConfirmation(towFactorConfirmation);
     } else {
       // if there is no code , generate and send a code
-      const twoFactorToken = await generateTwoFactorToken(existingUser.email);
-      await sendTwoFactorTokenEmail(twoFactorToken.email, twoFactorToken.token);
+      try {
+        const twoFactorToken = await generateTwoFactorToken(existingUser.email);
+        await sendTwoFactorTokenEmail(twoFactorToken.email, twoFactorToken.token);
 
-      return { twoFactor: true };
+        return { twoFactor: true };
+      } catch (error: any) {
+        return { error: error.message, twoFactor: true }
+      }
     }
   }
   // begin the sign-in process

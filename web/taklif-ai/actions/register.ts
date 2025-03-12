@@ -102,15 +102,19 @@ export async function register(formData: object) {
   try {
     await client.send(new PutCommand(insertParams));
 
-    const verificationToken = await generateVerificationToken(email, email);
+    try {
+      const verificationToken = await generateVerificationToken(email, email);
 
-    await sendVerificationEmail(
-      verificationToken.email,
-      verificationToken.token,
-    );
+      await sendVerificationEmail(
+        verificationToken.email,
+        verificationToken.token,
+      );
 
-    return { success: "Confirmation email sent!" };
+      return { success: "Confirmation email sent!" };
+    } catch (error1: any) {
+      return { error: error1.message }
+    }
   } catch (error) {
-    return { error: "Failed to create an account. Please try again2." };
+    return { error: "Failed to create an account. Please try again." };
   }
 }

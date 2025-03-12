@@ -155,6 +155,7 @@ export default function AssignmentPage() {
       is_pdf: false,
       run_id: runId,
       personalization_id: uuidv4(),
+      is_first_try:true,
     };
     sessionStorage.setItem("allowLoadingPage", "true");
     // redirect user to loadings page
@@ -224,7 +225,7 @@ export default function AssignmentPage() {
       Toast.success("Assignment personalized successfully!");
       setIsPending(false);
 
-      const data = await generateUrlToken(dataToBackend.run_id, dataToBackend.personalization_id);
+      const data = await generateUrlToken(dataToBackend.run_id);
       if (data.token) {
         router.push(`/assignment-personalization/result?token=${encodeURIComponent(data.token)}`);
         sessionStorage.removeItem("allowLoadingPage");

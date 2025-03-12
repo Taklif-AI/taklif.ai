@@ -17,8 +17,8 @@ export async function decodeUrlToken(token: string) {
 
     try {
         const decoded = jwt.verify(token, secret as string);
-        const { run_id, personalization_id } = decoded as { run_id: string, personalization_id: string };
-        return { run_id, personalization_id };
+        const { run_id } = decoded as { run_id: string };
+        return { run_id };
     } catch (error) {
         console.log(error);
         return { error: 'Failed to decode token' };

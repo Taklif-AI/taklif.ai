@@ -63,6 +63,7 @@ export async function POST(req) {
         run_id: body.run_id,
         personalization_id: body.personalization_id,
         user_id: user.id,
+        is_first_try:body.is_first_try
       },
     };
 

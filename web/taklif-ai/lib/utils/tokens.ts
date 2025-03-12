@@ -17,16 +17,21 @@ import { v4 as uuidv4 } from "uuid";
 import crypto from "crypto";
 
 export const generateTwoFactorToken = async (email: string) => {
-  const tokenId = uuidv4();
-  const token = crypto.randomInt(100000, 1000000).toString(); // 6 digits number
   const now = Math.floor(Date.now() / 1000); // Current time in seconds
-  const expires = now + 300; // expire the token in 1hour
 
   const existingToken = await getTwoFactorTokenByEmail(email);
 
   if (existingToken) {
-    await deleteTwoFactorToken(existingToken.pk, existingToken.sk);
+    if (existingToken.expires > now) {
+      throw new Error("A 2FA code has already been sent. Please wait until it expires before requesting another.");
+    } else {
+      await deleteTwoFactorToken(existingToken.pk, existingToken.sk);
+    }
   }
+  
+  const tokenId = uuidv4();
+  const token = crypto.randomInt(100000, 1000000).toString(); // 6 digits number
+  const expires = now + 300; // expire the token in 1hour
 
   // Create a new two factor token record in the database
   const twoFactorToken = {
@@ -44,15 +49,21 @@ export const generateTwoFactorToken = async (email: string) => {
 };
 
 export const generatePasswordResetToken = async (email: string) => {
-  const token = uuidv4();
+
   const now = Math.floor(Date.now() / 1000); // Current time in seconds
-  const expires = now + 3600; // expire the token in 1hour
 
   const existingToken = await getPasswordResetTokenByEmail(email);
 
   if (existingToken) {
-    await deletePasswordResetToken(existingToken.pk, existingToken.sk);
+    if (existingToken.expires > now) {
+      throw new Error("A reset email has already been sent. Please wait until it expires before requesting another.");
+    } else {
+      await deletePasswordResetToken(existingToken.pk, existingToken.sk);
+    }
   }
+
+  const token = uuidv4();
+  const expires = now + 3600; // expire the token in 1hour
 
   // Create a new password reset token record in the database
   const passwordResetToken = {
@@ -73,15 +84,20 @@ export const generateVerificationToken = async (
   email: string,
   old_email: string,
 ) => {
-  const token = uuidv4();
   const now = Math.floor(Date.now() / 1000); // Current time in seconds
-  const expires = now + 3600; // expire the token in 1hour
 
   const existingToken = await getVerificationTokenByEmail(email);
 
   if (existingToken) {
-    await deleteVerificationToken(existingToken.pk, existingToken.sk);
+    if (existingToken.expires > now) {
+      throw new Error("A verification email has already been sent. Please wait until it expires before requesting another.");
+    } else {
+      await deleteVerificationToken(existingToken.pk, existingToken.sk);
+    }
   }
+
+  const token = uuidv4();
+  const expires = now + 3600; // expire the token in 1hour
 
   // Create a new verification token record in the database
   const verificationToken = {
