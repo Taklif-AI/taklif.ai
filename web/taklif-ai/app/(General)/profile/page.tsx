@@ -317,7 +317,7 @@ export default function ProfilePage() {
               </div>
               <div>
                 <p className="text-2xl font-bold">{count}</p>
-                <p className="text-muted-foreground">Assignments Created</p>
+                <p className="text-muted-foreground">Assignments Personalized</p>
               </div>
             </div>
           </CardContent>
