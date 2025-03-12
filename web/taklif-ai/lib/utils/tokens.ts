@@ -44,15 +44,21 @@ export const generateTwoFactorToken = async (email: string) => {
 };
 
 export const generatePasswordResetToken = async (email: string) => {
-  const token = uuidv4();
+
   const now = Math.floor(Date.now() / 1000); // Current time in seconds
-  const expires = now + 3600; // expire the token in 1hour
 
   const existingToken = await getPasswordResetTokenByEmail(email);
 
   if (existingToken) {
-    await deletePasswordResetToken(existingToken.pk, existingToken.sk);
+    if (existingToken.expires > now) {
+      throw new Error("A reset email has already been sent. Please wait until it expires before requesting another.");
+    } else {
+      await deletePasswordResetToken(existingToken.pk, existingToken.sk);
+    }
   }
+
+  const token = uuidv4();
+  const expires = now + 3600; // expire the token in 1hour
 
   // Create a new password reset token record in the database
   const passwordResetToken = {
