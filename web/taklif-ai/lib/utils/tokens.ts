@@ -17,16 +17,21 @@ import { v4 as uuidv4 } from "uuid";
 import crypto from "crypto";
 
 export const generateTwoFactorToken = async (email: string) => {
-  const tokenId = uuidv4();
-  const token = crypto.randomInt(100000, 1000000).toString(); // 6 digits number
   const now = Math.floor(Date.now() / 1000); // Current time in seconds
-  const expires = now + 300; // expire the token in 1hour
 
   const existingToken = await getTwoFactorTokenByEmail(email);
 
   if (existingToken) {
-    await deleteTwoFactorToken(existingToken.pk, existingToken.sk);
+    if (existingToken.expires > now) {
+      throw new Error("A 2FA code has already been sent. Please wait until it expires before requesting another.");
+    } else {
+      await deleteTwoFactorToken(existingToken.pk, existingToken.sk);
+    }
   }
+  
+  const tokenId = uuidv4();
+  const token = crypto.randomInt(100000, 1000000).toString(); // 6 digits number
+  const expires = now + 300; // expire the token in 1hour
 
   // Create a new two factor token record in the database
   const twoFactorToken = {
@@ -88,7 +93,7 @@ export const generateVerificationToken = async (
       throw new Error("A verification email has already been sent. Please wait until it expires before requesting another.");
     } else {
       await deleteVerificationToken(existingToken.pk, existingToken.sk);
-    } 
+    }
   }
 
   const token = uuidv4();

@@ -131,10 +131,14 @@ export async function login(formData: object, callbackUrl?: string | null) {
       await createTwoFactorConfirmation(towFactorConfirmation);
     } else {
       // if there is no code , generate and send a code
-      const twoFactorToken = await generateTwoFactorToken(existingUser.email);
-      await sendTwoFactorTokenEmail(twoFactorToken.email, twoFactorToken.token);
+      try {
+        const twoFactorToken = await generateTwoFactorToken(existingUser.email);
+        await sendTwoFactorTokenEmail(twoFactorToken.email, twoFactorToken.token);
 
-      return { twoFactor: true };
+        return { twoFactor: true };
+      } catch (error: any) {
+        return { error: error.message, twoFactor: true }
+      }
     }
   }
   // begin the sign-in process
