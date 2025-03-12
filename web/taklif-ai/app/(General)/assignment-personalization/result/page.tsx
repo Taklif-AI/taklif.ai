@@ -36,7 +36,6 @@ export default function AssignmentResultPage() {
   const [isLoading, setIsLoading] = useState(true);
   const searchParams = useSearchParams();
   const [runId, setRunId] = useState("");
-  const [personalizationId, setPersonalizationId] = useState("");
 
   useEffect(() => {
     const token = searchParams.get("token");
@@ -52,7 +51,6 @@ export default function AssignmentResultPage() {
         return;
       }
       setRunId(result.run_id as string);
-      setPersonalizationId(result.personalization_id as string);
     }
     getToken(token);
   }, [router, searchParams]);
@@ -84,8 +82,8 @@ export default function AssignmentResultPage() {
             // Find the index of the assignment with the matching personalization_id
             assignmentIndex = sortedAssignments.findIndex(
               (assignment) =>
-                assignment.personalization_id === personalizationId &&
-                assignment.item_type === "Personalization",
+                assignment.run_id === runId &&
+                assignment.is_first_try === true,
             );
             if (assignmentIndex === -1) {
               // If the assignment is not found, show an error and redirect
@@ -121,7 +119,7 @@ export default function AssignmentResultPage() {
       getAssignment();
     }
     refreshCount();
-  }, [router, refreshCount, personalizationId, runId]);
+  }, [router, refreshCount, runId]);
 
   useEffect(() => {
     document.title = "Personalization Result";
@@ -208,7 +206,7 @@ export default function AssignmentResultPage() {
             is_pdf: false,
             run_id: runId,
             personalization_id: personalization_id,
-            is_first_try:false,
+            is_first_try: false,
           };
           // send the assignment to the backend
           const res = await fetch("/api/assignment-personalization", {
@@ -245,7 +243,7 @@ export default function AssignmentResultPage() {
           Toast.success("Assignment re-personalized successfully!");
           setIsPending(false);
 
-          const data = await generateUrlToken(dataToBackend.run_id, dataToBackend.personalization_id);
+          const data = await generateUrlToken(dataToBackend.run_id);
           if (data.token) {
             router.push(`/assignment-personalization/result?token=${encodeURIComponent(data.token)}`);
             sessionStorage.removeItem("allowLoadingPage");
@@ -300,7 +298,7 @@ export default function AssignmentResultPage() {
 
         const dataToBackend = {
           run_id: runId,
-          personalization_id: personalizationId,
+          personalization_id: currentAssignment.personalization_id,
           simplification_id: simplification_id,
           interest: currentAssignment.user_input.interest,
           personalized_assignment: currentAssignment?.model_output.content,
@@ -340,7 +338,7 @@ export default function AssignmentResultPage() {
           Toast.success("Assignment simplified successfully!");
           setIsPending(false);
 
-          const data = await generateUrlToken(dataToBackend.run_id, dataToBackend.personalization_id);
+          const data = await generateUrlToken(dataToBackend.run_id);
           if (data.token) {
             router.push(`/assignment-personalization/result?token=${encodeURIComponent(data.token)}`);
             sessionStorage.removeItem("allowLoadingPage");

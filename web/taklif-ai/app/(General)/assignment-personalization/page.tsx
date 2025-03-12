@@ -225,7 +225,7 @@ export default function AssignmentPage() {
       Toast.success("Assignment personalized successfully!");
       setIsPending(false);
 
-      const data = await generateUrlToken(dataToBackend.run_id, dataToBackend.personalization_id);
+      const data = await generateUrlToken(dataToBackend.run_id);
       if (data.token) {
         router.push(`/assignment-personalization/result?token=${encodeURIComponent(data.token)}`);
         sessionStorage.removeItem("allowLoadingPage");
