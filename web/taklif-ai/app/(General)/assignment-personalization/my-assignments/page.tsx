@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
-import { ArrowRight, ChevronLeft, ChevronRight, Eye } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, Eye, Trash } from "lucide-react";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { formatDistanceToNow } from "date-fns";
 import { getAssignments } from "@/actions/get-assignments";
@@ -25,6 +25,18 @@ import {
 } from "@/components/ui/select";
 import { generateUrlToken } from "@/actions/generate-url-token";
 import { Toast } from "@/lib/utils/toast";
+
+// --- Import shadcn/ui Dialog components ---
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+
 export default function AssignmentsPage() {
   const [assignments, setAssignments] = useState([]);
   const [pageHistory, setPageHistory] = useState([]); // Stores past lastEvaluatedKeys for back navigation
@@ -32,6 +44,10 @@ export default function AssignmentsPage() {
   const [loading, setLoading] = useState(false);
   const savedPageSize = sessionStorage.getItem("pageSize");
   const [pageSize, setPageSize] = useState(Number(savedPageSize) || 5); // Default page size
+
+  // --- Delete confirmation state ---
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const [assignmentToDelete, setAssignmentToDelete] = useState(null);
 
   const router = useRouter();
   const user = useCurrentUser();
@@ -49,13 +65,17 @@ export default function AssignmentsPage() {
       return;
     }
   };
+
   const fetchAssignments = async (newLastKey = null, isNextPage = false) => {
     if (!user?.id || loading) return;
 
     setLoading(true);
 
-    const { assignments: newAssignments, lastEvaluatedKey } =
-      await getAssignments(user.id, newLastKey, pageSize);
+    const { assignments: newAssignments, lastEvaluatedKey } = await getAssignments(
+      user.id,
+      newLastKey,
+      pageSize
+    );
 
     if (newAssignments.length === 0) {
       setCurrentLastKey(null);
@@ -83,6 +103,7 @@ export default function AssignmentsPage() {
       setPageSize(Number(savedPageSize));
     }
     fetchAssignments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, pageSize]);
 
   const handleNext = () => {
@@ -101,7 +122,7 @@ export default function AssignmentsPage() {
     }
   };
 
-  const handlePageSizeChange = (value) => {
+  const handlePageSizeChange = (value: string) => {
     const newSize = Number(value);
     setPageSize(newSize);
     sessionStorage.setItem("pageSize", newSize.toString());
@@ -109,17 +130,48 @@ export default function AssignmentsPage() {
     setCurrentLastKey(null);
   };
 
+  // --- Open the delete confirmation dialog ---
+  const confirmDelete = (assignment: any) => {
+    setAssignmentToDelete(assignment);
+    setConfirmDeleteOpen(true);
+  };
+
+  // --- Handle the actual delete once user confirms ---
+  const handleConfirmDelete = async () => {
+    if (!assignmentToDelete) return;
+
+    try {
+      // Example: call an action to delete from DB
+      // await deleteAssignment(assignmentToDelete.runId, assignmentToDelete.personalizationId);
+      // Filter it out of local state to update UI:
+      setAssignments((prev) =>
+        prev.filter((a) => {
+          const uniqueKeyA = `RUN#${a.runId}#PERSONALIZATION#${a.personalizationId}`;
+          const uniqueKeyB = `RUN#${assignmentToDelete.runId}#PERSONALIZATION#${assignmentToDelete.personalizationId}`;
+          return uniqueKeyA !== uniqueKeyB;
+        })
+      );
+      Toast.success("Assignment deleted!");
+    } catch (error: any) {
+      Toast.error("Unable to delete assignment.");
+    } finally {
+      setConfirmDeleteOpen(false);
+      setAssignmentToDelete(null);
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto space-y-8">
         <div className="text-center mb-8">
           <h1 className="mb-5 p-1 text-3xl font-bold bg-gradient-to-r from-violet-600 to-violet-400 bg-clip-text text-transparent md:text-4xl">
-            Personalized Assignments
+            My Personalized Assignments
           </h1>
           <p className="text-muted-foreground">
             View and manage your AI-personalized assignments
           </p>
         </div>
+
         <div className="space-y-6">
           {assignments && assignments.length > 0 ? (
             assignments.map((assignment) => {
@@ -129,7 +181,6 @@ export default function AssignmentsPage() {
               // Regular expression to match emojis
               const emojiRegex =
                 /(?:\p{Extended_Pictographic}|\p{Emoji_Presentation}|\p{Emoji_Modifier_Base}|\p{Emoji})+/gu;
-
               // Extract emojis from the title
               const emojis = title.match(emojiRegex) || [];
               // Remove emojis from the title
@@ -156,16 +207,24 @@ export default function AssignmentsPage() {
                         </p>
                       </div>
                       <div className="flex items-center gap-2">
+                        {/* View button */}
                         <button
                           onClick={() =>
                             handleViewResult(
                               assignment.runId,
-                              assignment.personalizationId,
+                              assignment.personalizationId
                             )
                           }
                           className="text-violet-600 hover:text-violet-700 hover:bg-violet-50 dark:hover:bg-violet-900/20 p-2 rounded-full transition"
                         >
                           <Eye className="h-5 w-5" />
+                        </button>
+                        {/* Delete button triggers confirmation */}
+                        <button
+                          onClick={() => confirmDelete(assignment)}
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 p-2 rounded-full transition"
+                        >
+                          <Trash className="h-5 w-5" />
                         </button>
                       </div>
                     </div>
@@ -182,39 +241,42 @@ export default function AssignmentsPage() {
             })
           ) : (
             <Card className="p-12 text-center">
-              <h3 className="text-xl font-semibold mb-2">No assignments yet</h3>
+              <h3 className="text-xl font-semibold mb-2">No assignments personalized yet</h3>
+              <br />
               <p className="text-muted-foreground mb-4">
                 Your personalized assignments will appear here
               </p>
+              <br />
               <Link href="/assignment-personalization">
                 <Button
                   size="lg"
                   className="rounded-full w-full sm:w-auto bg-violet-600 hover:bg-violet-700 text-gray-1000 dark:text-white"
                 >
-                  Create Your First Assignment
+                  Personalize Your First Assignment
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
             </Card>
           )}
         </div>
-        <div className="flex justify-between items-center mt-6">
-          {pageHistory.length !== 0 && (
-            <Button
-              onClick={handlePrevious}
-              disabled={pageHistory.length === 0}
-              className="bg-gray-500 hover:bg-gray-600"
-            >
-              <ChevronLeft className="h-5 w-5" /> Previous
-            </Button>
-          )}
 
-          <div className="flex items-center gap-4">
-            <Select
-              onValueChange={handlePageSizeChange}
-              value={pageSize.toString()}
-            >
-              <SelectTrigger className="w-24 bg-violet-600 hover:bg-violet-700">
+        <div className="flex items-center w-full mt-6">
+          {/* Left section (Previous button) */}
+          <div className="flex-1">
+            {pageHistory.length !== 0 && (
+              <Button
+                onClick={handlePrevious}
+                disabled={pageHistory.length === 0}
+                className="bg-gray-500 hover:bg-gray-600 rounded-full"
+              >
+                <ChevronLeft className="h-5 w-5" /> Previous
+              </Button>
+            )}
+          </div>
+          {/* Middle section (Select) */}
+          <div className="flex-1 flex justify-center">
+            <Select onValueChange={handlePageSizeChange} value={pageSize.toString()}>
+              <SelectTrigger className="w-20 bg-violet-600 hover:bg-violet-700 text-white">
                 <SelectValue placeholder="Page Size" />
               </SelectTrigger>
               <SelectContent>
@@ -225,18 +287,54 @@ export default function AssignmentsPage() {
               </SelectContent>
             </Select>
           </div>
-          {currentLastKey !== null && (
-            <Button
-              onClick={handleNext}
-              disabled={currentLastKey === null}
-              className="bg-violet-600 hover:bg-violet-700"
-            >
-              Next <ChevronRight className="h-5 w-5" />
-            </Button>
-          )}
-
+          {/* Right section (Next button) */}
+          <div className="flex-1 flex justify-end">
+            {currentLastKey !== null && (
+              <Button
+                onClick={handleNext}
+                disabled={currentLastKey === null}
+                className="bg-violet-600 hover:bg-violet-700 rounded-full"
+              >
+                Next <ChevronRight className="h-5 w-5" />
+              </Button>
+            )}
+          </div>
         </div>
       </div>
+
+      {/* ------------------------------- */}
+      {/* Delete Confirmation Dialog */}
+      {/* ------------------------------- */}
+      <Dialog open={confirmDeleteOpen} onOpenChange={setConfirmDeleteOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Assignment</DialogTitle>
+            <hr />
+            <br />
+            <DialogDescription>
+            <b>Are you sure you want to delete this assignment? </b>
+            <br /> <br />
+            This action will permanently remove the assignment,
+            including its simplifications and re-personalization attempts.
+            <br /> <br />
+            <span className="text-red-500">
+              This action cannot be undone.
+            </span>
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setConfirmDeleteOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleConfirmDelete}
+            >
+              Confirm Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
