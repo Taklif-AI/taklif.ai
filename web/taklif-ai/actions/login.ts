@@ -64,18 +64,22 @@ export async function login(formData: object, callbackUrl?: string | null) {
   }
   // check the email verification
   if (!existingUser.emailVerified) {
-    const verificationToken = await generateVerificationToken(
-      existingUser.email,
-      existingUser.email,
-    );
+    try {
+      const verificationToken = await generateVerificationToken(
+        existingUser.email,
+        existingUser.email,
+      );
 
-    // send verification token email
-    await sendVerificationEmail(
-      verificationToken.email,
-      verificationToken.token,
-    );
+      // send verification token email
+      await sendVerificationEmail(
+        verificationToken.email,
+        verificationToken.token,
+      );
 
-    return { success: "Confirmation email sent!" };
+      return { success: "Confirmation email sent!" };
+    } catch (error: any) {
+      return { error: error.message }
+    }
   }
 
   // check the two factor enabled or not

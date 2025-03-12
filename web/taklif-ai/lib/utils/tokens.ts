@@ -79,15 +79,20 @@ export const generateVerificationToken = async (
   email: string,
   old_email: string,
 ) => {
-  const token = uuidv4();
   const now = Math.floor(Date.now() / 1000); // Current time in seconds
-  const expires = now + 3600; // expire the token in 1hour
 
   const existingToken = await getVerificationTokenByEmail(email);
 
   if (existingToken) {
-    await deleteVerificationToken(existingToken.pk, existingToken.sk);
+    if (existingToken.expires > now) {
+      throw new Error("A verification email has already been sent. Please wait until it expires before requesting another.");
+    } else {
+      await deleteVerificationToken(existingToken.pk, existingToken.sk);
+    } 
   }
+
+  const token = uuidv4();
+  const expires = now + 3600; // expire the token in 1hour
 
   // Create a new verification token record in the database
   const verificationToken = {

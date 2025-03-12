@@ -50,16 +50,20 @@ export const profile = async (formData: object) => {
       return { error: "Email already in use!" };
     }
 
-    const verificationToken = await generateVerificationToken(
-      email,
-      user.email as string,
-    );
-    await sendVerificationEmail(
-      verificationToken.email,
-      verificationToken.token,
-    );
+    try {
+      const verificationToken = await generateVerificationToken(
+        email,
+        user.email as string,
+      );
+      await sendVerificationEmail(
+        verificationToken.email,
+        verificationToken.token,
+      );
 
-    return { success: "Verification email sent!" };
+      return { success: "Verification email sent!" };
+    } catch (error: any) {
+      return { error: error.message }
+    }
   }
 
   await updateUserDynamicData(dbUser.pk, data);
