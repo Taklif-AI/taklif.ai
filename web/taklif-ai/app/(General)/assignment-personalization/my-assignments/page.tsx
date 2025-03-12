@@ -35,11 +35,11 @@ export default function AssignmentsPage() {
   const router = useRouter();
   const user = useCurrentUser();
 
-  const handleViewResult = async (run_id: string, personalization_id: string) => {
+  const handleViewResult = async (run_id: string) => {
 
     sessionStorage.setItem("fromAllAssignments", "true"); // Set the flag
 
-    const data = await generateUrlToken(run_id, personalization_id);
+    const data = await generateUrlToken(run_id);
     if (data.token) {
       router.push(`/assignment-personalization/result?token=${encodeURIComponent(data.token)}`);
     } else if (data.error) {
@@ -147,7 +147,6 @@ export default function AssignmentsPage() {
                           onClick={() =>
                             handleViewResult(
                               assignment.runId,
-                              assignment.personalizationId
                             )
                           }
                           className="text-violet-600 hover:text-violet-700 hover:bg-violet-50 dark:hover:bg-violet-900/20 p-2 rounded-full transition"
