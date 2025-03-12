@@ -17,7 +17,7 @@ export async function generateUrlToken(run_id: string) {
 
     const payload = { run_id };
     try {
-        const token = jwt.sign(payload, secret as string, { expiresIn: '24h' });
+        const token = jwt.sign(payload, secret as string);
         return { token: token };
     } catch (error) {
         console.log(error);
