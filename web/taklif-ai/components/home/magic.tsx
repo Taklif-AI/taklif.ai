@@ -41,7 +41,7 @@ export function HomeMagic() {
   const [currentStep, setCurrentStep] = useState(1);
 
   const [selectedAssignment, setSelectedAssignment] = useState(
-    assignmentsData.assignments[0]
+    assignmentsData.assignments[1]
   );
 
   const SelectedAssignmentIcon = assignmentIcons[selectedAssignment.id] || CodeXml;
@@ -54,17 +54,17 @@ export function HomeMagic() {
 
   const steps = [
     {
-      title: "Step 1: Choose an Assignment",
-      description: "Pick one of the assignments from the JSON data below.",
+      title: "1: Choose an Assignment",
+      description: "Pick one of the assignments to be personalized.",
       icon: Book,
     },
     {
-      title: "Step 2: Choose an Interest",
-      description: "Select an interest related to that assignment.",
+      title: "2: Choose an Interest",
+      description: "Choose an interest to begin the magic.",
       icon: Earth,
     },
     {
-      title: "Step 3: Generate",
+      title: "3: Generate",
       description: "Watch the AI tailor the assignment for you.",
       icon: Sparkles,
     },
@@ -125,7 +125,7 @@ export function HomeMagic() {
         } else {
           clearInterval(interval);
         }
-      }, 10);
+      }, 5);
       return () => clearInterval(interval);
     }
   }, [generatedResult, isGenerating]);
@@ -147,7 +147,7 @@ export function HomeMagic() {
         </h2>
         <p className="text-sm sm:text-lg text-muted-foreground max-w-2xl mx-auto">
           Three simple steps to transform your learning experience with
-          AI-powered assignments.
+          AI-powered personalized assignments.
         </p>
       </motion.div>
 
@@ -160,7 +160,7 @@ export function HomeMagic() {
       >
         <div className="flex flex-col lg:flex-row gap-6 max-w-6xl mx-auto bg-card rounded-lg overflow-hidden shadow-xl border">
           {/* Left Panel: Step Info */}
-          <div className="w-full lg:w-1/3 bg-gradient-to-br from-violet-600 to-purple-700 p-6 sm:p-8 flex flex-col justify-between text-center lg:text-left">
+          <div className="w-full lg:w-2/5 bg-gradient-to-br from-violet-600 to-purple-700 p-6 sm:p-8 flex flex-col justify-between text-center lg:text-left">
             <div className=" sticky top-0 h-max">
               {/* Step Title & Icon */}
               <div className="flex items-center justify-center lg:justify-start gap-4">
@@ -193,7 +193,7 @@ export function HomeMagic() {
                   (currentStep === 1 && !selectedAssignment) ||
                   (currentStep === 2 && !selectedInterest)
                 }
-                className="bg-white text-purple-600 hover:bg-white/90 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto mt-2"
+                className="bg-white text-purple-600 hover:bg-white/90 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto mt-4 rounded-full"
               >
                 {currentStep === 3 ? "Start Over" : "Next"}
               </Button>
@@ -201,7 +201,7 @@ export function HomeMagic() {
           </div>
 
           {/* Right Panel: Content */}
-          <div className="lg:w-2/3 p-6 sm:p-8">
+          <div className="lg:w-3/5 p-6 sm:p-8">
             {/* STEP 1: Choose Assignment */}
             {currentStep === 1 && (
               <div className="space-y-4">

@@ -31,7 +31,7 @@ export function HomeHero() {
               <div className="inline-flex items-center px-4 py-2 rounded-full bg-purple-100 dark:bg-purple-900/20 backdrop-blur-sm border border-purple-200 dark:border-purple-500/20">
                 <Sparkles className="h-4 w-4 text-sm text-purple-700 dark:text-purple-300" />
                 <span className="text-sm text-purple-700 dark:text-purple-300">
-                  &nbsp; AI-Powered Learning
+                  &nbsp; AI-Powered Personalized Learning
                 </span>
               </div>
 
@@ -42,22 +42,22 @@ export function HomeHero() {
 
               {/* Hero Title */}
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
-                <span className="text-purple-500">Transform Learning</span>{" "}
-                <span className="text-gray-900 dark:text-white">
-                  with Personalized
-                </span>
+                <span className="text-purple-500">Personalize...</span>{" "}
                 <br />
+                <span className="text-purple-600 dark:text-purple-300">
+                  Learn..
+                </span>
                 <span className="text-gray-900 dark:text-white">
-                  {" "}
-                  Assignments
+                  {"     "}
+                      Excel.
                 </span>
               </h1>
 
               {/* Hero Description */}
               <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 max-w-xl mx-auto lg:mx-0">
-                Upload any educational content and let our AI generate tailored
-                assignments that match your interests, difficulty level, and
-                learning style.
+              Create personalized assignments customized to match your 
+              out-of-school interests, making assignments more engaging,
+              relevant, and impactful for your academic and professional growth.
               </p>
 
               {/* CTA Buttons */}
@@ -70,17 +70,8 @@ export function HomeHero() {
                     size="lg"
                     className="rounded-full w-full sm:w-auto bg-violet-600 hover:bg-violet-700 text-gray-1000 dark:text-white"
                   >
-                    Create Your First Assignment
+                    Personalize Your First Assignment
                     <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </Link>
-                <Link href="#magic" className="w-full sm:w-auto">
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="rounded-full w-full sm:w-auto text-gray-900 dark:text-white"
-                  >
-                    See How It Works
                   </Button>
                 </Link>
               </div>

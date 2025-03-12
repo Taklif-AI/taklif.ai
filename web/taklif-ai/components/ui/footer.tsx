@@ -19,13 +19,13 @@ export function Footer() {
           {/* Links */}
           <div className="flex flex-col sm:flex-row items-center gap-4">
             <a
-              href="/privacy"
+              href="/privacy-policy"
               className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
             >
               <span className="text-sm">Privacy Policy</span>
             </a>
             <a
-              href="/terms"
+              href="/terms-of-use"
               className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
             >
               <span className="text-sm">Terms of Use</span>

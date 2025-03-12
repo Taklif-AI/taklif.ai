@@ -16,22 +16,19 @@ export function HomeCTA() {
         <div className="inline-flex items-center justify-center px-4 py-2 rounded-full bg-purple-100 dark:bg-purple-900/20 backdrop-blur-sm border border-purple-200 dark:border-purple-500/20">
           <Sparkles className="h-4 w-4 text-sm text-purple-700 dark:text-purple-300" />
           <span className="text-xs sm:text-sm text-purple-700 dark:text-purple-300">
-            &nbsp; Start creating personalized assignments today
+            &nbsp; Start experiencing personalized assignments now!
           </span>
         </div>
 
         {/* Heading */}
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-center">
-          <span className="text-purple-500">Ready to Transform</span>
-          <br />
-          <span className="text-gray-900 dark:text-white">Your Learning Experience?</span>
-          <br />
-          <span className="text-gray-900 dark:text-white"></span>
+          <span className="text-purple-500 block">Ready to Transform</span>
+          <span className="text-gray-900 dark:text-white block mt-4">Your Learning Experience?</span>
         </h1>
 
         {/* Description */}
         <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 max-w-2xl text-center">
-          Join thousands of educators and students who are already benefiting from AI-powered personalized assignments.
+        Be among the first to experience AI-powered personalized assignments.
         </p>
 
         {/* Button */}
@@ -39,9 +36,10 @@ export function HomeCTA() {
           <Link href="/assignment-personalization">
             <Button
               size="lg"
-              className="rounded-full bg-violet-600 hover:bg-violet-700 text-gray-1000 dark:text-white"
-            >
-              Create Your First Assignment
+              variant="outline"
+              className="rounded-full w-full sm:w-auto text-gray-900 dark:text-white"
+              >
+              Personalize Your First Assignment
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </Link>
