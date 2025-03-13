@@ -38,40 +38,46 @@ import {
 } from "@/components/ui/dialog";
 
 export default function AssignmentsPage() {
-  const [assignments, setAssignments] = useState([]);
+  const [assignments, setAssignments] = useState<any[]>([]);
   const [pageIndex, setPageIndex] = useState(0);
   const [loading, setLoading] = useState(false);
+
+  // Use sessionStorage for initial page size
   const savedPageSize = sessionStorage.getItem("pageSize");
-  const [pageSize, setPageSize] = useState(Number(savedPageSize) || 5); // Default page size
+  const [pageSize, setPageSize] = useState<number>(Number(savedPageSize) || 5);
 
   // --- Delete confirmation state ---
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
-  const [assignmentToDelete, setAssignmentToDelete] = useState(null);
+  const [assignmentToDelete, setAssignmentToDelete] = useState<any>(null);
 
   const router = useRouter();
   const user = useCurrentUser();
 
   const handleViewResult = async (run_id: string) => {
-
-    sessionStorage.setItem("fromAllAssignments", "true"); // Set the flag
+    // If user wants to "View" the result, set a session flag so we know we came from "My Assignments"
+    sessionStorage.setItem("fromAllAssignments", "true");
 
     const data = await generateUrlToken(run_id);
     if (data.token) {
-      router.push(`/assignment-personalization/result?token=${encodeURIComponent(data.token)}`);
+      router.push(
+        `/assignment-personalization/result?token=${encodeURIComponent(
+          data.token
+        )}`
+      );
     } else if (data.error) {
       Toast.error(data.error);
       router.push("/assignment-personalization/my-assignments");
       return;
     }
   };
+
   const fetchAssignments = async () => {
     if (!user?.id || loading) return;
-
     setLoading(true);
 
     const { assignments: newAssignments } = await getAssignments(user.id);
-
     setAssignments(newAssignments);
+
     setLoading(false);
   };
 
@@ -91,7 +97,8 @@ export default function AssignmentsPage() {
   const paginatedAssignments = assignments.slice(
     pageIndex * pageSize,
     (pageIndex + 1) * pageSize
-  )
+  );
+
   const handleNext = () => {
     if ((pageIndex + 1) * pageSize < assignments.length) {
       setPageIndex(pageIndex + 1);
@@ -124,7 +131,7 @@ export default function AssignmentsPage() {
     try {
       // Example: call an action to delete from DB
       // await deleteAssignment(assignmentToDelete.runId, assignmentToDelete.personalizationId);
-      // Filter it out of local state to update UI:
+
       setAssignments((prev) =>
         prev.filter((a) => {
           const uniqueKeyA = `RUN#${a.runId}#PERSONALIZATION#${a.personalizationId}`;
@@ -153,6 +160,15 @@ export default function AssignmentsPage() {
           </p>
         </div>
 
+        {assignments.length > 0 && (
+          <div className="flex justify-center mb-4">
+            <p className="text-sm text-muted-foreground">
+              You have <strong className="text-purple-500">{assignments.length}</strong>{" "}
+              total assignment{assignments.length !== 1 && "s"}.
+            </p>
+          </div>
+        )}
+
         <div className="space-y-6">
           {loading ? (
             <div className="flex items-center justify-center w-full h-24">
@@ -179,7 +195,7 @@ export default function AssignmentsPage() {
                     <div className="flex justify-between items-start">
                       <div>
                         <h2 className="text-xl font-semibold mb-1">
-                          {titleWithoutEmojis}
+                          {titleWithoutEmojis}{" "}
                           <span style={{ fontFamily: "Noto Color Emoji" }}>
                             {emojis}
                           </span>
@@ -193,11 +209,7 @@ export default function AssignmentsPage() {
                       <div className="flex items-center gap-2">
                         {/* View button */}
                         <button
-                          onClick={() =>
-                            handleViewResult(
-                              assignment.runId,
-                            )
-                          }
+                          onClick={() => handleViewResult(assignment.runId)}
                           className="text-violet-600 hover:text-violet-700 hover:bg-violet-50 dark:hover:bg-violet-900/20 p-2 rounded-full transition"
                         >
                           <Eye className="h-5 w-5" />
@@ -224,7 +236,9 @@ export default function AssignmentsPage() {
             })
           ) : (
             <Card className="p-12 text-center">
-              <h3 className="text-xl font-semibold mb-2">No assignments personalized yet</h3>
+              <h3 className="text-xl font-semibold mb-2">
+                No assignments personalized yet
+              </h3>
               <br />
               <p className="text-muted-foreground mb-4">
                 Your personalized assignments will appear here
@@ -243,20 +257,20 @@ export default function AssignmentsPage() {
           )}
         </div>
         <div className="flex items-center w-full mt-6">
-        {/* Left section (Previous button) */}
-        <div className="flex-1">
-          {pageIndex !== 0 && (
-            <Button
-              onClick={handlePrevious}
-              disabled={pageIndex === 0}
-              className="bg-gray-500 hover:bg-gray-600 rounded-full"
-            >
-              <ChevronLeft className="h-5 w-5" /> Previous
-            </Button>
-          )}
-        </div>
-        {/* Middle section (Select) */}
-        <div className="flex-1 flex justify-center">
+          {/* Left section (Previous button) */}
+          <div className="flex-1">
+            {pageIndex !== 0 && (
+              <Button
+                onClick={handlePrevious}
+                disabled={pageIndex === 0}
+                className="bg-gray-500 hover:bg-gray-600 rounded-full"
+              >
+                <ChevronLeft className="h-5 w-5" /> Previous
+              </Button>
+            )}
+          </div>
+          {/* Middle section (Select) */}
+          <div className="flex-1 flex justify-center">
             <Select
               onValueChange={handlePageSizeChange}
               value={pageSize.toString()}
@@ -274,15 +288,15 @@ export default function AssignmentsPage() {
           </div>
           {/* Right section (Next button) */}
           <div className="flex-1 flex justify-end">
-          {!((pageIndex + 1) * pageSize >= assignments.length) && (
-            <Button
-              onClick={handleNext}
-              disabled={(pageIndex + 1) * pageSize >= assignments.length}
-              className="bg-violet-600 hover:bg-violet-700 rounded-full"
-            >
-              Next <ChevronRight className="h-5 w-5" />
-            </Button>
-          )}
+            {!((pageIndex + 1) * pageSize >= assignments.length) && (
+              <Button
+                onClick={handleNext}
+                disabled={(pageIndex + 1) * pageSize >= assignments.length}
+                className="bg-violet-600 hover:bg-violet-700 rounded-full"
+              >
+                Next <ChevronRight className="h-5 w-5" />
+              </Button>
+            )}
           </div>
         </div>
       </div>
@@ -297,24 +311,19 @@ export default function AssignmentsPage() {
             <hr />
             <br />
             <DialogDescription>
-            <b>Are you sure you want to delete this assignment? </b>
-            <br /> <br />
-            This action will permanently remove the assignment,
-            including its simplifications and re-personalization attempts.
-            <br /> <br />
-            <span className="text-red-500">
-              This action cannot be undone.
-            </span>
+              <b>Are you sure you want to delete this assignment?</b>
+              <br /> <br />
+              This action will permanently remove the assignment, including its
+              simplifications and re-personalization attempts.
+              <br /> <br />
+              <span className="text-red-500">This action cannot be undone.</span>
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setConfirmDeleteOpen(false)}>
               Cancel
             </Button>
-            <Button
-              variant="destructive"
-              onClick={handleConfirmDelete}
-            >
+            <Button variant="destructive" onClick={handleConfirmDelete}>
               Confirm Delete
             </Button>
           </DialogFooter>
