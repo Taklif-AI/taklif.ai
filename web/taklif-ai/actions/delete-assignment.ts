@@ -5,7 +5,9 @@ import { client } from "@/lib/database/dynamo-assignment-client";
 import { QueryCommand, DeleteCommand } from "@aws-sdk/lib-dynamodb";
 
 
-export async function DeleteAssignment(run_id: string) {
+export async function deleteAssignment(run_id: string) {
+
+    console.log('in action');
 
     const user = await currentUser();
     if (!user) {
@@ -23,7 +25,7 @@ export async function DeleteAssignment(run_id: string) {
         KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk_prefix)",
         ExpressionAttributeValues: {
             ":pk": PK,
-            ":skPrefix": SKPrefix,
+            ":sk_prefix": SKPrefix,
         },
     }
 
@@ -31,8 +33,9 @@ export async function DeleteAssignment(run_id: string) {
         const result = await client.send(new QueryCommand(params));
         const items = result.Items;
         if (!items || items.length === 0) {
-            return { error: 'No assignments found!' };
+            return { error: 'No assignments found.' };
         }
+        console.log(items.length);
 
         for (const item of items) {
             const deleteParams = {
@@ -47,6 +50,6 @@ export async function DeleteAssignment(run_id: string) {
         return { success: true }
     } catch (error) {
         console.log(error);
-        return { error: 'Faild to delete assignment' };
+        return { error: 'Unable to delete assignment.' };
     }
 }
