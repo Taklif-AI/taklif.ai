@@ -10,7 +10,7 @@ export async function getAssignmentsCount(userId: string) {
     ExpressionAttributeValues: {
       ":pk": `${userId}`,
     },
-    ProjectionExpression: "SK, created_at, model_output, simplification_id",
+    ProjectionExpression: "SK, is_first_try",
     ScanIndexForward: false,
   };
 
@@ -18,19 +18,15 @@ export async function getAssignmentsCount(userId: string) {
     const { Items } = await client.send(new QueryCommand(params));
 
     if (!Items || Items.length === 0) {
-      return [];
+      return 0;
     }
 
-    // Filter assignments where `simplification_id` is NULL
-    const assignments = Items.filter((item) => !item.simplification_id);
+    // Filter assignments where `is_first_try` is true
+    const assignments = Items.filter((item) => item.is_first_try === true);
 
-    if (assignments.length === 0) {
-      return [];
-    }
-
-    return assignments;
+    return assignments.length;
   } catch (error) {
     console.error("❌ Error fetching assignments:", error);
-    return [];
+    return 0;
   }
 }

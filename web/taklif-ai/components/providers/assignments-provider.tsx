@@ -12,7 +12,7 @@ export function AssignmentsProvider({ children }) {
   const fetchCount = async () => {
     if (!user?.id) return;
     const newCount = await getAssignmentsCount(user.id);
-    setCount(newCount.length);
+    setCount(newCount);
   };
 
   useEffect(() => {
