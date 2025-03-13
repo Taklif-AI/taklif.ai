@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-import { Book, Coins, Moon, Sun, Upload, User } from "lucide-react";
+import { Book, Coins, Moon, Sun, Upload, User, Eye, EyeOff } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { profile } from "@/actions/profile";
 import { useCurrentUser } from "@/hooks/use-current-user";
@@ -20,6 +20,16 @@ import { Toast } from "@/lib/utils/toast";
 import { uploadImage } from "@/actions/upload-image";
 import { useAssignments } from "@/components/providers/assignments-provider";
 import { useTheme } from "next-themes";
+
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 function addDays(date: Date, days: number) {
   const copy = new Date(date);
@@ -60,6 +70,10 @@ export default function ProfilePage() {
     isTwoFactorEnabled: user?.isTwoFactorEnabled,
     theme: user?.theme || "dark",
   });
+
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+
 
   const [image, setImage] = useState(user?.image || "/default-avatar.jpg");
   const [error, setError] = useState<string | undefined>("");
@@ -222,7 +236,7 @@ export default function ProfilePage() {
             setError(data.error);
           }
 
-          if (data.success) {
+          else if (data.success) {
             setTheme(settingsFormData.theme);
             update();
             setSuccess(data.success);
@@ -386,10 +400,11 @@ export default function ProfilePage() {
             </form>
           </TabsContent>
 
-          {/* Settings Tab */}
+         {/* Settings Tab */}
           <TabsContent value="settings" className="mt-6 space-y-6">
             <form onSubmit={submitSettings}>
               <div className="grid gap-6">
+                {/* Theme Preference */}
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
                     <Label>Theme Preference</Label>
@@ -400,6 +415,7 @@ export default function ProfilePage() {
                   <div className="flex space-x-2">
                     <Button
                       variant={theme === "light" ? "default" : "outline"}
+                      className="rounded-full"
                       onClick={() => {
                         setSettingsFormData((prev) => ({
                           ...prev,
@@ -411,6 +427,7 @@ export default function ProfilePage() {
                     </Button>
                     <Button
                       variant={theme === "dark" ? "default" : "outline"}
+                      className="rounded-full"
                       onClick={() => {
                         setSettingsFormData((prev) => ({
                           ...prev,
@@ -422,52 +439,124 @@ export default function ProfilePage() {
                     </Button>
                   </div>
                 </div>
+
+                {/* 2FA Toggle (if not OAuth) */}
                 {user?.isOAuth === false && (
-                  <>
-                    <div className="flex items-center justify-between">
-                      <div className="space-y-1">
-                        <Label>Two Factor Authentication</Label>
-                        <p className="text-sm text-muted-foreground">
-                          Add an extra layer of security to your account
-                        </p>
-                      </div>
-                      <Switch
-                        checked={settingsFormData.isTwoFactorEnabled}
-                        disabled={isPending}
-                        name="isTwoFactorEnabled"
-                        onCheckedChange={() =>
-                          setSettingsFormData((prev) => ({
-                            ...prev,
-                            isTwoFactorEnabled:
-                              !settingsFormData.isTwoFactorEnabled,
-                          }))
-                        }
-                      />
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <Label>Two Factor Authentication</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Add an extra layer of security to your account
+                      </p>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="password">Current Password</Label>
-                      <Input
-                        disabled={isPending}
-                        id="password"
-                        onChange={handleSettingsChange}
-                        name="password"
-                        type="password"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="newPassword">New Password</Label>
-                      <Input
-                        disabled={isPending}
-                        id="newPassword"
-                        onChange={handleSettingsChange}
-                        name="newPassword"
-                        type="password"
-                      />
-                    </div>
-                  </>
+                    <Switch
+                      checked={settingsFormData.isTwoFactorEnabled}
+                      disabled={isPending}
+                      name="isTwoFactorEnabled"
+                      onCheckedChange={() =>
+                        setSettingsFormData((prev) => ({
+                          ...prev,
+                          isTwoFactorEnabled: !settingsFormData.isTwoFactorEnabled,
+                        }))
+                      }
+                    />
+                  </div>
                 )}
+
+                {/* Error / Success Handling */}
                 <FormError message={error} />
                 <FormSuccess message={success} />
+
+                {/* Change Password Button (if not OAuth) */}
+                {user?.isOAuth === false && (
+                  <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" disabled={isPending} className="w-fit">
+                      Change Password
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Change Your Password</DialogTitle>
+                      <DialogDescription>
+                        Enter your current password and a new password below.
+                      </DialogDescription>
+                    </DialogHeader>
+                
+                    {/* The password form inside the dialog */}
+                    <form onSubmit={submitSettings}>
+                      {/* Current Password Field */}
+                      <div className="space-y-2">
+                        <Label htmlFor="password">Current Password</Label>
+                        <div className="relative">
+                          <Input
+                            disabled={isPending}
+                            id="password"
+                            onChange={handleSettingsChange}
+                            name="password"
+                            type={showCurrentPassword ? "text" : "password"}
+                            placeholder="Current Password"
+                          />
+                          <button
+                            type="button"
+                            className="absolute inset-y-0 right-0 flex items-center pr-3"
+                            onClick={() => setShowCurrentPassword((prev) => !prev)}
+                          >
+                            {showCurrentPassword ? (
+                              <EyeOff className="h-4 w-4" />
+                            ) : (
+                              <Eye className="h-4 w-4" />
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                
+                      {/* New Password Field */}
+                      <div className="space-y-2 mt-4">
+                        <Label htmlFor="newPassword">New Password</Label>
+                        <div className="relative">
+                          <Input
+                            disabled={isPending}
+                            id="newPassword"
+                            onChange={handleSettingsChange}
+                            name="newPassword"
+                            type={showNewPassword ? "text" : "password"}
+                            placeholder="New Password"
+                          />
+                          <button
+                            type="button"
+                            className="absolute inset-y-0 right-0 flex items-center pr-3"
+                            onClick={() => setShowNewPassword((prev) => !prev)}
+                          >
+                            {showNewPassword ? (
+                              <EyeOff className="h-4 w-4" />
+                            ) : (
+                              <Eye className="h-4 w-4" />
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                
+                      {/* Show any error/success for password changes here if desired */}
+                      <br/>
+                      <FormError message={error} />
+                      <FormSuccess message={success} />
+                
+                      <DialogFooter className="mt-4">
+                        <Button
+                          disabled={isPending}
+                          type="submit"
+                          className="bg-purple-600 hover:bg-purple-700 text-white"
+                        >
+                          Update Password
+                        </Button>
+                      </DialogFooter>
+                    </form>
+                  </DialogContent>
+                </Dialog>                
+                )}
+
+                {/* Save top-level settings changes */}
                 <Button
                   disabled={isPending}
                   className="w-fit bg-purple-600 hover:bg-purple-700 text-white"
