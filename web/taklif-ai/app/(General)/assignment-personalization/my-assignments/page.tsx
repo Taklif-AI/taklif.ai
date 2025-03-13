@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { ArrowRight, ChevronLeft, ChevronRight, Eye, Trash } from "lucide-react";
 import { useCurrentUser } from "@/hooks/use-current-user";
-import { formatDistanceToNow } from "date-fns";
 import { getAssignments } from "@/actions/get-assignments";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -15,7 +14,7 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import rehypeSanitize from "rehype-sanitize";
 import "katex/dist/katex.min.css";
-
+import { format } from 'date-fns';
 import {
   Select,
   SelectContent,
@@ -192,9 +191,8 @@ export default function AssignmentsPage() {
                           </span>
                         </h2>
                         <p className="text-sm text-muted-foreground mb-4">
-                          Personalized{" "}
-                          {formatDistanceToNow(new Date(assignment.createdAt))}{" "}
-                          ago
+                          Personalized since{" "}
+                          {format(new Date(assignment.createdAt), 'PPpp')}
                         </p>
                       </div>
                       <div className="flex items-center gap-2">

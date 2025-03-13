@@ -1,6 +1,5 @@
 "use client";
 
-import { formatDistanceToNow } from "date-fns";
 import { Assignment } from "@/lib/types/assigment-type";
 import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
@@ -9,6 +8,7 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import rehypeSanitize from "rehype-sanitize";
+import { format } from 'date-fns';
 import "katex/dist/katex.min.css";
 
 interface AssignmentResultProps {
@@ -55,7 +55,7 @@ export function AssignmentResult({ assignment }: AssignmentResultProps) {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
-          Generated {formatDistanceToNow(new Date(assignment.created_at))} ago
+          Generated since {format(new Date(assignment.created_at), 'PPpp')}
         </motion.p>
         <div className="inline-flex items-center mt-5 px-4 py-2 rounded-full bg-purple-100 dark:bg-purple-900/20 backdrop-blur-sm border border-purple-200 dark:border-purple-500/20">
           <Sparkles className="h-4 w-4 text-sm text-purple-700 dark:text-purple-300" />
