@@ -29,13 +29,13 @@ import { Toast } from "@/lib/utils/toast";
 // --- Import shadcn/ui Dialog components ---
 import {
   Dialog,
-  DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { deleteAssignment } from "@/actions/delete-assignment";
 
 export default function AssignmentsPage() {
   const [assignments, setAssignments] = useState([]);
@@ -122,17 +122,24 @@ export default function AssignmentsPage() {
     if (!assignmentToDelete) return;
 
     try {
-      // Example: call an action to delete from DB
-      // await deleteAssignment(assignmentToDelete.runId, assignmentToDelete.personalizationId);
-      // Filter it out of local state to update UI:
-      setAssignments((prev) =>
-        prev.filter((a) => {
-          const uniqueKeyA = `RUN#${a.runId}#PERSONALIZATION#${a.personalizationId}`;
-          const uniqueKeyB = `RUN#${assignmentToDelete.runId}#PERSONALIZATION#${assignmentToDelete.personalizationId}`;
-          return uniqueKeyA !== uniqueKeyB;
-        })
-      );
-      Toast.success("Assignment deleted!");
+      const result = await deleteAssignment(assignmentToDelete.runId);
+      console.log(result);
+      
+      if (result.error) {
+        Toast.error(result.error);
+        return;
+      }
+      if (result.success) {
+        // Filter it out of local state to update UI:
+        setAssignments((prev) =>
+          prev.filter((a) => {
+            const uniqueKeyA = `RUN#${a.runId}#PERSONALIZATION#${a.personalizationId}`;
+            const uniqueKeyB = `RUN#${assignmentToDelete.runId}#PERSONALIZATION#${assignmentToDelete.personalizationId}`;
+            return uniqueKeyA !== uniqueKeyB;
+          })
+        );
+        Toast.success("Assignment deleted!");
+      }
     } catch (error: any) {
       Toast.error("Unable to delete assignment.");
     } finally {
@@ -243,20 +250,20 @@ export default function AssignmentsPage() {
           )}
         </div>
         <div className="flex items-center w-full mt-6">
-        {/* Left section (Previous button) */}
-        <div className="flex-1">
-          {pageIndex !== 0 && (
-            <Button
-              onClick={handlePrevious}
-              disabled={pageIndex === 0}
-              className="bg-gray-500 hover:bg-gray-600 rounded-full"
-            >
-              <ChevronLeft className="h-5 w-5" /> Previous
-            </Button>
-          )}
-        </div>
-        {/* Middle section (Select) */}
-        <div className="flex-1 flex justify-center">
+          {/* Left section (Previous button) */}
+          <div className="flex-1">
+            {pageIndex !== 0 && (
+              <Button
+                onClick={handlePrevious}
+                disabled={pageIndex === 0}
+                className="bg-gray-500 hover:bg-gray-600 rounded-full"
+              >
+                <ChevronLeft className="h-5 w-5" /> Previous
+              </Button>
+            )}
+          </div>
+          {/* Middle section (Select) */}
+          <div className="flex-1 flex justify-center">
             <Select
               onValueChange={handlePageSizeChange}
               value={pageSize.toString()}
@@ -274,15 +281,15 @@ export default function AssignmentsPage() {
           </div>
           {/* Right section (Next button) */}
           <div className="flex-1 flex justify-end">
-          {!((pageIndex + 1) * pageSize >= assignments.length) && (
-            <Button
-              onClick={handleNext}
-              disabled={(pageIndex + 1) * pageSize >= assignments.length}
-              className="bg-violet-600 hover:bg-violet-700 rounded-full"
-            >
-              Next <ChevronRight className="h-5 w-5" />
-            </Button>
-          )}
+            {!((pageIndex + 1) * pageSize >= assignments.length) && (
+              <Button
+                onClick={handleNext}
+                disabled={(pageIndex + 1) * pageSize >= assignments.length}
+                className="bg-violet-600 hover:bg-violet-700 rounded-full"
+              >
+                Next <ChevronRight className="h-5 w-5" />
+              </Button>
+            )}
           </div>
         </div>
       </div>
@@ -297,14 +304,14 @@ export default function AssignmentsPage() {
             <hr />
             <br />
             <DialogDescription>
-            <b>Are you sure you want to delete this assignment? </b>
-            <br /> <br />
-            This action will permanently remove the assignment,
-            including its simplifications and re-personalization attempts.
-            <br /> <br />
-            <span className="text-red-500">
-              This action cannot be undone.
-            </span>
+              <b>Are you sure you want to delete this assignment? </b>
+              <br /> <br />
+              This action will permanently remove the assignment,
+              including its simplifications and re-personalization attempts.
+              <br /> <br />
+              <span className="text-red-500">
+                This action cannot be undone.
+              </span>
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
