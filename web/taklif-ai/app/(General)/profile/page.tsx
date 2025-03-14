@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -62,8 +62,8 @@ export default function ProfilePage() {
     remainingCredits < 10
       ? "text-red-500"
       : remainingCredits < 30
-      ? "text-orange-500"
-      : "text-green-600";
+        ? "text-orange-500"
+        : "text-green-600";
 
   const subscriptionDate = user?.subscription_date
     ? new Date(user.subscription_date)
@@ -95,6 +95,9 @@ export default function ProfilePage() {
   const [passwordError, setPasswordError] = useState<string | undefined>("");
 
   const [isPasswordDialogOpen, setPasswordDialogOpen] = useState(false);
+
+  const [isProfileDirty, setIsProfileDirty] = useState(false);
+  const initialProfileData = useRef(profileFormData);
 
   useEffect(() => {
     document.title = "Profile";
@@ -237,7 +240,16 @@ export default function ProfilePage() {
 
   const handleProfileChange = async (e) => {
     const { name, value } = e.target;
-    setProfileFormData((prev) => ({ ...prev, [name]: value }));
+    const newProfileData = { ...profileFormData, [name]: value };
+    setProfileFormData(newProfileData);
+
+    // Compare with the initial profile data
+    if (JSON.stringify(newProfileData) === JSON.stringify(initialProfileData.current)) {
+      setIsProfileDirty(false);
+    } else {
+      setIsProfileDirty(true);
+    }
+
   };
 
   const handlePasswordChange = (e) => {
@@ -311,6 +323,8 @@ export default function ProfilePage() {
           if (data.success) {
             update();
             setSuccess(data.success);
+            initialProfileData.current = profileFormData;
+            setIsProfileDirty(false);
           }
         })
         .catch(() => setError("Something went wrong!"));
@@ -481,7 +495,7 @@ export default function ProfilePage() {
                 <FormError message={error} />
                 <FormSuccess message={success} />
                 <Button
-                  disabled={isPending}
+                  disabled={isPending || !isProfileDirty}
                   type="submit"
                   className="w-fit bg-purple-600 hover:bg-purple-700 text-white"
                 >
