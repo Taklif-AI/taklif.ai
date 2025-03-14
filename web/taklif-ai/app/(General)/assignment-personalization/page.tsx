@@ -16,14 +16,18 @@ import { useSession } from "next-auth/react";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { generateUrlToken } from "@/actions/generate-url-token";
 
-const steps = ["Upload PDF", "Choose Interests", "Review Inputs"];
+const fullSteps = ["Attach Your Assignment", "Choose An Interest", "Review The Assignment"];
+const shortSteps = ["Attach", "Choose", "Review"];
 
 export default function AssignmentPage() {
   const { update } = useSession();
   const user = useCurrentUser();
   const router = useRouter();
+
   const [currentStep, setCurrentStep] = useState(0);
   const [isPending, setIsPending] = useState(false);
+  const [steps, setSteps] = useState(fullSteps);
+
   const [assignmentData, setAssignmentData] = useState({
     file: null as File | "" | null,
     interest: "",
@@ -85,6 +89,18 @@ export default function AssignmentPage() {
     if (savedStep !== null) {
       setCurrentStep(Number(savedStep));
     }
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      requestAnimationFrame(() => {
+        setSteps(window.innerWidth < 640 ? shortSteps : fullSteps);
+      });
+    };
+
+    handleResize(); // Initial check
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const handleNext = async (stepData: any) => {
@@ -278,7 +294,7 @@ export default function AssignmentPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-3xl mx-auto">
-        <div className=" bg-[rgb(18 18 18)] backdrop-blur  p-6 rounded-lg shadow-sm">
+        <div className=" bg-[rgb(18 18 18)] backdrop-blur p-6 rounded-lg">
           <ProgressSteps currentStep={currentStep} steps={steps} />
         </div>
         <div className="mt-8">{renderStep()}</div>

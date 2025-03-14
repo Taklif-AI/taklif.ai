@@ -48,13 +48,16 @@ export function AssignmentActions({
             <ThumbsDown className="h-4 w-4 mr-1" />
           </Button>
         </motion.div>
-      </div>
-      <div>
-        <Copy
-          size={20}
-          onClick={() => onAction("copied")}
-          className="cursor-pointer text-violet-600 hover:text-violet-700"
-        />
+        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+          <Button
+            variant="ghost"
+            size={"sm"}
+            onClick={() => onAction("copied")}
+            className="text-violet-600 hover:text-violet-700 hover:bg-purple-50 dark:hover:bg-purple-900/20"
+          >
+            <Copy className="h-5 w-5 mr-1" />
+          </Button>
+        </motion.div>
       </div>
       {assignment.item_type === "Personalization" && (
         <>

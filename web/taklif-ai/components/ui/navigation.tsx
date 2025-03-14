@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Logo } from "@/components/ui/logo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { LogOut, User, Book } from "lucide-react";
+import { LogOut, User, Book, Zap } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -53,9 +53,10 @@ export function Navigation() {
             <Link href="/assignment-personalization">
               <Button
                 variant="ghost"
-                className="rounded-full h-9 w-[120px] bg-purple-500 transition-colors hover:outline-none "
+                className="rounded-full p-0 h-9 w-[40px] sm:w-[120px] bg-purple-500 transition-colors hover:outline-none "
               >
-                Try Now
+                <span className="hidden sm:inline">Try Now</span>
+                <Zap className="sm:ml-1.5 h-4 w-4" />
               </Button>
             </Link>
           )}

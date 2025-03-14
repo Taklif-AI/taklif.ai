@@ -1,16 +1,22 @@
 "use client";
 
 import { Card } from "@/components/ui/card";
-import { Sparkles, Brain, Wand2, Stars } from "lucide-react";
-import { motion } from "framer-motion";
-import { useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-const backgroundIcons = [Brain, Wand2, Stars, Sparkles];
+
+const sentences = [
+  "Analyzing your unique interest...",
+  "Tailoring assignment content uniquely for you...",
+  "Integrating engaging topics with learning objectives..."
+];
 
 export default function AssignmentLoadingPage() {
   const router = useRouter();
+  const [currentSentence, setCurrentSentence] = useState(0);
+
   useEffect(() => {
-    document.title = "Loading...";
+    document.title = "Personalizing...";
   }, []);
   useEffect(() => {
     const allow = sessionStorage.getItem("allowLoadingPage");
@@ -18,36 +24,25 @@ export default function AssignmentLoadingPage() {
       router.push("/");
     }
   }, [router]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSentence((prev) => (prev + 1) % sentences.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const variants = {
+    initial: { opacity: 0, y: 10 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -10 },
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-3xl mx-auto">
         <div className="relative">
-          {/* Animated Background Icons */}
-          <div className="absolute inset-0 -z-10 overflow-hidden">
-            {backgroundIcons.map((Icon, index) => (
-              <motion.div
-                key={index}
-                className="absolute text-violet-100 dark:text-violet-900/20"
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{
-                  opacity: 0.5,
-                  scale: 1,
-                  x: Math.random() * 100 - 50,
-                  y: Math.random() * 100 - 50,
-                }}
-                transition={{
-                  duration: 20,
-                  repeat: Infinity,
-                  repeatType: "reverse",
-                  delay: index * 2,
-                }}
-              >
-                <Icon size={64} />
-              </motion.div>
-            ))}
-          </div>
-
-          <Card className="p-12 text-center space-y-8 bg-gradient-to-br from-violet-50 to-white dark:from-violet-950/20 dark:to-background backdrop-blur-sm border-violet-100 dark:border-violet-800">
+          <Card className="p-12 text-center space-y-8 bg-gradient-to-br from-violet-50 to-white dark:from-violet-950/5 dark:to-background backdrop-blur-sm">
             <div className=" ml-auto	mr-auto	 w-[10rem]">
               <object
                 data="/logo-animation.gif"
@@ -63,41 +58,29 @@ export default function AssignmentLoadingPage() {
               <motion.h1
                 className="text-3xl font-bold bg-gradient-to-r from-violet-600 to-violet-400 bg-clip-text text-transparent"
                 animate={{ opacity: [0.5, 1, 0.5] }}
-                transition={{ duration: 2, repeat: Infinity }}
+                transition={{ duration: 5, repeat: Infinity }}
               >
-                AI Magic in Progress
+                Personalizing Your Assignment
               </motion.h1>
               <p className="text-lg text-muted-foreground">
-                Our AI is crafting the perfect assignment just for you...
+                We're creating a unique assignment tailored to your interests
               </p>
             </div>
 
-            <div className="space-y-3">
-              {[...Array(3)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="h-4 bg-gradient-to-r from-violet-400 to-violet-600 dark:from-violet-700 dark:to-violet-900 rounded-full"
-                  initial={{ width: "10%", opacity: 1 }}
-                  animate={{
-                    width: ["10%", "100%", "100%", "10%"], // Smooth reset to starting point
-                    opacity: [1, 1, 0, 0], // Stays invisible before restarting
-                  }}
-                  transition={{
-                    duration: 3, // Smooth transition time
-                    ease: "easeInOut", // Natural movement
-                    repeat: Infinity,
-                    repeatType: "loop",
-                    delay: i * 0.5, // Staggered start times
-                    repeatDelay: 0.5, // Ensures no flash when restarting
-                  }}
-                />
-              ))}
-            </div>
-
-            <div className="pt-4 space-y-2 text-sm text-muted-foreground">
-              <p>Analyzing content structure...</p>
-              <p>Generating personalized questions...</p>
-              <p>Applying educational frameworks...</p>
+            <div className="pt-4 space-y-2 text-base text-muted-foreground h-20 relative overflow-hidden">
+              <AnimatePresence mode="wait">
+                <motion.p
+                  key={currentSentence}
+                  variants={variants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  transition={{ duration: 0.5 }}
+                  className="absolute w-full text-center"
+                >
+                  {sentences[currentSentence]}
+                </motion.p>
+              </AnimatePresence>
             </div>
           </Card>
         </div>

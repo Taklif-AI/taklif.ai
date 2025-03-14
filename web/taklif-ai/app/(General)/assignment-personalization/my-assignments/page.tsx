@@ -195,9 +195,9 @@ export default function AssignmentsPage() {
               return (
                 <Card
                   key={uniqueKey}
-                  className="hover:shadow-lg transition-all border-violet-100 dark:border-violet-800"
+                  className="hover:shadow-lg transition-all "
                 >
-                  <div className="p-8 bg-gradient-to-br from-violet-50 to-white dark:from-violet-950/20 dark:to-background relative">
+                  <div className="p-8 bg-gradient-to-br from-violet-50 to-white dark:from-violet-900/5 dark:to-background relative">
                     <div className="flex justify-between items-start">
                       <div>
                         <h2 className="text-xl font-semibold mb-1">
@@ -222,7 +222,7 @@ export default function AssignmentsPage() {
                         {/* Delete button triggers confirmation */}
                         <button
                           onClick={() => confirmDelete(assignment)}
-                          className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 p-2 rounded-full transition"
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full transition"
                         >
                           <Trash className="h-5 w-5" />
                         </button>
@@ -330,7 +330,7 @@ export default function AssignmentsPage() {
             <Button variant="outline" onClick={() => setConfirmDeleteOpen(false)}>
               Cancel
             </Button>
-            <Button variant="destructive" onClick={handleConfirmDelete}>
+            <Button variant="destructive" onClick={handleConfirmDelete} className="mb-2">
               Confirm Delete
             </Button>
           </DialogFooter>

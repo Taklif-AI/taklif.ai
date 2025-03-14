@@ -7,7 +7,7 @@ import { useEffect } from "react";
 
 export default function NotFound() {
   useEffect(() => {
-    document.title = "Not Found";
+    document.title = "Page Not Found";
   }, []);
   return (
     <div className="min-h-screen bg-[#13111C] flex items-center justify-center p-4">
@@ -32,9 +32,9 @@ export default function NotFound() {
             <Link href="/">
               <Button
                 size="lg"
-                className="bg-purple-600 hover:bg-purple-700 text-white px-8 rounded-full"
+                className="bg-purple-600 hover:bg-purple-700 text-white px-8 rounded-full mt-5"
               >
-                Return Home →
+                Return Home
               </Button>
             </Link>
           </motion.div>
