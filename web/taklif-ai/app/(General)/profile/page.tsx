@@ -8,7 +8,17 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-import { Book, Coins, Moon, Sun, Upload, User, Eye, EyeOff, Settings } from "lucide-react";
+import {
+  Book,
+  Coins,
+  Moon,
+  Sun,
+  Upload,
+  User,
+  Eye,
+  EyeOff,
+  Settings,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { profile } from "@/actions/profile";
 import { useCurrentUser } from "@/hooks/use-current-user";
@@ -51,8 +61,8 @@ export default function ProfilePage() {
     remainingCredits < 10
       ? "text-red-500"
       : remainingCredits < 30
-        ? "text-orange-500"
-        : "text-green-600";
+      ? "text-orange-500"
+      : "text-green-600";
 
   const subscriptionDate = user?.subscription_date
     ? new Date(user.subscription_date)
@@ -74,13 +84,14 @@ export default function ProfilePage() {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
 
-
   const [image, setImage] = useState(user?.image || "/default-avatar.jpg");
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
 
   const [passwordError, setPasswordError] = useState<string | undefined>("");
-  const [passwordSuccess, setPasswordSuccess] = useState<string | undefined>("");
+  const [passwordSuccess, setPasswordSuccess] = useState<string | undefined>(
+    ""
+  );
 
   const [isPasswordDialogOpen, setPasswordDialogOpen] = useState(false);
 
@@ -96,7 +107,7 @@ export default function ProfilePage() {
       return () => clearTimeout(timer);
     }
   }, [success]);
-  
+
   useEffect(() => {
     if (error) {
       const timer = setTimeout(() => {
@@ -105,7 +116,7 @@ export default function ProfilePage() {
       return () => clearTimeout(timer);
     }
   }, [error]);
-  
+
   const cropImage = async (file: File): Promise<Blob> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -136,7 +147,7 @@ export default function ProfilePage() {
               0,
               0,
               250,
-              250,
+              250
             );
           }
 
@@ -226,10 +237,10 @@ export default function ProfilePage() {
 
   const submitPasswordChange = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-  
+
     setPasswordError("");
     setPasswordSuccess("");
-  
+
     startTransition(() => {
       // Only send password changes to your `settings` action
       settings({
@@ -258,7 +269,7 @@ export default function ProfilePage() {
       ...prev,
       isTwoFactorEnabled: newValue,
     }));
-  
+
     // Immediately call the settings action to persist the change
     startTransition(() => {
       settings({
@@ -275,7 +286,7 @@ export default function ProfilePage() {
         })
         .catch(() => setError("Something went wrong!"));
     });
-  };  
+  };
 
   const submitProfile = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -310,9 +321,7 @@ export default function ProfilePage() {
         .then((data) => {
           if (data.error) {
             setError(data.error);
-          }
-
-          else if (data.success) {
+          } else if (data.success) {
             setTheme(settingsFormData.theme);
             update();
             setSuccess(data.success);
@@ -326,46 +335,40 @@ export default function ProfilePage() {
     <div className="p-6">
       <div className="max-w-4xl mx-auto space-y-8">
         {/* Profile Header */}
-        <div className="relative h-48 bg-gradient-to-b from-purple-900/50 to-transparent dark:from-purple-900/50 rounded-lg">
-          <div className="absolute bottom-[50px]	 left-8 flex items-end space-x-4">
-            <div className="relative  ">
-              <div className=" inset-0 rounded-full transition-opacity duration-300 before:absolute before:inset-0 before:rounded-full before:blur-lg before:bg-purple-500/50">
-                <Avatar className="w-24 h-24">
-                  <AvatarImage
-                    src={image}
-                    alt="Profile Image"
-                    width={50}
-                    height={50}
-                  />
-                  <AvatarFallback style={{ fontFamily: "Noto Color Emoji" }}>
-                    ⚙️
-                  </AvatarFallback>
-                </Avatar>
-                <label
-                  htmlFor="avatar-upload"
-                  className="absolute -right-2 -bottom-2"
-                >
-                  <div className="rounded-full bg-primary p-2 cursor-pointer hover:bg-primary/90">
-                    <Upload className="w-4 h-4 text-primary-foreground" />
-                  </div>
-                </label>
-                <input
-                  id="avatar-upload"
-                  type="file"
-                  className="hidden"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  disabled={isPending}
-                />
-              </div>
+        <div className="relative p-[32px] bg-gradient-to-b from-purple-900/30 to-transparent dark:from-purple-900/30 rounded-lg flex flex-col justify-end px-4 sm:px-8">
+          <div className="flex flex-col sm:flex-row items-center sm:items-end space-y-4 sm:space-y-0 sm:space-x-4">
+            {/* Profile Avatar */}
+            <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32">
+              <Avatar className="w-full h-full">
+                <AvatarImage src={image} alt="Profile Image" />
+                <AvatarFallback style={{ fontFamily: "Noto Color Emoji" }}>
+                  ⚙️
+                </AvatarFallback>
+              </Avatar>
+              <label
+                htmlFor="avatar-upload"
+                className="absolute -right-2 -bottom-2 cursor-pointer"
+              >
+                <div className="rounded-full bg-primary p-2 hover:bg-primary/90">
+                  <Upload className="w-4 h-4 text-primary-foreground" />
+                </div>
+              </label>
+              <input
+                id="avatar-upload"
+                type="file"
+                className="hidden"
+                accept="image/*"
+                onChange={handleImageUpload}
+                disabled={isPending}
+              />
             </div>
 
-            <div className="space-y-1">
-              <div className="flex flex-wrap gap-2 justify-center md:justify-start">
-                <h1 className="text-2xl font-bold text-gray dark:text-white">
+            {/* Profile Info */}
+            <div className="flex flex-col items-center sm:items-start text-center sm:text-left space-y-2">
+              <div className="flex flex-wrap justify-center sm:justify-start gap-2">
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray dark:text-white">
                   {user?.name}
                 </h1>
-                {/* Plan Badge */}
                 <Badge className="bg-violet-100 text-violet-800 dark:bg-violet-900 dark:text-violet-100 pointer-events-none">
                   {user?.plan
                     ?.split(" ")
@@ -374,11 +377,13 @@ export default function ProfilePage() {
                   Member
                 </Badge>
               </div>
+
+              {/* Credits Section */}
               <div className="flex items-center space-x-2">
                 <Coins className="w-5 h-5 text-purple-800 dark:text-purple-200" />
                 <span className="font-semibold">
                   <span className={`${creditsColorClass} font-semibold`}>
-                    {user?.remaining_credits}
+                    {remainingCredits}
                   </span>
                   <span className="text-purple-800 dark:text-purple-200">
                     {" "}
@@ -386,13 +391,14 @@ export default function ProfilePage() {
                   </span>
                 </span>
               </div>
+
               <p className="text-xs text-gray-500 dark:text-gray-400">
                 Credits renew on{" "}
                 {renewalDate.toLocaleDateString("en-GB", {
                   day: "2-digit",
                   month: "2-digit",
                   year: "numeric",
-                })}{" "}
+                })}
               </p>
             </div>
           </div>
@@ -407,7 +413,9 @@ export default function ProfilePage() {
               </div>
               <div>
                 <p className="text-2xl font-bold">{count}</p>
-                <p className="text-muted-foreground">Assignments Personalized</p>
+                <p className="text-muted-foreground">
+                  Assignments Personalized
+                </p>
               </div>
             </div>
           </CardContent>
@@ -476,7 +484,7 @@ export default function ProfilePage() {
             </form>
           </TabsContent>
 
-         {/* Settings Tab */}
+          {/* Settings Tab */}
           <TabsContent value="settings" className="mt-6 space-y-6">
             <form onSubmit={submitSettings}>
               <div className="grid gap-6">
@@ -534,105 +542,115 @@ export default function ProfilePage() {
                   </div>
                 )}
 
-{user?.isOAuth === false && (
-  <div className="flex items-center justify-between">
-    {/* Left side: label and description */}
-    <div className="space-y-1">
-      <Label>Change Password</Label>
-      <p className="text-sm text-muted-foreground">
-        Update your account password.
-      </p>
-    </div>
+                {user?.isOAuth === false && (
+                  <div className="flex items-center justify-between">
+                    {/* Left side: label and description */}
+                    <div className="space-y-1">
+                      <Label>Change Password</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Update your account password.
+                      </p>
+                    </div>
 
-    {/* Right side: Dialog trigger button */}
-    <Dialog open={isPasswordDialogOpen} onOpenChange={setPasswordDialogOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline" disabled={isPending} className="rounded-full">
-          Change Password
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Change Your Password</DialogTitle>
-          <DialogDescription>
-            Enter your current password and a new password below.
-          </DialogDescription>
-        </DialogHeader>
-        {/* Password form */}
-        <form onSubmit={submitPasswordChange}>
-          <div className="space-y-2">
-            <Label htmlFor="password">Current Password</Label>
-            <div className="relative">
-              <Input
-                disabled={isPending}
-                id="password"
-                onChange={handleSettingsChange}
-                name="password"
-                type={showCurrentPassword ? "text" : "password"}
-                placeholder="Current Password"
-              />
-              <button
-                type="button"
-                className="absolute inset-y-0 right-0 flex items-center pr-3"
-                onClick={() => setShowCurrentPassword((prev) => !prev)}
-              >
-                {showCurrentPassword ? (
-                  <EyeOff className="h-4 w-4" />
-                ) : (
-                  <Eye className="h-4 w-4" />
+                    {/* Right side: Dialog trigger button */}
+                    <Dialog
+                      open={isPasswordDialogOpen}
+                      onOpenChange={setPasswordDialogOpen}
+                    >
+                      <DialogTrigger asChild>
+                        <Button
+                          variant="outline"
+                          disabled={isPending}
+                          className="rounded-full"
+                        >
+                          Change Password
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Change Your Password</DialogTitle>
+                          <DialogDescription>
+                            Enter your current password and a new password
+                            below.
+                          </DialogDescription>
+                        </DialogHeader>
+                        {/* Password form */}
+                        <form onSubmit={submitPasswordChange}>
+                          <div className="space-y-2">
+                            <Label htmlFor="password">Current Password</Label>
+                            <div className="relative">
+                              <Input
+                                disabled={isPending}
+                                id="password"
+                                onChange={handleSettingsChange}
+                                name="password"
+                                type={showCurrentPassword ? "text" : "password"}
+                                placeholder="Current Password"
+                              />
+                              <button
+                                type="button"
+                                className="absolute inset-y-0 right-0 flex items-center pr-3"
+                                onClick={() =>
+                                  setShowCurrentPassword((prev) => !prev)
+                                }
+                              >
+                                {showCurrentPassword ? (
+                                  <EyeOff className="h-4 w-4" />
+                                ) : (
+                                  <Eye className="h-4 w-4" />
+                                )}
+                              </button>
+                            </div>
+                          </div>
+                          <div className="space-y-2 mt-4">
+                            <Label htmlFor="newPassword">New Password</Label>
+                            <div className="relative">
+                              <Input
+                                disabled={isPending}
+                                id="newPassword"
+                                onChange={handleSettingsChange}
+                                name="newPassword"
+                                type={showNewPassword ? "text" : "password"}
+                                placeholder="New Password"
+                              />
+                              <button
+                                type="button"
+                                className="absolute inset-y-0 right-0 flex items-center pr-3"
+                                onClick={() =>
+                                  setShowNewPassword((prev) => !prev)
+                                }
+                              >
+                                {showNewPassword ? (
+                                  <EyeOff className="h-4 w-4" />
+                                ) : (
+                                  <Eye className="h-4 w-4" />
+                                )}
+                              </button>
+                            </div>
+                          </div>
+                          <br />
+                          <FormError message={error} />
+                          <DialogFooter className="mt-4">
+                            <Button
+                              disabled={isPending}
+                              type="submit"
+                              className="bg-purple-600 hover:bg-purple-700 text-white"
+                            >
+                              Update Password
+                            </Button>
+                          </DialogFooter>
+                        </form>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
                 )}
-              </button>
-            </div>
-          </div>
-          <div className="space-y-2 mt-4">
-            <Label htmlFor="newPassword">New Password</Label>
-            <div className="relative">
-              <Input
-                disabled={isPending}
-                id="newPassword"
-                onChange={handleSettingsChange}
-                name="newPassword"
-                type={showNewPassword ? "text" : "password"}
-                placeholder="New Password"
-              />
-              <button
-                type="button"
-                className="absolute inset-y-0 right-0 flex items-center pr-3"
-                onClick={() => setShowNewPassword((prev) => !prev)}
-              >
-                {showNewPassword ? (
-                  <EyeOff className="h-4 w-4" />
-                ) : (
-                  <Eye className="h-4 w-4" />
-                )}
-              </button>
-            </div>
-          </div>
-          <br />
-          <FormError message={error} />
-          <DialogFooter className="mt-4">
-            <Button
-              disabled={isPending}
-              type="submit"
-              className="bg-purple-600 hover:bg-purple-700 text-white"
-            >
-              Update Password
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
-  </div>
-)}
-
               </div>
 
-              <br/>
+              <br />
 
-               {/* Error / Success Handling */}
+              {/* Error / Success Handling */}
               <FormError message={error} />
               <FormSuccess message={success} />
-
             </form>
           </TabsContent>
         </Tabs>
