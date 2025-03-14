@@ -55,7 +55,9 @@ export function AssignmentResult({ assignment }: AssignmentResultProps) {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
-          Generated since {format(new Date(assignment.created_at), 'PPpp')}
+          {assignment.item_type === "Personalization"
+              ? "Personalized"
+              : "Simplified"} since {format(new Date(assignment.created_at), 'PPpp')}
         </motion.p>
         <div className="inline-flex items-center mt-5 px-4 py-2 rounded-full bg-purple-100 dark:bg-purple-900/20 backdrop-blur-sm border border-purple-200 dark:border-purple-500/20">
           <Sparkles className="h-4 w-4 text-sm text-purple-700 dark:text-purple-300" />

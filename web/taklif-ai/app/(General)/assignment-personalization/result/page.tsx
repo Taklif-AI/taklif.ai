@@ -7,7 +7,6 @@ import { Card } from "@/components/ui/card";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Toast } from "@/lib/utils/toast";
 import { motion } from "framer-motion";
-import { Brain, Sparkles, Stars, Wand2 } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import { ArrowRight, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -22,7 +21,6 @@ import { useSession } from "next-auth/react";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { decodeUrlToken } from "@/actions/decode-url-token";
 import { generateUrlToken } from "@/actions/generate-url-token";
-const backgroundIcons = [Brain, Wand2, Stars, Sparkles];
 
 export default function AssignmentResultPage() {
   const { update } = useSession();
@@ -402,38 +400,13 @@ export default function AssignmentResultPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-3xl mx-auto">
         <div className="relative">
-          {/* Animated Background Icons */}
-          <div className="absolute inset-0 -z-10 overflow-hidden">
-            {backgroundIcons.map((Icon, index) => (
-              <motion.div
-                key={index}
-                className="absolute text-violet-100 dark:text-violet-900/20"
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{
-                  opacity: 0.5,
-                  scale: 1,
-                  x: Math.random() * 100 - 50,
-                  y: Math.random() * 100 - 50,
-                }}
-                transition={{
-                  duration: 20,
-                  repeat: Infinity,
-                  repeatType: "reverse",
-                  delay: index * 2,
-                }}
-              >
-                <Icon size={64} />
-              </motion.div>
-            ))}
-          </div>
-
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <Card className="overflow-hidden backdrop-blur-sm border-violet-100 dark:border-violet-800">
-              <div className="p-8 space-y-6 bg-gradient-to-br from-violet-50 to-white dark:from-violet-950/20 dark:to-background relative">
+            <Card className="overflow-hidden backdrop-blur-sm">
+              <div className="p-8 space-y-6 bg-gradient-to-br from-violet-50 to-white dark:from-violet-950/5 dark:to-background relative">
                 <AssignmentResult assignment={currentAssignment} />
                 <motion.div
                   className="flex justify-between mt-4"
@@ -451,7 +424,7 @@ export default function AssignmentResultPage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="text-violet-600 hover:text-violet-700 hover:bg-violet-50 dark:hover:bg-violet-900/20"
+                        className="text-violet-600 hover:text-violet-700 hover:bg-violet-50 dark:hover:bg-violet-900/20 rounded-full"
                       >
                         <ArrowLeft
                           className="cursor-pointer"
@@ -471,7 +444,7 @@ export default function AssignmentResultPage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="text-violet-600 hover:text-violet-700 hover:bg-violet-50 dark:hover:bg-violet-900/20"
+                        className="text-violet-600 hover:text-violet-700 hover:bg-violet-50 dark:hover:bg-violet-900/20 rounded-full"
                       >
                         <ArrowRight
                           className="cursor-pointer"
