@@ -519,6 +519,7 @@ export default function ProfilePage() {
                   </div>
                   <div className="flex space-x-2">
                     <Button
+                      disabled={isPending || user?.theme as string === 'light'}
                       variant={theme === "light" ? "default" : "outline"}
                       className="rounded-full"
                       onClick={() => {
@@ -531,6 +532,7 @@ export default function ProfilePage() {
                       <Sun className="w-5 h-5" />
                     </Button>
                     <Button
+                      disabled={isPending || user?.theme as string === 'dark'}
                       variant={theme === "dark" ? "default" : "outline"}
                       className="rounded-full"
                       onClick={() => {
