@@ -10,6 +10,7 @@ import { useSearchParams } from "next/navigation";
 import { Turnstile } from "next-turnstile";
 import Link from "next/link";
 import Image from "next/image";
+import { Eye, EyeOff } from "lucide-react";
 export const SignIn = () => {
   const turnstileTokenRef = useRef<string | null>(null);
   const [turnstileStatus, setTurnstileStatus] = useState<
@@ -28,6 +29,7 @@ export const SignIn = () => {
   const [isPending, startTransition] = useTransition();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl");
+  const [showPassword, setShowPassword] = useState(false);
   const urlError =
     searchParams.get("error") === "OAuthAccountNotLinked"
       ? "Email already in use with different provider!"
@@ -136,31 +138,42 @@ export const SignIn = () => {
                       onChange={handleChange}
                     />
                   </div>
-                  <div>
+                  <div className="relative">
                     <Input
                       name="password"
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       value={formData.password}
                       disabled={isPending}
                       placeholder="Password"
                       className="w-full bg-gray-800/50 border-gray-700 text-white placeholder:text-gray-400"
                       onChange={handleChange}
                     />
-                    <Button
-                      size="sm"
-                      variant="link"
-                      asChild
-                      className="px-0 mt-1 font-normal"
-                      color="purple"
+                    <button
+                      type="button"
+                      className="absolute inset-y-0 right-0 flex items-center pr-3"
+                      onClick={() => setShowPassword((prev) => !prev)}
                     >
-                      <Link
-                        href="/auth/reset"
-                        className="text-purple-400 hover:text-purple-300"
-                      >
-                        Forgot password?
-                      </Link>
-                    </Button>
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4 text-purple-400 hover:text-purple-300" />
+                      ) : (
+                        <Eye className="h-4 w-4 text-purple-400 hover:text-purple-300" />
+                      )}
+                    </button>
                   </div>
+                  <Button
+                    size="sm"
+                    variant="link"
+                    asChild
+                    className="px-0 font-normal"
+                    color="purple"
+                  >
+                    <Link
+                      href="/auth/reset"
+                      className="text-purple-400 hover:text-purple-300"
+                    >
+                      Forgot password?
+                    </Link>
+                  </Button>
                 </>
               )}
 

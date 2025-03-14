@@ -8,6 +8,7 @@ import { useState, useTransition } from "react";
 import { useSearchParams } from "next/navigation";
 import { newPassword } from "@/actions/new-password";
 import Image from "next/image";
+import { Eye, EyeOff } from "lucide-react";
 
 export const NewPasswordForm = () => {
   const searchParams = useSearchParams();
@@ -20,6 +21,9 @@ export const NewPasswordForm = () => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -74,27 +78,49 @@ export const NewPasswordForm = () => {
               method="POST"
               onSubmit={handleSubmit}
             >
-              <div>
+              <div className="relative">
                 <Input
                   name="password"
                   value={formData.password}
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   disabled={isPending}
                   placeholder="Password"
                   className="w-full bg-gray-800/50 border-gray-700 text-white placeholder:text-gray-400"
                   onChange={handleChange}
                 />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 flex items-center pr-3"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4 text-purple-400 hover:text-purple-300" />
+                  ) : (
+                    <Eye className="h-4 w-4 text-purple-400 hover:text-purple-300" />
+                  )}
+                </button>
               </div>
-              <div>
+              <div className="relative">
                 <Input
                   name="confirmPassword"
                   value={formData.confirmPassword}
-                  type="password"
+                  type={showConfirmPassword ? "text" : "password"}
                   disabled={isPending}
                   placeholder="Password Confirmation"
                   className="w-full bg-gray-800/50 border-gray-700 text-white placeholder:text-gray-400"
                   onChange={handleChange}
                 />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 flex items-center pr-3"
+                  onClick={() => setShowConfirmPassword((prev) => !prev)}
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff className="h-4 w-4 text-purple-400 hover:text-purple-300" />
+                  ) : (
+                    <Eye className="h-4 w-4 text-purple-400 hover:text-purple-300" />
+                  )}
+                </button>
               </div>
 
               <FormError message={error} />
