@@ -5,6 +5,7 @@ export const PasswordsSchema = z.object({
     z.preprocess(
       (val) => (typeof val === "string" ? val.trim() : val),
       z.string()
+        .min(1, { message: "Password is required!" })
     ),
   newPassword:
     z.preprocess(
