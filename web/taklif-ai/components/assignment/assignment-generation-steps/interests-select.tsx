@@ -84,8 +84,8 @@ export function InterestsSelect({
         <div className="absolute inset-0 bg-gradient-to-br from-violet-50/50 to-white dark:from-violet-950/20 dark:to-background" />
       </div>
 
-      <Card className="min-h-[580px] p-8 max-w-xl mx-auto backdrop-blur-sm bg-white/80 dark:bg-gray-950/80">
-        <div className="overflow-auto h-20 ;">
+      <Card className="min-h-[580px] p-8 max-w-xl mx-auto backdrop-blur-sm">
+        <div className="overflow-auto h-12;">
           <Image
             src={LightSVG}
             alt="Light Mode Background"
@@ -99,16 +99,16 @@ export function InterestsSelect({
             className="object-cover opacity-[0.04] -z-10 hidden dark:block"
           />
         </div>
-        <div className="text-center mb-6">
-          <h2 className="text-2xl font-bold mb-2">Select Your Interest</h2>
+        <div className="text-center mt-6 mb-6">
+          <h2 className="text-2xl font-bold mb-2">Choose An Interest</h2>
           <p className="text-muted-foreground">
-            Choose a topic you are interested in
+          Select a topic or hobby that captivates your interest
           </p>
         </div>
 
         <div className="space-y-6">
           <div>
-            <h3 className="text-sm font-medium mb-3">Suggested Interests</h3>
+            <h3 className="text-sm font-medium mb-3">Sample Interests</h3>
             <div className="flex flex-wrap gap-2">
               {suggestedInterests.map((interest) => (
                 <Badge
@@ -132,12 +132,12 @@ export function InterestsSelect({
           </div>
 
           <div className="space-y-2">
-            <h3 className="text-sm font-medium">Or Enter Custom Interest</h3>
+            <h3 className="text-sm font-medium">Or Enter A Custom Interest</h3>
             <Input
               value={customInterest}
               onChange={handleCustomInterestChange}
               placeholder="Enter your interest"
-              className={`bg-white/50 dark:bg-gray-950/50 backdrop-blur-sm ${
+              className={`backdrop-blur-sm ${
                 isCustom ? "border-violet-500 ring-1 ring-violet-500" : ""
               }`}
             />
