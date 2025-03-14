@@ -30,6 +30,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { changePassword } from "@/actions/change-password";
 
 function addDays(date: Date, days: number) {
   const copy = new Date(date);
@@ -65,11 +66,14 @@ export default function ProfilePage() {
     institution: user?.institution || "",
   });
   const [settingsFormData, setSettingsFormData] = useState({
-    password: undefined,
-    newPassword: undefined,
     isTwoFactorEnabled: user?.isTwoFactorEnabled,
     theme: user?.theme || "dark",
   });
+
+  const [passwordFormData, setPasswordFormData] = useState({
+    password: undefined,
+    newPassword: undefined,
+  })
 
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -80,7 +84,6 @@ export default function ProfilePage() {
   const [success, setSuccess] = useState<string | undefined>("");
 
   const [passwordError, setPasswordError] = useState<string | undefined>("");
-  const [passwordSuccess, setPasswordSuccess] = useState<string | undefined>("");
 
   const [isPasswordDialogOpen, setPasswordDialogOpen] = useState(false);
 
@@ -96,7 +99,7 @@ export default function ProfilePage() {
       return () => clearTimeout(timer);
     }
   }, [success]);
-  
+
   useEffect(() => {
     if (error) {
       const timer = setTimeout(() => {
@@ -105,7 +108,16 @@ export default function ProfilePage() {
       return () => clearTimeout(timer);
     }
   }, [error]);
-  
+
+  useEffect(() => {
+    if (passwordError) {
+      const timer = setTimeout(() => {
+        setPasswordError("");
+      }, 5000); // 5000ms = 5 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [passwordError]);
+
   const cropImage = async (file: File): Promise<Blob> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -224,25 +236,27 @@ export default function ProfilePage() {
     setSettingsFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handlePasswordChange = (e) => {
+    const { name, value } = e.target;
+    setPasswordFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
   const submitPasswordChange = (e: React.FormEvent<HTMLFormElement>) => {
+
     e.preventDefault();
-  
+
     setPasswordError("");
-    setPasswordSuccess("");
-  
+
     startTransition(() => {
       // Only send password changes to your `settings` action
-      settings({
-        password: settingsFormData.password,
-        newPassword: settingsFormData.newPassword,
-      })
+      changePassword(passwordFormData)
         .then((data) => {
-          if (data.error) {
-            setPasswordError(data.error);
+          if (data.passError) {
+            setPasswordError(data.passError);
             return;
           }
           if (data.success) {
-            setPasswordSuccess(data.success);
+            setSuccess(data.success);
             // Close the dialog
             setPasswordDialogOpen(false);
           }
@@ -258,7 +272,7 @@ export default function ProfilePage() {
       ...prev,
       isTwoFactorEnabled: newValue,
     }));
-  
+
     // Immediately call the settings action to persist the change
     startTransition(() => {
       settings({
@@ -275,7 +289,7 @@ export default function ProfilePage() {
         })
         .catch(() => setError("Something went wrong!"));
     });
-  };  
+  };
 
   const submitProfile = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -476,7 +490,7 @@ export default function ProfilePage() {
             </form>
           </TabsContent>
 
-         {/* Settings Tab */}
+          {/* Settings Tab */}
           <TabsContent value="settings" className="mt-6 space-y-6">
             <form onSubmit={submitSettings}>
               <div className="grid gap-6">
@@ -533,107 +547,102 @@ export default function ProfilePage() {
                     />
                   </div>
                 )}
-
-{user?.isOAuth === false && (
-  <div className="flex items-center justify-between">
-    {/* Left side: label and description */}
-    <div className="space-y-1">
-      <Label>Change Password</Label>
-      <p className="text-sm text-muted-foreground">
-        Update your account password.
-      </p>
-    </div>
-
-    {/* Right side: Dialog trigger button */}
-    <Dialog open={isPasswordDialogOpen} onOpenChange={setPasswordDialogOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline" disabled={isPending} className="rounded-full">
-          Change Password
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Change Your Password</DialogTitle>
-          <DialogDescription>
-            Enter your current password and a new password below.
-          </DialogDescription>
-        </DialogHeader>
-        {/* Password form */}
-        <form onSubmit={submitPasswordChange}>
-          <div className="space-y-2">
-            <Label htmlFor="password">Current Password</Label>
-            <div className="relative">
-              <Input
-                disabled={isPending}
-                id="password"
-                onChange={handleSettingsChange}
-                name="password"
-                type={showCurrentPassword ? "text" : "password"}
-                placeholder="Current Password"
-              />
-              <button
-                type="button"
-                className="absolute inset-y-0 right-0 flex items-center pr-3"
-                onClick={() => setShowCurrentPassword((prev) => !prev)}
-              >
-                {showCurrentPassword ? (
-                  <EyeOff className="h-4 w-4" />
-                ) : (
-                  <Eye className="h-4 w-4" />
-                )}
-              </button>
-            </div>
-          </div>
-          <div className="space-y-2 mt-4">
-            <Label htmlFor="newPassword">New Password</Label>
-            <div className="relative">
-              <Input
-                disabled={isPending}
-                id="newPassword"
-                onChange={handleSettingsChange}
-                name="newPassword"
-                type={showNewPassword ? "text" : "password"}
-                placeholder="New Password"
-              />
-              <button
-                type="button"
-                className="absolute inset-y-0 right-0 flex items-center pr-3"
-                onClick={() => setShowNewPassword((prev) => !prev)}
-              >
-                {showNewPassword ? (
-                  <EyeOff className="h-4 w-4" />
-                ) : (
-                  <Eye className="h-4 w-4" />
-                )}
-              </button>
-            </div>
-          </div>
-          <br />
-          <FormError message={error} />
-          <DialogFooter className="mt-4">
-            <Button
-              disabled={isPending}
-              type="submit"
-              className="bg-purple-600 hover:bg-purple-700 text-white"
-            >
-              Update Password
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
-  </div>
-)}
-
               </div>
-
-              <br/>
-
-               {/* Error / Success Handling */}
-              <FormError message={error} />
-              <FormSuccess message={success} />
-
             </form>
+            {user?.isOAuth === false && (
+              <div className="flex items-center justify-between">
+                {/* Left side: label and description */}
+                <div className="space-y-1">
+                  <Label>Change Password</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Update your account password.
+                  </p>
+                </div>
+
+                {/* Right side: Dialog trigger button */}
+                <Dialog open={isPasswordDialogOpen} onOpenChange={setPasswordDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" disabled={isPending} className="rounded-full">
+                      Change Password
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Change Your Password</DialogTitle>
+                      <DialogDescription>
+                        Enter your current password and a new password below.
+                      </DialogDescription>
+                    </DialogHeader>
+                    {/* Password form */}
+                    <form onSubmit={submitPasswordChange}>
+                      <div className="space-y-2">
+                        <Label htmlFor="password">Current Password</Label>
+                        <div className="relative">
+                          <Input
+                            disabled={isPending}
+                            id="password"
+                            onChange={handlePasswordChange}
+                            name="password"
+                            type={showCurrentPassword ? "text" : "password"}
+                            placeholder="Current Password"
+                          />
+                          <button
+                            type="button"
+                            className="absolute inset-y-0 right-0 flex items-center pr-3"
+                            onClick={() => setShowCurrentPassword((prev) => !prev)}
+                          >
+                            {showCurrentPassword ? (
+                              <EyeOff className="h-4 w-4" />
+                            ) : (
+                              <Eye className="h-4 w-4" />
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                      <div className="space-y-2 mt-4">
+                        <Label htmlFor="newPassword">New Password</Label>
+                        <div className="relative">
+                          <Input
+                            disabled={isPending}
+                            id="newPassword"
+                            onChange={handlePasswordChange}
+                            name="newPassword"
+                            type={showNewPassword ? "text" : "password"}
+                            placeholder="New Password"
+                          />
+                          <button
+                            type="button"
+                            className="absolute inset-y-0 right-0 flex items-center pr-3"
+                            onClick={() => setShowNewPassword((prev) => !prev)}
+                          >
+                            {showNewPassword ? (
+                              <EyeOff className="h-4 w-4" />
+                            ) : (
+                              <Eye className="h-4 w-4" />
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                      <br />
+                      <FormError message={passwordError} />
+                      <DialogFooter className="mt-4">
+                        <Button
+                          disabled={isPending}
+                          type="submit"
+                          className="bg-purple-600 hover:bg-purple-700 text-white"
+                        >
+                          Update Password
+                        </Button>
+                      </DialogFooter>
+                    </form>
+                  </DialogContent>
+                </Dialog>
+              </div>
+            )}
+            <br />
+            {/* Error / Success Handling */}
+            <FormError message={error} />
+            <FormSuccess message={success} />
           </TabsContent>
         </Tabs>
       </div>
