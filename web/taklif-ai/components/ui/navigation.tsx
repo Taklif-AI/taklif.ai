@@ -68,7 +68,7 @@ export function Navigation() {
                 variant="ghost"
                 className="rounded-full w-[130px] outline outline-1 hover:bg-purple-600 hover:text-white transition-colors hover:outline-none"
               >
-                Sign in
+                Sign In
               </Button>
             </Link>
           )}
