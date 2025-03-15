@@ -13,10 +13,10 @@ export function HomeCTA() {
       {/* Content Container */}
       <div className="relative max-w-7xl mx-auto flex flex-col items-center gap-8">
         {/* Badge */}
-        <div className="inline-flex items-center justify-center px-4 py-2 rounded-full bg-purple-100 dark:bg-purple-900/20 backdrop-blur-sm border border-purple-200 dark:border-purple-500/20">
-          <Sparkles className="h-4 w-4 text-sm text-purple-700 dark:text-purple-300" />
-          <span className="text-xs sm:text-sm text-purple-700 dark:text-purple-300">
-            &nbsp; Start experiencing personalized assignments now!
+        <div className="flex flex-col sm:flex-row items-center justify-center px-3 py-1 sm:px-4 sm:py-2 rounded-full bg-purple-100 dark:bg-purple-900/20 backdrop-blur-sm border border-purple-200 dark:border-purple-500/20">
+          <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-purple-700 dark:text-purple-300" />
+          <span className="mt-1 sm:mt-0 sm:ml-2 text-xs sm:text-sm text-purple-700 dark:text-purple-300">
+            Start experiencing personalized assignments
           </span>
         </div>
 
