@@ -55,7 +55,7 @@ export const ResetForm = () => {
               Forgot password?
             </h2>
             <p className="text-gray-400 text-center mb-8">
-              Reset it to continue to your AI workspace
+              Secure your account, reset your password to proceed
             </p>
 
             <form
