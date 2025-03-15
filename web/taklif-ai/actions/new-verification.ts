@@ -3,13 +3,17 @@
 import {
   getUserByEmail,
   updateUserDynamicData,
-  updateUserFields,
 } from "@/data/user";
 import { getVerificationTokenByToken } from "@/data/verification-token";
 import { client } from "@/lib/database/dynamo-client";
 import { DeleteCommand } from "@aws-sdk/lib-dynamodb";
+import { redirect } from "next/navigation";
 
-export const newVerification = async (token: string) => {
+export const newVerification = async (token?: string) => {
+  if (!token) {
+    // Redirect the user to the sign-in page if no token is provided
+    redirect("/");
+  }
   const existingToken = await getVerificationTokenByToken(`VR#${token}`);
 
   if (!existingToken) {

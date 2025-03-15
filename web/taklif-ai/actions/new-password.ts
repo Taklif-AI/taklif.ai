@@ -6,10 +6,11 @@ import { NewPasswordSchema } from "@/lib/schemas/new-password-schema";
 import bcrypt from "bcryptjs";
 import { client } from "@/lib/database/dynamo-client";
 import { DeleteCommand } from "@aws-sdk/lib-dynamodb";
+import { redirect } from "next/navigation";
 
 export const newPassword = async (formData: object, token?: string | null) => {
   if (!token) {
-    return { error: "Missing token!" };
+    redirect("/");
   }
 
   const validateData = NewPasswordSchema.safeParse(formData);
