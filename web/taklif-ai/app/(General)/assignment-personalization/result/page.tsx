@@ -220,6 +220,7 @@ export default function AssignmentResultPage() {
           if (!res.ok || !result || result.error) {
             setIsPending(false);
             Toast.error(result.error);
+            sessionStorage.removeItem("allowLoadingPage");
             router.push("/assignment-personalization/result");
             return;
           }
@@ -288,7 +289,7 @@ export default function AssignmentResultPage() {
         }
 
         sessionStorage.setItem("allowLoadingPage", "true");
-
+        sessionStorage.setItem("fromSimplify", "true");
         // redirect user to loadings page
         router.push("/assignment-personalization/loading");
 
@@ -315,6 +316,8 @@ export default function AssignmentResultPage() {
           // check the incoming response
           if (!res.ok || !result || result.error) {
             Toast.error("Failed to simplify assignment. Please try again.1");
+            sessionStorage.removeItem("allowLoadingPage");
+            sessionStorage.removeItem("fromSimplify");
             router.push("/assignment-personalization/result");
             return;
           }
@@ -340,15 +343,18 @@ export default function AssignmentResultPage() {
           if (data.token) {
             router.push(`/assignment-personalization/result?token=${encodeURIComponent(data.token)}`);
             sessionStorage.removeItem("allowLoadingPage");
+            sessionStorage.removeItem("fromSimplify");
           } else if (data.error) {
             Toast.error(data.error);
             sessionStorage.removeItem("allowLoadingPage");
+            sessionStorage.removeItem("fromSimplify");
             router.push("/assignment-personalization/my-assignments");
             return;
           }
           /* eslint-disable */
         } catch (error) {
           sessionStorage.removeItem("allowLoadingPage");
+          sessionStorage.removeItem("fromSimplify");
           setIsPending(false);
           Toast.error("Failed to simplified assignment. Please try again");
           router.push("/assignment-personalization/result/");
