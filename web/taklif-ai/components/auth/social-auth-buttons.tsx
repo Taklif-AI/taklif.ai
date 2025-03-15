@@ -21,7 +21,7 @@ export function SocialAuthButtons() {
           <Image
             src="https://www.google.com/favicon.ico"
             alt="Google"
-            width={16}
+            width={20}
             height={16}
             className="mr-2"
           />

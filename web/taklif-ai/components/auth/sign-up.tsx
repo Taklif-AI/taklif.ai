@@ -67,7 +67,7 @@ export const SignUp = () => {
               Create Account
             </h2>
             <p className="text-gray-400 text-center mb-8">
-              Join our AI platform today
+              Join now and transform your learning
             </p>
 
             <SocialAuthButtons />
@@ -162,7 +162,7 @@ export const SignUp = () => {
                 href="/auth/sign-in"
                 className="text-purple-400 hover:text-purple-300"
               >
-                Sign in
+                Sign In
               </Link>
             </p>
           </div>

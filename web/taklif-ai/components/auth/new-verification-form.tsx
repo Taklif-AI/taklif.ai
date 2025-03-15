@@ -57,13 +57,13 @@ export const NewVerificationForm = () => {
               />{" "}
             </div>
             <h5 className="text-3xl font-bold text-center text-white mb-2">
-              Confirming verification
+              Confirming Verification
             </h5>
             <p className="text-gray-400 text-center mb-8">
-              Confirm verification to continue to your AI workspace
+              Verify your account to proceed
             </p>
             <div className="flex items-center w-full justify-center">
-              {!success && !error && <BeatLoader color="purple" />}
+              {!success && !error && <BeatLoader color="#7861ff" />}
 
               <FormSuccess message={success} />
               <FormError message={error} />

@@ -67,10 +67,10 @@ export const NewPasswordForm = () => {
             </div>
 
             <h2 className="text-3xl font-bold text-center text-white mb-2">
-              New password
+              New Password
             </h2>
             <p className="text-gray-400 text-center mb-8">
-              Enter password to continue to your AI workspace
+              Confirm your password to proceed
             </p>
 
             <form
@@ -130,7 +130,7 @@ export const NewPasswordForm = () => {
                 disabled={isPending}
                 className="w-full bg-gradient-to-r from-purple-500 to-purple-700 hover:from-purple-700 hover:to-purple-500 text-white"
               >
-                Reset password
+                Reset Password
               </Button>
             </form>
 
