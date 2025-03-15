@@ -14,16 +14,25 @@ const sentences = [
 export default function AssignmentLoadingPage() {
   const router = useRouter();
   const [currentSentence, setCurrentSentence] = useState(0);
+  const [simplification, setSimplification] = useState(false);
 
   useEffect(() => {
-    document.title = "Personalizing...";
-  }, []);
+    document.title = simplification ? "Simplifying..." : "Personalizing...";
+  }, [simplification]);
+
   useEffect(() => {
     const allow = sessionStorage.getItem("allowLoadingPage");
     if (!allow) {
       router.push("/");
     }
   }, [router]);
+
+  useEffect(() => {
+    const simplify = sessionStorage.getItem("fromSimplify");
+    if (simplify) {
+      setSimplification(true);
+    }
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -60,10 +69,10 @@ export default function AssignmentLoadingPage() {
                 animate={{ opacity: [0.5, 1, 0.5] }}
                 transition={{ duration: 5, repeat: Infinity }}
               >
-                Personalizing Your Assignment
+                {simplification ? 'Simplifying' : 'Personalizing'} Your Assignment
               </motion.h1>
               <p className="text-lg text-muted-foreground">
-                We're creating a unique assignment tailored to your interests
+                We're {simplification ? 'simplifying' : 'personalizing'} a unique assignment tailored to your interests
               </p>
             </div>
 
