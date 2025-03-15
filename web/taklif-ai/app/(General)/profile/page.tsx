@@ -18,6 +18,7 @@ import {
   Eye,
   EyeOff,
   Settings,
+  Info,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { profile } from "@/actions/profile";
@@ -39,6 +40,7 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
+  DialogClose,
 } from "@/components/ui/dialog";
 import { changePassword } from "@/actions/change-password";
 
@@ -550,9 +552,39 @@ export default function ProfilePage() {
                 {/* 2FA Toggle (if not OAuth) */}
                 {user?.isOAuth === false && (
                   <div className="flex items-center justify-between">
-                    <div className="space-y-1">
-                      <Label>Two Factor Authentication</Label>
-                      <p className="text-sm text-muted-foreground">
+                    <div className="flex flex-col">
+                      <div className="flex items-center">
+                        <Label>Two Factor Authentication</Label>
+                        {/* Info Icon with Pop-up */}
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <button type="button" className="ml-1">
+                              <Info className="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-pointer" />
+                            </button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>Two Factor Authentication Info</DialogTitle>
+                              <DialogDescription>
+                                Once enabled, two-factor authentication (2FA) adds an extra layer of security by sending a verification code to your registered email at every sign-in attempt.
+                                <br />
+                                <br />
+                                <span className="text-red-500">
+                                  Please note that the code expires after <strong>5 minutes</strong>, so make sure to use it promptly.
+                                </span>
+                              </DialogDescription>
+                            </DialogHeader>
+                            <DialogFooter>
+                              <DialogClose asChild>
+                                <Button type="button" variant="outline">
+                                  Close
+                                </Button>
+                              </DialogClose>
+                            </DialogFooter>
+                          </DialogContent>
+                        </Dialog>
+                      </div>
+                      <p className="text-sm mt-1.5 text-muted-foreground">
                         Add an extra layer of security to your account.
                       </p>
                     </div>
