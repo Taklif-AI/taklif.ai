@@ -31,7 +31,7 @@ export const generateTwoFactorToken = async (email: string) => {
   
   const tokenId = uuidv4();
   const token = crypto.randomInt(100000, 1000000).toString(); // 6 digits number
-  const expires = now + 300; // expire the token in 1hour
+  const expires = now + 300; // expire the token in 5 minutes
 
   // Create a new two factor token record in the database
   const twoFactorToken = {
