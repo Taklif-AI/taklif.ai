@@ -30,7 +30,7 @@ export default function PrivacyPolicy() {
                 <li>
                   <a
                     href="#what-information-do-we-collect"
-                    className="hover:underline"
+                    className="hover:underline text-gray-800 dark:text-gray-300"
                   >
                     WHAT INFORMATION DO WE COLLECT?
                   </a>
@@ -38,7 +38,7 @@ export default function PrivacyPolicy() {
                 <li>
                   <a
                     href="#how-do-we-process-your-information"
-                    className="hover:underline"
+                    className="hover:underline text-gray-800 dark:text-gray-300"
                   >
                     HOW DO WE PROCESS YOUR INFORMATION?
                   </a>
@@ -46,7 +46,7 @@ export default function PrivacyPolicy() {
                 <li>
                   <a
                     href="#when-and-with-whom-do-we-share-personal-information"
-                    className="hover:underline"
+                    className="hover:underline text-gray-800 dark:text-gray-300"
                   >
                     WHEN AND WITH WHOM DO WE SHARE YOUR PERSONAL INFORMATION?
                   </a>
@@ -54,7 +54,7 @@ export default function PrivacyPolicy() {
                 <li>
                   <a
                     href="#do-we-use-cookies-and-other-tracking-technologies"
-                    className="hover:underline"
+                    className="hover:underline text-gray-800 dark:text-gray-300"
                   >
                     DO WE USE COOKIES AND OTHER TRACKING TECHNOLOGIES?
                   </a>
@@ -62,7 +62,7 @@ export default function PrivacyPolicy() {
                 <li>
                   <a
                     href="#do-we-offer-artificial-intelligence-based-products"
-                    className="hover:underline"
+                    className="hover:underline text-gray-800 dark:text-gray-300"
                   >
                     DO WE OFFER ARTIFICIAL INTELLIGENCE-BASED PRODUCTS?
                   </a>
@@ -70,7 +70,7 @@ export default function PrivacyPolicy() {
                 <li>
                   <a
                     href="#how-do-we-handle-your-social-logins"
-                    className="hover:underline"
+                    className="hover:underline text-gray-800 dark:text-gray-300"
                   >
                     HOW DO WE HANDLE YOUR SOCIAL LOGINS?
                   </a>
@@ -78,7 +78,7 @@ export default function PrivacyPolicy() {
                 <li>
                   <a
                     href="#how-long-do-we-keep-your-information"
-                    className="hover:underline"
+                    className="hover:underline text-gray-800 dark:text-gray-300"
                   >
                     HOW LONG DO WE KEEP YOUR INFORMATION?
                   </a>
@@ -86,7 +86,7 @@ export default function PrivacyPolicy() {
                 <li>
                   <a
                     href="#how-do-we-keep-your-information-safe"
-                    className="hover:underline"
+                    className="hover:underline text-gray-800 dark:text-gray-300"
                   >
                     HOW DO WE KEEP YOUR INFORMATION SAFE?
                   </a>
@@ -94,7 +94,7 @@ export default function PrivacyPolicy() {
                 <li>
                   <a
                     href="#do-we-collect-information-from-minors"
-                    className="hover:underline"
+                    className="hover:underline text-gray-800 dark:text-gray-300"
                   >
                     DO WE COLLECT INFORMATION FROM MINORS?
                   </a>
@@ -102,7 +102,7 @@ export default function PrivacyPolicy() {
                 <li>
                   <a
                     href="#what-are-your-privacy-rights"
-                    className="hover:underline"
+                    className="hover:underline text-gray-800 dark:text-gray-300"
                   >
                     WHAT ARE YOUR PRIVACY RIGHTS?
                   </a>
@@ -110,7 +110,7 @@ export default function PrivacyPolicy() {
                 <li>
                   <a
                     href="#controls-for-do-not-track-features"
-                    className="hover:underline"
+                    className="hover:underline text-gray-800 dark:text-gray-300"
                   >
                     CONTROLS FOR DO-NOT-TRACK FEATURES
                   </a>
@@ -118,7 +118,7 @@ export default function PrivacyPolicy() {
                 <li>
                   <a
                     href="#do-we-make-updates-to-this-notice"
-                    className="hover:underline"
+                    className="hover:underline text-gray-800 dark:text-gray-300"
                   >
                     DO WE MAKE UPDATES TO THIS NOTICE?
                   </a>
@@ -126,7 +126,7 @@ export default function PrivacyPolicy() {
                 <li>
                   <a
                     href="#how-can-you-contact-us-about-this-notice"
-                    className="hover:underline"
+                    className="hover:underline text-gray-800 dark:text-gray-300"
                   >
                     HOW CAN YOU CONTACT US ABOUT THIS NOTICE?
                   </a>
@@ -134,7 +134,7 @@ export default function PrivacyPolicy() {
                 <li>
                   <a
                     href="#how-can-you-review-update-or-delete-the-data-we-collect-from-you"
-                    className="hover:underline"
+                    className="hover:underline text-gray-800 dark:text-gray-300"
                   >
                     HOW CAN YOU REVIEW, UPDATE, OR DELETE THE DATA WE COLLECT FROM YOU?
                   </a>
@@ -143,7 +143,7 @@ export default function PrivacyPolicy() {
 
               {/* Introduction */}
               <p className="text-gray-800 dark:text-gray-300 mt-8">
-                This Privacy Notice for Taklif.AI (<strong className="text-gray-800 dark:text-gray-300">"we," "us," or "our"</strong>) describes how and why we might access, collect, store, use, and/or share (<strong className="text-gray-800 dark:text-gray-300">"process"</strong>) your personal information when you use our services (<strong className="text-gray-800 dark:text-gray-300">"Services"</strong>), including when you:
+                This Privacy Notice for Taklif.AI (<strong className="text-gray-800 dark:text-gray-300">&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;</strong>) describes how and why we might access, collect, store, use, and/or share (<strong className="text-gray-800 dark:text-gray-300">&quot;process&quot;</strong>) your personal information when you use our services (<strong className="text-gray-800 dark:text-gray-300">&quot;Services&quot;</strong>), including when you:
               </p>
               <ul className="list-disc pl-6 text-gray-800 dark:text-gray-300 space-y-2">
                 <li>
@@ -176,7 +176,7 @@ export default function PrivacyPolicy() {
                   <strong className="text-gray-800 dark:text-gray-300">What personal information do we process?</strong> When you visit, use, or navigate our Services, we may process personal information depending on how you interact with us and the Services, the choices you make, and the products and features you use.{" "}
                 </li>
                 <li>
-                  <strong className="text-gray-800 dark:text-gray-300">Do we process any sensitive personal information?</strong> Some of the information may be considered "special" or "sensitive" in certain jurisdictions, for example your racial or ethnic origins, sexual orientation, and religious beliefs. We do not process sensitive personal information.
+                  <strong className="text-gray-800 dark:text-gray-300">Do we process any sensitive personal information?</strong> Some of the information may be considered &quot;special" or "sensitive" in certain jurisdictions, for example your racial or ethnic origins, sexual orientation, and religious beliefs. We do not process sensitive personal information.
                 </li>
                 <li>
                   <strong className="text-gray-800 dark:text-gray-300">Do we collect any information from third parties?</strong> We do not collect any information from third parties.
