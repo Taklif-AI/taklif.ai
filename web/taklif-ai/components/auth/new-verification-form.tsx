@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { BeatLoader } from "react-spinners";
 import { newVerification } from "@/actions/new-verification";
 import { FormError } from "@/components/auth/form-error";
@@ -12,6 +12,7 @@ export const NewVerificationForm = () => {
   const [error, setError] = useState<string | undefined>();
   const [success, setSuccess] = useState<string | undefined>();
 
+  const router = useRouter();
   const searchParams = useSearchParams();
 
   const token = searchParams.get("token");
@@ -33,8 +34,12 @@ export const NewVerificationForm = () => {
   }, [token]);
 
   useEffect(() => {
+    if (!token) {
+      router.push('/');
+      return;
+    }
     onSubmit();
-  }, [onSubmit]);
+  }, [onSubmit, router, token]);
 
   return (
     <div className="min-h-screen w-full bg-gray-800 flex items-center justify-center p-4">

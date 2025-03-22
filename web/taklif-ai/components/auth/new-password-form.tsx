@@ -4,8 +4,8 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { FormError } from "@/components/auth/form-error";
 import { FormSuccess } from "@/components/auth/form-success";
-import { useState, useTransition } from "react";
-import { useSearchParams } from "next/navigation";
+import { useEffect, useState, useTransition } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { newPassword } from "@/actions/new-password";
 import Image from "next/image";
 import { Eye, EyeOff } from "lucide-react";
@@ -14,6 +14,7 @@ export const NewPasswordForm = () => {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
 
+  const router = useRouter();
   const [formData, setFormData] = useState({
     password: "",
     confirmPassword: "",
@@ -25,6 +26,13 @@ export const NewPasswordForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  useEffect(() => {
+    if (!token) {
+      router.push("/");
+      return;
+    }
+  }, [router, token]);
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
