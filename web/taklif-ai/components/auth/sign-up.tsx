@@ -10,6 +10,7 @@ import { useState, useTransition } from "react";
 import { register } from "@/actions/register";
 import Image from "next/image";
 import { Eye, EyeOff } from "lucide-react";
+import { useRouter } from "next/navigation";
 export const SignUp = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -18,9 +19,9 @@ export const SignUp = () => {
     confirmPassword: "",
   });
   const [error, setError] = useState<string | undefined>("");
-  const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
 
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const handleChange = (e) => {
@@ -32,12 +33,15 @@ export const SignUp = () => {
     e.preventDefault();
 
     setError("");
-    setSuccess("");
 
     startTransition(() => {
       register(formData).then((data) => {
-        setError(data.error);
-        setSuccess(data.success);
+        if (data.error) {
+          setError(data.error);
+        } else if (data.success) {
+          sessionStorage.setItem("registered", "registered");
+          router.push(`/auth/registration-complete?email=${formData.email}`);
+        }
       });
     });
   };
@@ -145,7 +149,6 @@ export const SignUp = () => {
               </div>
 
               <FormError message={error} />
-              <FormSuccess message={success} />
 
               <Button
                 type="submit"
