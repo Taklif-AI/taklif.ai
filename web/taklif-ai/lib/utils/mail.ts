@@ -23,7 +23,7 @@ export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
 
                 <!-- Logo -->
                 <div style="text-align: center;">
-                    <img src="https://external-assets-taklif-ai.s3.eu-north-1.amazonaws.com/logo-dark.png" alt="Taklif.AI Logo" style="width: 400px; margin-bottom: 20px;">
+                    <img src="https://drive.google.com/uc?export=view&id=1qcZzP-yoh4hJaG7a88McMBw_qJ9-E21q" alt="Taklif.AI Logo" style="width: 400px; margin-bottom: 20px;">
                 </div>
 
                 <h2 style="text-align: center; color: #ffffff;">Your Two-Factor Authentication Code</h2>
@@ -77,7 +77,7 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
 
                 <!-- Logo -->
                 <div style="text-align: center;">
-                    <img src="https://external-assets-taklif-ai.s3.eu-north-1.amazonaws.com/logo-dark.png" alt="Taklif.AI Logo" style="width: 400px; margin-bottom: 20px;">
+                    <img src="https://drive.google.com/uc?export=view&id=1qcZzP-yoh4hJaG7a88McMBw_qJ9-E21q" alt="Taklif.AI Logo" style="width: 400px; margin-bottom: 20px;">
                 </div>
 
                 <h2 style="text-align: center; color: #ffffff;">Reset Your Taklif.AI Password</h2>
@@ -128,7 +128,7 @@ export const sendVerificationEmail = async (email: string, token: string) => {
             <div style="max-width: 600px; margin: auto; background-color: #252525; border-radius: 10px; padding: 30px;">
                 <!-- Logo -->
                 <div style="text-align: center;">
-                    <img src="https://external-assets-taklif-ai.s3.eu-north-1.amazonaws.com/logo-dark.png" 
+                    <img src="https://drive.google.com/uc?export=view&id=1qcZzP-yoh4hJaG7a88McMBw_qJ9-E21q" 
                         alt="Taklif.AI Logo" 
                         style="width: 400px; margin-bottom: 20px;">
                 </div>
