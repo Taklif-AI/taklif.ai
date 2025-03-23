@@ -60,7 +60,7 @@ export function Navigation() {
               </Button>
             </Link>
           )}
-          {!session && <ThemeToggle />}
+          
           <div className="hidden md:flex md:items-center md:gap-5"></div>
 
           {!session && (
