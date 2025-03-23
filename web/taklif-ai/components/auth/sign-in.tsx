@@ -108,7 +108,11 @@ export const SignIn = () => {
             <h2 className="text-3xl font-bold text-center text-white mb-2">
               {showTwoFactor ? "2FA" : "Welcome Back"}
             </h2>
-
+            {showTwoFactor && (
+              <p className="text-gray-400 text-center mb-8">
+                Enter the code you just received in your email
+              </p>
+            )}
             {!showTwoFactor && (
               <>
                 <p className="text-gray-400 text-center mb-8">
@@ -130,7 +134,7 @@ export const SignIn = () => {
                     type="text"
                     value={formData.code}
                     disabled={isPending}
-                    placeholder="Two Factor Code"
+                    placeholder="Enter Your 2FA Code"
                     className="w-full bg-gray-800/50 border-gray-700 text-white placeholder:text-gray-400"
                     onChange={handleChange}
                   />
