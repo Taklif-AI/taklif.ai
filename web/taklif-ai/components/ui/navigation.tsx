@@ -53,7 +53,7 @@ export function Navigation() {
             <Link href="/assignment-personalization">
               <Button
                 variant="ghost"
-                className="rounded-full p-0 h-9 w-[40px] sm:w-[120px] bg-purple-500 transition-colors hover:outline-none "
+                className="rounded-full p-0 h-9 w-[40px] sm:w-[120px] bg-purple-500 text-white transition-colors hover:outline-none "
               >
                 <span className="hidden sm:inline">Try Now</span>
                 <Zap className="sm:ml-1.5 h-4 w-4" />

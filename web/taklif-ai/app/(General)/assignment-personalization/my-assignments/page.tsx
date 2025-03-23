@@ -252,7 +252,7 @@ export default function AssignmentsPage() {
               <Link href="/assignment-personalization">
                 <Button
                   size="lg"
-                  className="rounded-full w-full sm:w-auto bg-violet-600 hover:bg-violet-700 text-gray-1000 dark:text-white"
+                  className="rounded-full w-full sm:w-auto bg-violet-600 hover:bg-violet-700 text-white dark:text-white"
                 >
                   Personalize Your First Assignment
                   <ArrowRight className="ml-2 h-4 w-4" />

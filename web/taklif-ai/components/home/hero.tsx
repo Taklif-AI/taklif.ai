@@ -54,7 +54,7 @@ export function HomeHero() {
               </h1>
 
               {/* Hero Description */}
-              <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 max-w-xl mx-auto lg:mx-0">
+              <p className="text-base sm:text-lg text-gray-700 dark:text-gray-400 max-w-xl mx-auto lg:mx-0">
               Create personalized assignments customized to match your 
               out-of-school interests, making assignments more engaging,
               relevant, and impactful for your academic and professional growth.
@@ -68,7 +68,7 @@ export function HomeHero() {
                 >
                   <Button
                     size="lg"
-                    className="rounded-full w-full sm:w-auto bg-violet-600 hover:bg-violet-700 text-gray-1000 dark:text-white"
+                    className="rounded-full w-full sm:w-auto bg-violet-600 hover:bg-violet-700 text-white dark:text-white"
                   >
                     Personalize Your First Assignment
                     <ArrowRight className="ml-2 h-4 w-4" />
