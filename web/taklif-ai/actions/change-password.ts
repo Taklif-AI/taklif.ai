@@ -19,7 +19,9 @@ export const changePassword = async (formData) => {
   }
 
   if (!user.isOAuth) {
-
+    if (!formData.password) {
+      return { passError: "Password is required!" };
+    }
     if (formData.password && !formData.newPassword) {
       return { passError: " New password is required!" };
     }
