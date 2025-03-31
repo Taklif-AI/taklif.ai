@@ -35,7 +35,7 @@ export async function POST(req) {
       // pdf validation
       if (mimeType !== "application/pdf") {
         return new Response(
-          JSON.stringify({ error: "Only pdf files are allowed" }),
+          JSON.stringify({ error: "Only PDF files are allowed" }),
           { status: 400 },
         );
       }
@@ -63,7 +63,7 @@ export async function POST(req) {
         run_id: body.run_id,
         personalization_id: body.personalization_id,
         user_id: user.id,
-        is_first_try:body.is_first_try
+        is_first_try: body.is_first_try
       },
     };
 
@@ -83,7 +83,7 @@ export async function POST(req) {
     }
     if (!res.ok || data.error || data.message) {
       return new Response(
-        JSON.stringify({ error: "Failed to generate assignment" }),
+        JSON.stringify({ error: "Failed to generate assignment, please try again!" }),
         { status: 500 },
       );
     }
@@ -95,7 +95,7 @@ export async function POST(req) {
   } catch (error) {
     console.log(error);
     return new Response(
-      JSON.stringify({ error: "Failed to generate assignment" }),
+      JSON.stringify({ error: "Failed to generate assignment, please try again!" }),
       { status: 500 },
     );
   }
