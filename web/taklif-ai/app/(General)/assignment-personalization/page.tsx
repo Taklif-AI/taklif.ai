@@ -171,7 +171,7 @@ export default function AssignmentPage() {
       is_pdf: false,
       run_id: runId,
       personalization_id: uuidv4(),
-      is_first_try:true,
+      is_first_try: true,
     };
     sessionStorage.setItem("allowLoadingPage", "true");
     // redirect user to loadings page
@@ -204,18 +204,22 @@ export default function AssignmentPage() {
       const result = await res.json();
       // check the incoming response
       if (!res.ok || !result || result.error) {
-        if (result.error.guardrail === "interest") {
+        if (result.error?.guardrail === "interest") {
           setCurrentStep(1);
           storage.saveProgress("CURRENT_STEP", 1);
-          Toast.error(result.error.rejected);
-        } else if (result.error.guardrail === "assignment") {
+          Toast.error(result.error?.rejected);
+        } else if (result.error?.guardrail === "assignment") {
           setCurrentStep(0);
           storage.saveProgress("CURRENT_STEP", 0);
-          Toast.error(result.error.rejected);
-        } else if (result.error.guardrail === "model_output") {
+          Toast.error(result.error?.rejected);
+        } else if (result.error?.guardrail === "model_output") {
           setCurrentStep(2);
           storage.saveProgress("CURRENT_STEP", 2);
-          Toast.error(result.error.rejected);
+          Toast.error(result.error?.rejected);
+        } else {
+          setCurrentStep(2);
+          storage.saveProgress("CURRENT_STEP", 2);
+          Toast.error(result.error);
         }
         setIsPending(false);
         sessionStorage.removeItem("allowLoadingPage");
