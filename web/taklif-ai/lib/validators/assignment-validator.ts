@@ -8,12 +8,12 @@ export const validatePDF = (file: File): ValidationResult => {
   const isValidType =
     file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
   if (!isValidType) {
-    return { isValid: false, error: "Please upload a PDF file only" };
+    return { isValid: false, error: "Please upload a PDF file only!" };
   }
 
   // Check if file is empty
   if (file.size === 0) {
-    return { isValid: false, error: "The file appears to be empty" };
+    return { isValid: false, error: "The file appears to be empty!" };
   }
 
   // Check file size (5MB limit)
@@ -31,25 +31,25 @@ export const validatePDF = (file: File): ValidationResult => {
 export const validateInterest = (interest: string): ValidationResult => {
   const trimmedInterest = interest.trim();
   const length = trimmedInterest.length;
-  const validChars = /^[a-zA-Z ]+$/; // Only a-z and A-Z
+  const validChars = /^[a-zA-Z\s]+$/; // Only a-z and A-Z
 
   // check the interest is existing
   if (!trimmedInterest) {
-    return { isValid: false, error: "Please enter interest" };
+    return { isValid: false, error: "Please enter interest!" };
   }
 
-  // Check the length (minimum 3 characters, maximum 15 characters)
+  // Check the length (minimum 3 characters, maximum 35 characters)
   if (length < 3) {
     return {
       isValid: false,
-      error: "Interest should be at least 3 characters long",
+      error: "Interest must be at least 3 characters long",
     };
   }
 
-  if (length > 40) {
+  if (length > 35) {
     return {
       isValid: false,
-      error: "Interest should be at most 40 characters long",
+      error: "Interest must be at most 35 characters long",
     };
   }
 
@@ -58,7 +58,7 @@ export const validateInterest = (interest: string): ValidationResult => {
     return {
       isValid: false,
       error:
-        "Interest must contain letters only (no spaces, numbers, or symbols)",
+        "Interest must contain letters only (no numbers, or symbols)",
     };
   }
 
