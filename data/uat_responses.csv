@@ -1,0 +1,69 @@
+﻿participant_id,role,q1_more_engaging,q2_easy_to_use,q3_objectives_preserved,q4_future_use,q5_feedback_ar,q5_feedback_en
+P01,student,5,5,5,4,سؤال الـ normalization عن جدول لاعبين ومباريات خلاني أفهم ليش منقسم الجداول أصلًا,The normalization question about a players and matches table made me understand why we split tables in the first place
+P02,student,4,4,4,5,تخيلت إني بكتب كود للعبة أتاري قديمة خلاني أحب الـ low level لأول مرة,"I imagined writing code for an old Atari game, it made me like low level programming for the first time"
+P03,student,3,4,3,4,إضافة حلوة لمساقاتنا كملوا على هالمستوى,"A nice addition to our courses, keep up this level"
+P04,student,4,4,3,5,جدول تمارين وسعرات حرارية بقاعدة البيانات صرت أدرس وأخطط لتماريني بنفس الوقت,"A workouts and calories table in the database, now I study and plan my training at the same time"
+P05,student,5,5,4,4,,
+P06,student,5,3,4,5,الواجب صار موقع لتقييم ألعاب الفيديو حسيته مشروع شخصي إلي مش واجب جامعة,"The assignment became a video game review site, it felt like a personal project of mine, not a university assignment"
+P07,student,5,4,4,4,حساب الـ sets والـ reps بالـ registers فكرة عبقرية أول مرة الأسمبلي إله معنى عندي,"Calculating sets and reps with registers is a genius idea, first time assembly means something to me"
+P08,student,4,4,4,3,الفكرة حلوة وواعدة بمساق الأسمبلي التخصيص كان خفيف شوي بس أكيد رح يتحسن,"The idea is nice and promising, in the assembly course the personalization was a bit light but it will surely improve"
+P09,student,4,5,4,4,يعطيكم العافية مشروع بشرف الكلية,"Great work, a project that makes the faculty proud"
+P10,student,5,4,4,4,سؤال الأسمبلي صار عن حساب نقاط ودمج combos بلعبة حسيت إني ببرمج لعبة حقيقية,"The assembly question became about calculating scores and combos in a game, I felt like I was programming a real game"
+P11,student,5,4,4,5,واجهة سهلة وواضحة دخلت اهتمامي بكرة القدم وطلع الواجب عالطول,"An easy and clear interface, I entered my football interest and the assignment came out right away"
+P12,student,4,5,4,5,,
+P13,student,5,5,5,5,واجب الويب عن الموسيقى كان رائع بس التوليد أخد شوي وقت لو أسرع بيصير كامل,"The web assignment about music was great, generation just took a little time, if faster it would be complete"
+P14,student,5,4,4,4,واجب الـ joins صار عن مباريات الدوري ولاعيبة الفرق فهمت الـ inner join من أول مرة,"The joins assignment became about league matches and team players, I understood inner join from the first try"
+P15,student,4,5,4,5,,
+P16,student,5,4,4,4,التبسيط ساعدني كتير بأسئلة قواعد البيانات الطويلة لغة أوضح بكتير,"The simplification helped me a lot with long database questions, much clearer language"
+P17,educator,5,4,4,5,لاحظت تفاعلًا أعلى بواجبات لغة التجميع تحديدًا وهي عادة الأقل شعبية ننتظر تقييمًا فعليًا للأثر على التحصيل ودعم توليد جماعي للشعب,"I noticed higher engagement specifically in assembly language assignments, usually the least popular; we await a real evaluation of the impact on achievement, plus bulk generation for course sections"
+P18,educator,4,4,4,4,مستوى الصعوبة بقي ثابتًا رغم اختلاف اهتمامات الطلاب بين كرة القدم والألعاب وهذا أهم ما في الأداة أتمنى تحسين سرعة الاستجابة وربطها مع Moodle,"The difficulty level stayed consistent despite students' interests varying between football and gaming, which is the tool's most important quality; I hope for improved responsiveness and Moodle integration"
+P19,student,4,4,5,5,كلشي تمام استمروا,"Everything is fine, keep going"
+P20,student,5,5,4,5,عملت جدول ترتيب الدوري بالـ HTML والـ CSS كنت متحمس أشوف النتيجة النهائية,"I built the league standings table with HTML and CSS, I was excited to see the final result"
+P21,student,5,5,5,5,موقع لأخبار فريقي المفضل بدل صفحة تجريبية الدراسة هيك بتصير متعة,"A website for my favorite team's news instead of a demo page, studying becomes fun this way"
+P22,student,5,5,5,4,,
+P23,student,5,4,4,4,الأسمبلي صعب بس لما صار سؤال الـ loop عن عدّ التكرارات بالجيم صار أوضح بكتير,"Assembly is hard, but when the loop question became about counting gym reps it got much clearer"
+P24,student,5,5,5,4,,
+P25,student,4,5,5,4,,
+P26,student,4,5,4,5,كلشي حلو بس الموقع بعلّق شوي عالموبايل بتمنى تزبطوها بالتحديث الجاي,"Everything is nice, the site just lags a bit on mobile, I hope you fix it in the next update"
+P27,student,5,3,5,5,,
+P28,student,5,4,4,4,,
+P29,student,4,5,5,5,,
+P30,student,5,4,4,4,استعلامات عن أكثر الأغاني تشغيلًا وقوائم التشغيل حسيت حالي بشتغل بشركة موسيقى,"Queries about most played songs and playlists, I felt like I was working at a music company"
+P31,student,2,2,3,3,فكرة مميزة بس مرة رفض اهتمامي بالجيم بالغلط لما تتحسن الفلترة رح تكون خرافية,"A distinctive idea, though it rejected my gym interest once by mistake, once the filtering improves it will be amazing"
+P32,student,4,4,4,3,سؤال قواعد البيانات عن كرة القدم لطيف بتمنى بس التخصيص يكون أعمق من تغيير أسماء الجداول,"The database question about football is pleasant, I just hope the personalization goes deeper than renaming tables"
+P33,student,3,3,4,3,قصة الألعاب اللي انضافت لسؤال الويب حلوة بس لو أقصر شوي بتكون مثالية إلي,"The gaming story added to the web question is nice, just a bit shorter would be perfect for me"
+P34,student,4,5,4,5,عملت صفحة ويب لقائمة أغانيّ المفضلة بدل مثال المتجر المعتاد حبيت الواجب كتير,"I built a web page for my favorite songs playlist instead of the usual store example, I really loved the assignment"
+P35,student,4,4,5,5,,
+P36,student,5,5,5,4,التخصيص بمساق قواعد البيانات ممتاز ياريت تضيفوا أسئلة اختيار من متعدد للمراجعة قبل الامتحانات,"The personalization in the databases course is excellent, I hope you add multiple-choice questions for revision before exams"
+P37,student,3,4,4,4,الواجهة سهلة ومريحة والتجربة عمومًا حلوة يعطيكم العافية,"The interface is easy and comfortable and the experience overall is nice, great work"
+P38,student,4,4,4,4,الـ ERD عن ألبومات وفنانين بدل مكتبة الجامعة المعتادة كتير أحلى هيك,"The ERD was about albums and artists instead of the usual university library, much nicer this way"
+P39,student,4,5,4,5,واجب الـ JavaScript صار مشغل موسيقى بسيط أول واجب بخلصه قبل الموعد بيومين,"The JavaScript assignment became a simple music player, the first assignment I finish two days before the deadline"
+P40,student,4,4,3,3,تجربة لطيفة يمكن ما أستخدمها بكل واجب بس أكيد رح تفيد كتير طلاب بالكلية,"A pleasant experience, I might not use it for every assignment but it will surely help many students in the faculty"
+P41,student,5,4,5,4,حبيت إنه رفض إدخال فاضي لما جربت يعني في رقابة حقيقية عالمحتوى,"I liked that it rejected an empty input when I tried, meaning there's real content moderation"
+P42,student,5,5,4,5,جربت اهتمام الجيم مع الأسمبلي والألعاب مع الويب والتنين طلعوا ممتازين,"I tried the gym interest with assembly and video games with web, both came out excellent"
+P43,student,3,2,4,3,حلو كتير أهم اقتراح عندي تحسين سرعة الاستجابة وقت الضغط,"Really nice, my main suggestion is improving responsiveness under load"
+P44,student,5,4,5,4,,
+P45,student,4,5,3,4,ياريت تصدير PDF للواجب المخصص عشان أطبعه وأدرس منه,I hope for PDF export of the personalized assignment so I can print it and study from it
+P46,student,5,5,5,5,فكرة عظيمة لو تضيفوا واجبات نظرية واختيار من متعدد بتغطوا كل احتياجات المساقات,"A great idea, if you add theoretical and multiple-choice assignments you'd cover all course needs"
+P47,student,5,5,4,5,سؤال الـ aggregate functions عن نقاط اللاعبين بلعبة أونلاين حليته بنص الوقت المعتاد,"The aggregate functions question was about player scores in an online game, I solved it in half my usual time"
+P48,student,4,4,5,5,صفحة الـ forms صارت شاشة تسجيل للاعبين ببطولة e-sports فكرة كتير حلوة,"The forms page became a player registration screen for an e-sports tournament, a really nice idea"
+P49,student,5,5,5,5,تجربة ممتعة بس نفسي ما أستنى ٣٠ ثانية كل مرة بولّد فيها واجب,"A fun experience, I just wish I didn't wait 30 seconds every time I generate an assignment"
+P50,student,4,4,4,5,,
+P51,student,3,3,4,3,تجربة منيحة ياريت بس دعم أفضل لملفات الـ PDF المصورة تبعت الأسمبلي,"A good experience, I just hope for better support for the scanned assembly PDF files"
+P52,student,4,4,5,4,بتمنى تدعموا الأسئلة المقالية كمان النظري بمساق الويب بستاهل نفس الفكرة,"I hope you support essay questions too, the theory part of the web course deserves the same idea"
+P53,student,4,4,4,5,المنصة ممتازة أهم اقتراح عندي تحسين سرعة الاستجابة خصوصًا مع ملفات PDF,"The platform is excellent, my main suggestion is improving responsiveness especially with PDF files"
+P54,student,3,4,4,2,المنصة حلوة بس النت عندي ضعيف فالتوليد طوّل عليّ لو أسرع بتكون ممتازة,"The platform is nice, but my internet is weak so generation took a while, if faster it would be excellent"
+P55,student,4,5,3,4,,
+P56,student,4,5,5,4,عملت قاعدة بيانات لمخزون لعبة RPG بدل المثال التقليدي بجنن بصراحة,"I built a database for an RPG game inventory instead of the classic example, honestly amazing"
+P57,student,5,5,5,5,,
+P58,student,5,5,4,4,كنت بأجل واجبات الأسمبلي دايمًا هاي أول مرة أبلش من أول يوم,"I always used to postpone assembly assignments, this is the first time I start on day one"
+P59,student,4,5,5,4,,
+P60,student,4,4,4,4,حافظ على نفس مستوى صعوبة السؤال الأصلي بالضبط بس غلفه بطريقة أحلى بكتير,"It kept the exact same difficulty of the original question, just wrapped it in a much nicer way"
+P61,student,4,5,4,4,سؤال الـ SQL صار عن تشكيلة فريق كرة قدم أول مرة أحل استعلام وأنا مبسوط,"The SQL question became about a football team lineup, first time I solve a query while actually enjoying it"
+P62,student,4,4,5,4,تحويل النوتات لأرقام والتعامل معها بالأسمبلي كان فكرة مبتكرة استمتعت وأنا بحل,"Converting musical notes to numbers and handling them in assembly was a creative idea, I enjoyed solving it"
+P63,educator,5,5,5,4,طبقنا الفكرة على واجبات قواعد البيانات وتطوير الويب وفّرت وقتًا حقيقيًا وحافظت على الأهداف التعليمية أقترح إضافة قوالب اختيار من متعدد وأسئلة نظرية,We applied the idea to databases and web development assignments; it saved real time and preserved the learning objectives. I suggest adding multiple-choice templates and theory questions
+P64,student,5,5,4,4,بتمنى دعم أكبر للغة العربية بنصوص الواجبات نفسها,I hope for stronger Arabic support in the assignment texts themselves
+P65,student,4,5,4,5,,
+P66,student,3,4,3,3,بداية قوية بتمنى تضيفوا اختيار من متعدد ومقالي لمساقات زي قواعد البيانات النظري,"A strong start, I hope you add multiple choice and essay for courses like databases theory"
+P67,student,5,5,5,4,,
+P68,student,5,4,5,4,,
