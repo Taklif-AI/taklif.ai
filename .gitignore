@@ -9,3 +9,27 @@ venv
 # CDK asset staging directory
 .cdk.staging
 cdk.out
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+.npmrc
+.netrc
+
+# Node
+node_modules
+.next
+out
+build
+.vercel
+
+# Editors / OS
+.vscode
+.idea
+.DS_Store
+Thumbs.db

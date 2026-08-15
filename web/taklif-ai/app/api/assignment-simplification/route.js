@@ -23,14 +23,14 @@ export async function POST(req) {
     };
 
     // Send data to llm api
-    const res = await fetch(
-      "https://***REMOVED-API-ENDPOINT***/Development/llm_generation",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(dataToApi),
+    const res = await fetch(process.env.LLM_API_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": process.env.LLM_API_KEY,
       },
-    );
+      body: JSON.stringify(dataToApi),
+    });
 
     const data = await res.json();
 
