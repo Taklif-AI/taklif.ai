@@ -257,6 +257,8 @@ export default function AssignmentPage() {
       }
       /* eslint-disable */
     } catch (error) {
+      console.error(">>> PERSONALIZATION PAGE ERROR:", error);
+      
       sessionStorage.removeItem("allowLoadingPage");
       setIsPending(false);
       Toast.error("Failed to personalize assignment. Please try again");
