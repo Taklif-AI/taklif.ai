@@ -2,10 +2,17 @@
 
 import { QueryCommand } from "@aws-sdk/lib-dynamodb";
 import { client } from "@/lib/database/dynamo-assignment-client";
+import { currentUser } from "@/lib/auth/auth";
 
 export async function getAssignments(
   userId: string,
 ) {
+  const user = await currentUser();
+
+  if (!user || user.id !== userId) {
+    return { assignments: [] };
+  }
+  
   const params: any = {
     TableName: "Development-AssignmentsTable",
     KeyConditionExpression: "PK = :pk",
