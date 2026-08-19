@@ -1,4 +1,4 @@
-from langchain_community.chat_models import ChatLiteLLMRouter
+from langchain_litellm import ChatLiteLLMRouter
 from litellm import Router
 from langchain_core.messages import SystemMessage
 import boto3
