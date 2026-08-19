@@ -44,5 +44,18 @@ export default auth((req) => {
 });
 
 export const config = {
-  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
+  matcher: [
+    {
+      source: "/((?!.+\\.[\\w]+$|_next).*)",
+      missing: [{ type: "header", key: "next-action" }],
+    },
+    {
+      source: "/",
+      missing: [{ type: "header", key: "next-action" }],
+    },
+    {
+      source: "/(api|trpc)(.*)",
+      missing: [{ type: "header", key: "next-action" }],
+    },
+  ],
 };
