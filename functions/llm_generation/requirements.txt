@@ -4,6 +4,6 @@ langchain_community
 langsmith
 openai
 boto3
-pymupdf
+pymupdf==1.24.14
 PyPDF2
 llama-parse
