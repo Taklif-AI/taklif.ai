@@ -267,6 +267,7 @@ def handler(event, context):
             }
         )}
     except Exception as e:
+        print(">>> UNHANDLED ERROR:", repr(e))
         return {
             "statusCode": 500,
             "body": json.dumps({"error": "Internal Server Error: " + str(e)}),
