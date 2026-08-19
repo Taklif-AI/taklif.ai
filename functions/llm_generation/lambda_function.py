@@ -132,12 +132,14 @@ def handler(event, context):
         response = ""
         try:
             if task == "personalization":
+                print(">>> START PERSONALIZATION")
                 response = assignment.personalize(
                     params,
                     metadata={
                         "langsmith_client": langsmith_client,
                     },
                 )
+                print(">>> END PERSONALIZATION")
             elif task == "simplify":
                 response = simplify.simplify(
                     params,
