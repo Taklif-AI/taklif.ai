@@ -37,7 +37,7 @@ def send_request(task: str, prompt: str, metadata: dict):
     )
 
     messages = [SystemMessage(content=prompt)]
-    response = chat(messages=messages)
+    response = chat.invoke(messages)
 
     return response
 
