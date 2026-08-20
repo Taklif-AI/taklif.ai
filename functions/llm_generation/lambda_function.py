@@ -132,14 +132,12 @@ def handler(event, context):
         response = ""
         try:
             if task == "personalization":
-                print(">>> START PERSONALIZATION")
                 response = assignment.personalize(
                     params,
                     metadata={
                         "langsmith_client": langsmith_client,
                     },
                 )
-                print(">>> END PERSONALIZATION")
             elif task == "simplify":
                 response = simplify.simplify(
                     params,
@@ -267,7 +265,6 @@ def handler(event, context):
             }
         )}
     except Exception as e:
-        print(">>> UNHANDLED ERROR:", repr(e))
         return {
             "statusCode": 500,
             "body": json.dumps({"error": "Internal Server Error: " + str(e)}),

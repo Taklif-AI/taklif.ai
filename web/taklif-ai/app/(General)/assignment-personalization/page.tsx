@@ -229,32 +229,23 @@ export default function AssignmentPage() {
       }
 
       storage.clearProgress();
-
-      console.log(">>> BEFORE DECREMENT");
       const decrement = await decrementRemainingCredit();
-      console.log(">>> AFTER DECREMENT", decrement);
-
       if (decrement.error) {
         Toast.error(decrement.error);
       }
       if (user?.remaining_credits) {
         const value = user.remaining_credits - 1;
-
-        console.log(">>> BEFORE SESSION UPDATE");
         await update({
           user: {
             remaining_credits: value,
           },
         });
-        console.log(">>> AFTER SESSION UPDATE");
       }
 
       Toast.success("Assignment personalized successfully!");
       setIsPending(false);
 
-      console.log(">>> BEFORE TOKEN GENERATION");
       const data = await generateUrlToken(dataToBackend.run_id);
-      console.log(">>> AFTER TOKEN GENERATION", data);
 
       if (data.token) {
         router.push(`/assignment-personalization/result?token=${encodeURIComponent(data.token)}`);
@@ -267,7 +258,6 @@ export default function AssignmentPage() {
       }
       /* eslint-disable */
     } catch (error) {
-      console.error(">>> PERSONALIZATION PAGE ERROR:", error);
 
       sessionStorage.removeItem("allowLoadingPage");
       setIsPending(false);
