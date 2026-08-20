@@ -21,6 +21,7 @@ import { useSession } from "next-auth/react";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { decodeUrlToken } from "@/actions/decode-url-token";
 import { generateUrlToken } from "@/actions/generate-url-token";
+import AssignmentLoading from "@/components/assignment-loading";
 
 export default function AssignmentResultPage() {
   const { update } = useSession();
@@ -32,6 +33,8 @@ export default function AssignmentResultPage() {
     useState<number>(0);
   const [isPending, setIsPending] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSimplifying, setIsSimplifying] = useState(false);
+
   const searchParams = useSearchParams();
   const [runId, setRunId] = useState("");
 
@@ -168,6 +171,7 @@ export default function AssignmentResultPage() {
         break;
       case "repersonalized":
         setIsPending(true);
+        setIsSimplifying(false);
         const check = await checkAndRenewSubscription();
         if (!check) {
           setIsPending(false);
@@ -195,7 +199,7 @@ export default function AssignmentResultPage() {
 
         sessionStorage.setItem("allowLoadingPage", "true");
         // redirect user to loadings page
-        router.push("/assignment-personalization/loading");
+        // router.push("/assignment-personalization/loading");
         try {
           const personalization_id = uuidv4();
           const dataToBackend = {
@@ -262,7 +266,7 @@ export default function AssignmentResultPage() {
         break;
       case "simplify":
         setIsPending(true);
-
+        setIsSimplifying(true);
         const check1 = await checkAndRenewSubscription();
         if (!check1) {
           setIsPending(false);
@@ -291,7 +295,7 @@ export default function AssignmentResultPage() {
         sessionStorage.setItem("allowLoadingPage", "true");
         sessionStorage.setItem("fromSimplify", "true");
         // redirect user to loadings page
-        router.push("/assignment-personalization/loading");
+        // router.push("/assignment-personalization/loading");
 
         const simplification_id = uuidv4();
 
@@ -400,6 +404,9 @@ export default function AssignmentResultPage() {
   };
 
   if (isLoading) return null;
+  if (isPending) {
+    return <AssignmentLoading simplification={isSimplifying} />;
+  }
   if (assignmentsStack.length === 0) return null;
   const currentAssignment = assignmentsStack[currentAssignmentIndex];
   return (
