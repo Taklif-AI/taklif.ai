@@ -175,7 +175,7 @@ export default function AssignmentPage() {
     };
     sessionStorage.setItem("allowLoadingPage", "true");
     // redirect user to loadings page
-    router.push("assignment-personalization/loading");
+    // router.push("assignment-personalization/loading");
 
     try {
       if (assignmentData.file instanceof File) {
