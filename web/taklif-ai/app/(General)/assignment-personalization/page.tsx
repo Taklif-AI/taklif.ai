@@ -15,6 +15,7 @@ import { decrementRemainingCredit } from "@/actions/decrement-remaining-credit";
 import { useSession } from "next-auth/react";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { generateUrlToken } from "@/actions/generate-url-token";
+import AssignmentLoading from "@/components/assignment-loading";
 
 const fullSteps = ["Attach Your Assignment", "Choose An Interest", "Review The Assignment"];
 const shortSteps = ["Attach", "Choose", "Review"];
@@ -254,7 +255,7 @@ export default function AssignmentPage() {
       console.log(">>> BEFORE TOKEN GENERATION");
       const data = await generateUrlToken(dataToBackend.run_id);
       console.log(">>> AFTER TOKEN GENERATION", data);
-      
+
       if (data.token) {
         router.push(`/assignment-personalization/result?token=${encodeURIComponent(data.token)}`);
         sessionStorage.removeItem("allowLoadingPage");
@@ -306,6 +307,10 @@ export default function AssignmentPage() {
         return null;
     }
   };
+
+  if (isPending) {
+    return <AssignmentLoading />;
+  }
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-3xl mx-auto">
